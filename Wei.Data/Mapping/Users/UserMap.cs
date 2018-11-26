@@ -8,7 +8,7 @@ namespace Wei.Data.Mapping.Users
         {
             this.ToTable("A_User");
             this.HasKey(c => c.Id);
-            this.Property(c => c.GId).IsRequired().HasMaxLength(50);
+            this.Property(c => c.OpenId).IsRequired().HasMaxLength(50);
             this.Property(u => u.FirstName).HasMaxLength(10);
             this.Property(u => u.LastName).HasMaxLength(20);
             this.Property(u => u.LoginName).HasMaxLength(50);
@@ -33,6 +33,7 @@ namespace Wei.Data.Mapping.Users
             //this.HasRequired(u => u.Updater).WithMany().HasForeignKey(x => x.UpdaterId);
 
             this.Ignore(x => x.UserName);
+            this.Ignore(x => x.TagId_List);
         }
     }
 }

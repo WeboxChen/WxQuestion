@@ -1,19 +1,25 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using Wei.Core;
+using Wei.Core.Domain.Sys;
 
 namespace Wei.Services.Common
 {
     public class CommonService : ICommonService
     {
         private readonly DBHelp _dbHelp;
-        public CommonService(DBHelp dbHelp)
+        private readonly IWorkContext _workContext;
+
+        public CommonService(DBHelp dbHelp
+            , IWorkContext workContext)
         {
             this._dbHelp = dbHelp;
+            this._workContext = workContext;
         }
 
         public int Insert(string tblname, IDictionary<string, object> data)
@@ -22,16 +28,16 @@ namespace Wei.Services.Common
             List<SqlParameter> paras = new List<SqlParameter>();
             StringBuilder cols = new StringBuilder();
             StringBuilder vals = new StringBuilder();
-            
-            foreach(var item in data)
+
+            foreach (var item in data)
             {
                 if (item.Key.Equals("id", StringComparison.CurrentCultureIgnoreCase) || item.Value == null)
-                    continue; 
+                    continue;
 
                 cols.AppendFormat(" {0} ", item.Key);
                 vals.AppendFormat(" @{0} ", item.Key);
                 paras.Add(new SqlParameter("@" + item.Key, item.Value));
-                
+
                 cols.Append(" , ");
                 vals.Append(" , ");
             }
@@ -49,14 +55,14 @@ namespace Wei.Services.Common
         {
             StringBuilder sql = new StringBuilder();
             IList<SqlParameter> paras = new List<SqlParameter>();
-            foreach(var item in data)
+            foreach (var item in data)
             {
                 if (item.Value.Count == 0)
                     continue;
                 string tname = item.Key;
                 StringBuilder cols = new StringBuilder();
                 StringBuilder vals = new StringBuilder();
-                foreach(var j in item.Value)
+                foreach (var j in item.Value)
                 {
                     if (j.Key.Equals("id", StringComparison.CurrentCultureIgnoreCase) || j.Value == null || string.IsNullOrEmpty(j.Value.ToString()))
                         continue;
@@ -64,7 +70,7 @@ namespace Wei.Services.Common
                     cols.AppendFormat(" {0} ", j.Key);
                     vals.AppendFormat(" @{0} ", parakey);
                     paras.Add(new SqlParameter("@" + parakey, j.Value));
-                    
+
                     cols.Append(" , ");
                     vals.Append(" , ");
                 }
@@ -128,12 +134,12 @@ namespace Wei.Services.Common
             string whereStr = "";
             StringBuilder cols = new StringBuilder();
             IList<SqlParameter> paras = new List<SqlParameter>();
-            
+
             foreach (var item in data)
             {
-                if(item.Key.Equals("id", StringComparison.CurrentCultureIgnoreCase))
+                if (item.Key.Equals("id", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if(whereStr.Length == 0)
+                    if (whereStr.Length == 0)
                     {
                         whereStr = " where Id=@id ";
                         paras.Add(new SqlParameter("@" + item.Key, item.Value));
@@ -167,7 +173,7 @@ namespace Wei.Services.Common
             IList<SqlParameter> paras = new List<SqlParameter>();
 
             int i = 0;
-            foreach(var item in data)
+            foreach (var item in data)
             {
                 i++;
                 cols.AppendFormat(" {0}=@{0} ", item.Key);
@@ -178,18 +184,18 @@ namespace Wei.Services.Common
             }
             _dbHelp.Execute(string.Format(sql, tblname, cols.ToString(), whereStr), CommandType.Text, paras.ToArray());
         }
-        
+
         public void Delete(IDictionary<string, IDictionary<string, object>> data)
         {
-            if(data == null || data.Count ==0)
+            if (data == null || data.Count == 0)
                 throw new Exception("丢失更新条件！");
             string sql = "";
-            foreach(var i in data)
+            foreach (var i in data)
             {
-                if(i.Value.ContainsKey("Id"))
+                if (i.Value.ContainsKey("Id"))
                     sql += string.Format("delete {0} where id={1}", i.Key, i.Value["Id"]);
             }
-            if(sql.Length>0)
+            if (sql.Length > 0)
                 _dbHelp.Execute(sql, System.Data.CommandType.Text);
         }
 
@@ -197,7 +203,7 @@ namespace Wei.Services.Common
         {
             IList<SqlParameter> paras = new List<SqlParameter>();
             string wherestr = "";
-            foreach(var j in data)
+            foreach (var j in data)
             {
                 if (j.Key.Equals("id", StringComparison.CurrentCultureIgnoreCase))
                 {
@@ -315,11 +321,10 @@ namespace Wei.Services.Common
         }
 
 
-
         public int ExecuteProcedure(string procname, IDictionary<string, object> paras)
         {
             IList<SqlParameter> list = new List<SqlParameter>();
-            foreach(var item in paras)
+            foreach (var item in paras)
             {
                 list.Add(new SqlParameter(item.Key, item.Value));
             }
@@ -356,5 +361,152 @@ namespace Wei.Services.Common
                 list.Add(row["name"].ToString());
             return list;
         }
+
+        #region 基础信息表增删改查
+
+        public DataTable GetByViewNonAlias(string view, out int count, out int fcount, int start = 0, int length = 20, string filter = "", string sort = "Id")
+        {
+            count = 0;
+            fcount = 0;
+            string sql = string.Format(@"select count(*) from {0};
+                select count(*) from {0} where 1=1 {1};
+                select * from 
+                    (select {2} ROW_NUMBER() over(order by {4}) as 'RowNo', * from {0} where 1=1 {1} ) as temp 
+                where 1=1 {3} ;  "
+                , view, filter
+                , length > 0 ? " top " + (start + length) : ""
+                , " and RowNo>" + start
+                , sort);
+            var set = _dbHelp.Select(sql, CommandType.Text);
+            if (set != null && set.Tables.Count == 3)
+            {
+                count = set.Tables[0].Rows[0][0].ToInt();
+                fcount = set.Tables[1].Rows[0][0].ToInt();
+                return set.Tables[2];
+            }
+            return null;
+        }
+
+        public void InsertEntity(string tname, JObject jobj, DBTable table)
+        {
+            StringBuilder colstr = new StringBuilder();
+            StringBuilder valstr = new StringBuilder();
+            List<SqlParameter> paras = new List<SqlParameter>();
+            var jproperties = jobj.Properties();
+
+            foreach (JProperty prop in jproperties)
+            {
+                if ("id".Equals(prop.Name, StringComparison.CurrentCultureIgnoreCase))
+                    continue;
+                DBColumn col = table.DBColumnList.FirstOrDefault(x => x.Name.ToLower() == prop.Name);
+                if (col == null || !col.IsEdit)
+                    continue;
+
+                colstr.AppendFormat("[{0}],", prop.Name);
+                string pname = "@" + prop.Name;
+                valstr.Append(pname + ",");
+                var tmp = CommonHelper.GetJValue(prop.Value);
+                paras.Add(new SqlParameter(pname, tmp));
+            }
+            if (table.DBColumnList.Any(x => x.Name.ToLower() == "createtime"))
+            {
+                colstr.Append("[CreateTime] ,");
+                valstr.Append("GetDate(),");
+            }
+            if (table.DBColumnList.Any(x => x.Name.ToLower() == "creatorid"))
+            {
+                colstr.Append("[CreatorId] ,");
+                string pname = "@creatorid";
+                valstr.Append(pname + ",");
+                paras.Add(new SqlParameter(pname, this._workContext.CurrentUser.Id));
+            }
+            if (table.DBColumnList.Any(x => x.Name.ToLower() == "updatetime"))
+            {
+                colstr.Append("[UpdateTime] ,");
+                valstr.Append("GetDate(),");
+            }
+            if (table.DBColumnList.Any(x => x.Name.ToLower() == "updatorid"))
+            {
+                colstr.Append("[UpdatorId] ,");
+                string pname = "@updatorid";
+                valstr.Append(pname + ",");
+                paras.Add(new SqlParameter(pname, this._workContext.CurrentUser.Id));
+            }
+
+            colstr.Remove(colstr.Length - 1, 1);
+            valstr.Remove(valstr.Length - 1, 1);
+            string sql = string.Format("insert into {0} ({1}) values ({2})", tname, colstr.ToString(), valstr.ToString());
+            this._dbHelp.Insert(sql, CommandType.Text, paras.ToArray());
+        }
+
+        public void UpdateEntity(string tname, int id, JObject jobj, DBTable table)
+        {
+            if (id == 0)
+                return;
+
+            StringBuilder str = new StringBuilder();
+            var jproperties = jobj.Properties();
+
+            List<SqlParameter> paras = new List<SqlParameter>();
+            foreach (JProperty prop in jproperties)
+            {
+                if ("id".Equals(prop.Name, StringComparison.CurrentCultureIgnoreCase))
+                    continue;
+                DBColumn col = table.DBColumnList.FirstOrDefault(x => x.Name.ToLower() == prop.Name);
+                if (col == null || !col.IsEdit)
+                    continue;
+
+                string pname = "@" + prop.Name;
+                str.AppendFormat("{0}={1},", prop.Name, pname);
+
+                paras.Add(new SqlParameter(pname, CommonHelper.GetJValue(prop.Value)));
+            }
+            if (table.DBColumnList.Any(x => x.Name.ToLower() == "updatetime"))
+            {
+                str.Append("UpdateTime=GetDate(),");
+            }
+            if (table.DBColumnList.Any(x => x.Name.ToLower() == "updatorid"))
+            {
+                string pname = "@updatorid";
+                str.Append("UpdatorId=" + pname + " ,");
+                paras.Add(new SqlParameter(pname, this._workContext.CurrentUser.Id));
+            }
+
+            paras.Add(new SqlParameter("@id", id));
+            str.Remove(str.Length - 1, 1);
+            string sql = string.Format("update {0} set {1} where id=@id", tname, str.ToString());
+            this._dbHelp.Execute(sql, CommandType.Text, paras.ToArray());
+        }
+
+        public void DeleteEntity(string tname, int id)
+        {
+            if (id == 0)
+                return;
+            string sql = string.Format("delete {0} where id=@id", tname);
+            SqlParameter para = new SqlParameter("@id", id);
+            this._dbHelp.Execute(sql, CommandType.Text, para);
+        }
+
+        public string[] GetColumns(string tname)
+        {
+            string sql = @"select scol.name 
+from syscolumns scol inner join sys.extended_properties sext on scol.id=sext.major_id and scol.colid=sext.minor_id and sext.name='_edit'
+where id=OBJECT_ID(@tname) and sext.value='1'";
+            SqlParameter para = new SqlParameter("@tname", tname);
+            DataSet set = _dbHelp.Select(sql, CommandType.Text, para);
+            if (set == null && set.Tables.Count == 0 && set.Tables[0].Rows.Count == 0)
+            {
+                throw new Exception("数据库连接错误！");
+            }
+            DataTable table = set.Tables[0];
+            string[] cols = new string[table.Rows.Count];
+            for (int i = 0; i < table.Rows.Count; i++)
+            {
+                DataRow row = table.Rows[i];
+                cols[i] = row["name"].ToString().ToLower();
+            }
+            return cols;
+        }
+        #endregion
     }
 }

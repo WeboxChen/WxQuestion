@@ -1,0 +1,124 @@
+﻿Ext.application({
+    name: 'Wei',
+
+    // automatically create an instance of Wei.view.Viewport
+    // autoCreateViewport: true,
+    extend: 'Wei.Application',
+
+    requires: [
+        /*********************************************************************************************
+         * base 
+         */
+        'Wei.data.Simulated',
+        'Wei.proxy.API',
+        'Wei.proxy.WeiApi',
+        'Wei.proxy.WeiTreeApi',
+        'Wei.model.Base',
+        'Wei.model.DataXY',
+        'Wei.model.TreeBase',
+        'Wei.store.BaseStore',
+        'Wei.store.BaseTreeStore',
+        'Wei.store.NavigationTree',
+        'Wei.view.BaseController',
+        'Wei.view.BaseGrid',
+        'Wei.view.NonPageBaseGrid',
+
+        /*********************************************************************************************
+         * data
+         */
+        'Wei.data.base.BaseConfig',
+
+        /*********************************************************************************************
+         * models
+         */
+        // setting
+        'Wei.model.setting.ModuleType',
+        'Wei.model.setting.QuestionBankTag',
+
+        // answers
+        'Wei.model.answers.UserAnswer',
+        'Wei.model.answers.UserAnswerDetail',
+
+        // questions
+        'Wei.model.questions.Question',
+        'Wei.model.questions.QuestionBank',
+
+        /*********************************************************************************************
+         * stores 
+         */
+        // setting
+        'Wei.store.setting.ModuleType',
+        'Wei.store.setting.QuestionBankTag',
+
+        // answers
+        'Wei.store.answers.Useranswer',
+        'Wei.store.answers.UserAnswerDetail',
+
+        // questions
+        'Wei.store.questions.Question',
+        'Wei.store.questions.QuestionBank',
+
+        /*********************************************************************************************
+         * base grid 
+         */
+        
+        /*********************************************************************************************
+         * views 
+         */
+        // authentication
+        'Wei.view.authentication.AuthenticationModel',
+        'Wei.view.authentication.AuthenticationController',
+        'Wei.view.authentication.LockingWindow',
+        'Wei.view.authentication.Dialog',
+        'Wei.view.authentication.LockScreen',
+        'Wei.view.authentication.Login',
+        'Wei.view.authentication.PasswordReset',
+        'Wei.view.authentication.Register',
+
+        // main
+        'Wei.view.main.MainModel',
+        'Wei.view.main.MainController',
+        'Wei.view.main.MainContainerWrap',
+        'Wei.view.main.Main',
+
+        // pages
+        'Wei.view.pages.ErrorBase',
+        'Wei.view.pages.BlankPage',
+        'Wei.view.pages.Error404Window',
+        'Wei.view.pages.Error500Window',
+       
+        // common
+        'Wei.view.common.Window',
+        'Wei.view.common.IconBrowser',
+        'Wei.view.common.FileInfo',
+
+        // setting
+        'Wei.view.setting.ModuletypeController',
+        'Wei.view.setting.ModuleTypeGrid',
+        'Wei.view.setting.ModuleTypeInfo',
+        'Wei.view.setting.QuestionBankTagController',
+        'Wei.view.setting.QuestionBankTagGrid',
+        'Wei.view.setting.QuestionBankTagInfo',
+
+        // questions
+        'Wei.view.questions.IndexViewModel',
+        'Wei.view.questions.DetailViewModel', 
+
+        'Wei.view.questions.IndexController',
+        'Wei.view.questions.DetailController',
+
+        'Wei.view.questions.QuestionBankGrid',
+        'Wei.view.questions.QuestionBankInfo',
+        'Wei.view.questions.QuestionGrid',
+        'Wei.view.questions.QuestionInfo',
+
+        'Wei.view.questions.QuestionList',
+        'Wei.view.questions.QuestionBankList',
+        'Wei.view.questions.QuestionBankDetail',
+        'Wei.view.questions.Index',
+        // answers
+
+
+        //'Wei.Application'
+    ]
+});

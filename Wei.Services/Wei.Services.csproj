@@ -70,6 +70,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CommonService.cs" />
+    <Compile Include="Custom\IUserAnswerService.cs" />
+    <Compile Include="Custom\UserAnswerService.cs" />
+    <Compile Include="Questions\IQuestionBankService.cs" />
+    <Compile Include="Questions\QuestionBankService.cs" />
+    <Compile Include="Sys\DBService.cs" />
     <Compile Include="Common\ICommonService.cs" />
     <Compile Include="Events\EventPublisher.cs" />
     <Compile Include="Events\EventPublisherExtensions.cs" />
@@ -84,15 +89,22 @@
     <Compile Include="Media\IDownloadService.cs" />
     <Compile Include="Media\IPictureService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sys\IDBService.cs" />
+    <Compile Include="Users\ChangePasswordRequest.cs" />
+    <Compile Include="Users\ChangePasswordResult.cs" />
+    <Compile Include="Users\UserRegistrationRequest.cs" />
+    <Compile Include="Users\UserRegistrationResult.cs" />
     <Compile Include="Users\External\AuthorizationResult.cs" />
     <Compile Include="Users\External\ExternalAuthorizerHelper.cs" />
     <Compile Include="Users\External\OpenAuthenticationStatus.cs" />
     <Compile Include="Users\FormsAuthenticationService.cs" />
     <Compile Include="Users\IAuthenticationService.cs" />
     <Compile Include="Users\IPermissionService.cs" />
+    <Compile Include="Users\IUserRegistrationService.cs" />
     <Compile Include="Users\IUserService.cs" />
     <Compile Include="Users\PermissionService.cs" />
     <Compile Include="Users\UserExtensions.cs" />
+    <Compile Include="Users\UserRegistrationService.cs" />
     <Compile Include="Users\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +121,7 @@
       <Name>Wei.Data</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -473,6 +476,62 @@ namespace Wei.Core
                     property.SetValue(nobj, property.GetValue(obj));
             }
             return nobj;
+        }
+
+        /// <summary>
+        /// 解密
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="t"></param>
+        /// <param name="prevstr"></param>
+        /// <param name="extstr"></param>
+        /// <returns></returns>
+        public static object Decryption(string str, Type t, string prevstr = "YPu_", string extstr = ".SH")
+        {
+            if (string.IsNullOrEmpty(str))
+                return null;
+            string tmp = HttpUtility.UrlDecode(UTF8Encoding.UTF8.GetString(Convert.FromBase64String(str)));
+            //tmp = JsonConvert.DeserializeObject<string>(tmp);
+            if (tmp.IndexOf(prevstr) != 0 || tmp.LastIndexOf(extstr) != tmp.Length - extstr.Length)
+            {
+                throw new Exception("请求参数错误！");
+            }
+            tmp = tmp.Substring(prevstr.Length, tmp.Length - prevstr.Length - extstr.Length);
+            tmp = string.Join("", tmp.Reverse());
+            tmp = UTF8Encoding.UTF8.GetString(Convert.FromBase64String(tmp));
+            return JsonConvert.DeserializeObject(tmp, t);
+        }
+
+        /// <summary>
+        /// 获取jobject值
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static object GetJValue(JToken token)
+        {
+            if (token == null)
+                return null;
+
+            switch (token.Type)
+            {
+                case JTokenType.Boolean:
+                    return token.Value<bool>();
+                case JTokenType.Integer:
+                    return token.Value<int>();
+                case JTokenType.Float:
+                    return token.Value<decimal>();
+                case JTokenType.Date:
+                    return token.Value<DateTime>();
+                case JTokenType.Null:
+                    return null;
+                case JTokenType.None:
+                    return null;
+                case JTokenType.String:
+                    return token.Value<string>();
+                case JTokenType.Object:
+                    return token.Value<object>();
+            }
+            return token;
         }
     }
 }

@@ -61,10 +61,16 @@
     <Compile Include="EfRepository.cs" />
     <Compile Include="IDbContext.cs" />
     <Compile Include="Initializers\CreateTablesIfNotExist.cs" />
+    <Compile Include="Mapping\Custom\UserAnswerDetailMap.cs" />
     <Compile Include="Mapping\Logging\ActionRecordMap.cs" />
     <Compile Include="Mapping\Logging\LogMap.cs" />
     <Compile Include="Mapping\Media\DownloadMap.cs" />
     <Compile Include="Mapping\Media\PictureMap.cs" />
+    <Compile Include="Mapping\Questions\ModuleTypeMap.cs" />
+    <Compile Include="Mapping\Questions\QuestionBankMap.cs" />
+    <Compile Include="Mapping\Questions\QuestionBankTagMap.cs" />
+    <Compile Include="Mapping\Questions\QuestionMap.cs" />
+    <Compile Include="Mapping\Custom\UserAnswerMap.cs" />
     <Compile Include="Mapping\Users\DepartmentMap.cs" />
     <Compile Include="Mapping\Users\LoginPermissionMap.cs" />
     <Compile Include="Mapping\Users\PermissionRecordMap.cs" />

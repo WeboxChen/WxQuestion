@@ -12,9 +12,12 @@ using Wei.Core.Infrastructure;
 using Wei.Core.Infrastructure.DependencyManagement;
 using Wei.Data;
 using Wei.Services.Common;
+using Wei.Services.Custom;
 using Wei.Services.Events;
 using Wei.Services.Logging;
 using Wei.Services.Media;
+using Wei.Services.Questions;
+using Wei.Services.Sys;
 using Wei.Services.Users;
 using Wei.Web.Framework.Mvc.Routes;
 
@@ -80,15 +83,20 @@ namespace Wei.Web.Framework
             
             //work context
             builder.RegisterType<WebWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
+            builder.RegisterType<DBHelp>().As<DBHelp>().InstancePerLifetimeScope();
 
-            
+
             builder.RegisterType<CommonService>().As<ICommonService>().InstancePerLifetimeScope();
             builder.RegisterType<DownloadService>().As<IDownloadService>().InstancePerLifetimeScope();
+            builder.RegisterType<DBService>().As<IDBService>().InstancePerLifetimeScope();
             builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
             builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>().InstancePerLifetimeScope();
+            builder.RegisterType<UserRegistrationService>().As<IUserRegistrationService>().InstancePerLifetimeScope();
             builder.RegisterType<DefaultLogger>().As<ILogger>().InstancePerLifetimeScope();
             builder.RegisterType<RoutePublisher>().As<IRoutePublisher>().SingleInstance();
-            builder.RegisterType<DBHelp>().As<DBHelp>().SingleInstance();
+
+            builder.RegisterType<UserAnswerService>().As<IUserAnswerService>().InstancePerLifetimeScope();
+            builder.RegisterType<QuestionBankService>().As<IQuestionBankService>().InstancePerLifetimeScope();
 
             //Register event consumers
             var consumers = typeFinder.FindClassesOfType(typeof(IConsumer<>)).ToList();

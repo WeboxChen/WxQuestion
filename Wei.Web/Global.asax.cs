@@ -5,6 +5,7 @@ using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 using StackExchange.Profiling;
 using System;
+using System.Data.Entity;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -12,6 +13,7 @@ using System.Web.Routing;
 using Wei.Core;
 using Wei.Core.Data;
 using Wei.Core.Infrastructure;
+using Wei.Data;
 using Wei.Services.Logging;
 using Wei.Web.Framework;
 using Wei.Web.Framework.Mvc.Routes;
@@ -54,21 +56,8 @@ namespace Wei.Web
 
         void Application_Start(object sender, EventArgs e)
         {
-            //初始化Aoc容器
-            EngineContext.Initialize(false);
 
-            RegisterRoutes(RouteTable.Routes);
-            GlobalConfiguration.Configure(RegisterApiRoutes);
-
-            //fluent数据验证设置
-            DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;        // 属性值可以为null
-            ModelValidatorProviders.Providers.Add(new FluentValidationModelValidatorProvider(new WeiValidatorFactory()));
-            // GlobalFilterCollection
-            RegisterGlobalFilters(GlobalFilters.Filters);
-
-            GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
-            //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.
-
+            #region 微信注册
             /* CO2NET 全局注册开始
              * 建议按照以下顺序进行注册
              */
@@ -91,6 +80,27 @@ namespace Wei.Web
 
             //微信全局注册，必须！！
             register.UseSenparcWeixin(senparcWeixinSetting, senparcSetting);
+            #endregion
+
+            //初始化Aoc容器
+            EngineContext.Initialize(false);
+            // 数据库不用初始化  CodeFirst 容易报错
+            Database.SetInitializer<WeiObjectContext>(null);
+
+            //RegisterRoutes(RouteTable.Routes);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+
+            //fluent数据验证设置
+            DataAnnotationsModelValidatorProvider.AddImplicitRequiredAttributeForValueTypes = false;        // 属性值可以为null
+            ModelValidatorProviders.Providers.Add(new FluentValidationModelValidatorProvider(new WeiValidatorFactory()));
+            // GlobalFilterCollection
+            RegisterGlobalFilters(GlobalFilters.Filters);
+
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+            //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.
+
+
 
             var logger = EngineContext.Current.Resolve<ILogger>();
             logger.Information("Application started", null, null);
@@ -123,6 +133,14 @@ namespace Wei.Web
             }
         }
 
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            var exception = Server.GetLastError();
+
+            //log error
+            LogException(exception);
+        }
 
         protected void LogException(Exception exc)
         {

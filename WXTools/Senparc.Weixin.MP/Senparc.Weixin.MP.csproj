@@ -483,6 +483,10 @@
     <Compile Include="TenPayLib\TenPayHttpClient.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Wei.Core\Wei.Core.csproj">
+      <Project>{53e347e5-b5b6-4602-8a73-9c77142ec872}</Project>
+      <Name>Wei.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Senparc.Weixin\Senparc.Weixin.csproj">
       <Project>{814092cd-9cd0-4fb7-91e8-d147f476f1fb}</Project>
       <Name>Senparc.Weixin</Name>

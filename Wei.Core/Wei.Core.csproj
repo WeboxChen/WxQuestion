@@ -122,7 +122,19 @@
     <Compile Include="Domain\Logging\LogLevel.cs" />
     <Compile Include="Domain\Media\Download.cs" />
     <Compile Include="Domain\Media\Picture.cs" />
+    <Compile Include="Domain\Questions\AnswerType.cs" />
+    <Compile Include="Domain\Questions\ModuleType.cs" />
+    <Compile Include="Domain\Questions\Question.cs" />
+    <Compile Include="Domain\Questions\QuestionBank.cs" />
+    <Compile Include="Domain\Questions\QuestionBankTag.cs" />
+    <Compile Include="Domain\Questions\QuestionType.cs" />
+    <Compile Include="Domain\Custom\UserAnswer.cs" />
+    <Compile Include="Domain\Custom\UserAnswerDetail.cs" />
+    <Compile Include="Domain\Sys\DBColumn.cs" />
+    <Compile Include="Domain\Sys\DBTable.cs" />
     <Compile Include="Domain\Users\LoginPermission.cs" />
+    <Compile Include="Domain\Users\PasswordFormat.cs" />
+    <Compile Include="Domain\Users\UserLoginResults.cs" />
     <Compile Include="Domain\Users\UserSettings.cs" />
     <Compile Include="Domain\Users\Department.cs" />
     <Compile Include="Domain\Users\Function.cs" />
@@ -147,6 +159,7 @@
     <Compile Include="IWebHelper.cs" />
     <Compile Include="IWorkContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TLogger.cs" />
     <Compile Include="WebHelper.cs" />
     <Compile Include="XmlHelper.cs" />
     <Compile Include="WeiException.cs" />

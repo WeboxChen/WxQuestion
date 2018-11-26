@@ -130,12 +130,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ActionLogAttribute.cs" />
-    <Compile Include="Controllers\BaseApiController.cs" />
+    <Compile Include="ApiControllers\BaseApiController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\JsonCallbackAttribute.cs" />
     <Compile Include="Controllers\SessionValidateAttribute.cs" />
-    <Compile Include="Controllers\UserApiAuthorizeAttribute.cs" />
-    <Compile Include="Controllers\WebApiExceptionFilterAttribute.cs" />
+    <Compile Include="ApiControllers\UserApiAuthorizeAttribute.cs" />
+    <Compile Include="ApiControllers\WebApiExceptionFilterAttribute.cs" />
     <Compile Include="Controllers\XmlCallbackAttribute.cs" />
     <Compile Include="DependencyRegistrar.cs" />
     <Compile Include="ExtJs\CreateOrUpdateRequest.cs" />

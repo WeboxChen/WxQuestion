@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Data;
+using Wei.Core.Domain.Sys;
 
 namespace Wei.Services.Common
 {
@@ -147,5 +149,30 @@ namespace Wei.Services.Common
         /// <param name="procname"></param>
         /// <returns></returns>
         IList<string> GetParasByProcName(string procname);
+
+
+        #region 基础信息表增删改查
+        void InsertEntity(string tname, JObject jobj, DBTable table);
+
+        void UpdateEntity(string tname, int id, JObject jobj, DBTable table);
+
+        void DeleteEntity(string tname, int id);
+
+        /// <summary>
+        /// 查询view数据，不使用别名系统
+        /// </summary>
+        /// <param name="view"></param>
+        /// <param name="columns"></param>
+        /// <param name="filter"></param>
+        /// <param name="sort"></param>
+        /// <returns></returns>
+        DataTable GetByViewNonAlias(string view, out int count, out int fcount, int start = 0, int length = 20, string filter = "", string sort = "Id");
+
+        /// <summary>
+        /// 获取有效列
+        /// </summary>
+        /// <returns></returns>
+        string[] GetColumns(string tname);
+        #endregion
     }
 }

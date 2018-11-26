@@ -154,7 +154,7 @@ namespace Wei.Web.Framework
                 //validation
                 if (user != null && user.Status >= 0)
                 {
-                    SetUserCookie(user.GId);
+                    SetUserCookie(user.OpenId);
                     _cachedUser = user;
                 }
 
@@ -162,7 +162,7 @@ namespace Wei.Web.Framework
             }
             set
             {
-                SetUserCookie(value.GId);
+                SetUserCookie(value.OpenId);
                 _cachedUser = value;
             }
         }

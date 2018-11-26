@@ -6,7 +6,7 @@ namespace Wei.Core
     {
         public static readonly DateTime MinDate = new DateTime(2000, 1, 1);
 
-        public static string ToString(this object obj)
+        public static string ToStringN(this object obj)
         {
             if (obj == null || obj == DBNull.Value)
                 return "";
