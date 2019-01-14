@@ -815,7 +815,7 @@
         } 
         var win = Ext.create(cfg);
     },
-    alertFormObjWindow: function (fxtype, title, winObj, confirmFn) {
+    alertFormObjWindow: function (fxtype, title, record, winObj, confirmFn) {
         var that = this;
         var cfg = {
             xtype: 'common_window',
@@ -826,7 +826,8 @@
             },
             _sizePrecent: 0,
             items: {
-                xtype: fxtype
+                xtype: fxtype,
+                _record: record
             },
             tbar: [
                 {

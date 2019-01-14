@@ -18,6 +18,11 @@ namespace Wei.Core
     public partial class CommonHelper
     {
         /// <summary>
+        /// 系统支持的特殊符号，用于split、trim
+        /// </summary>
+        public static char[] SPECIALCHARACTERS = new[] { ' ', ',', '，', '.', '。', ';', '；', ':', '：', '-', '_', '~', '`', '|', '、', '+', '=' };
+
+        /// <summary>
         /// Ensures the subscriber email or throw.
         /// </summary>
         /// <param name="email">The email.</param>

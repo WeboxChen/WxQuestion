@@ -16,10 +16,17 @@ namespace Wei.Web
                 new[] { "Wei.Web.Controllers" }
             );
 
-            routes.MapRoute(
-                name: "Login",
-                url: "authentication/login"
-            );
+            //routes.MapRoute("login",
+            //    "wxquestion/login",
+            //    new { controller = "Authentication", action = "login" },
+            //    new[] { "Wei.Web.Controllers" });
+
+            //routes.MapRoute(
+            //    name: "Login",
+            //    url: "login",
+            //    defaults: new { controller = "Authentication", action = "login" },
+            //    constraints: new[] { "Wei.Web.Controllers" }
+            //);
         }
     }
 }

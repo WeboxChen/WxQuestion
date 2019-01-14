@@ -34,14 +34,18 @@
         // setting
         'Wei.model.setting.ModuleType',
         'Wei.model.setting.QuestionBankTag',
-
-        // answers
-        'Wei.model.answers.UserAnswer',
-        'Wei.model.answers.UserAnswerDetail',
-
+        
         // questions
         'Wei.model.questions.Question',
         'Wei.model.questions.QuestionBank',
+        'Wei.model.questions.QuestionAnswer',
+
+        // account
+        'Wei.model.account.User',
+
+        // custom
+        'Wei.model.custom.UserAnswer',
+        'Wei.model.custom.UserAnswerDetail',
 
         /*********************************************************************************************
          * stores 
@@ -49,14 +53,18 @@
         // setting
         'Wei.store.setting.ModuleType',
         'Wei.store.setting.QuestionBankTag',
-
-        // answers
-        'Wei.store.answers.Useranswer',
-        'Wei.store.answers.UserAnswerDetail',
-
+        
         // questions
         'Wei.store.questions.Question',
         'Wei.store.questions.QuestionBank',
+        'Wei.store.questions.QuestionAnswer',
+
+        // account
+        'Wei.store.account.User',
+
+        // custom
+        'Wei.store.custom.UserAnswer',
+        'Wei.store.custom.UserAnswerDetail',
 
         /*********************************************************************************************
          * base grid 
@@ -110,14 +118,31 @@
         'Wei.view.questions.QuestionBankGrid',
         'Wei.view.questions.QuestionBankInfo',
         'Wei.view.questions.QuestionGrid',
+        'Wei.view.questions.QuestionAnswerGrid',
         'Wei.view.questions.QuestionInfo',
 
         'Wei.view.questions.QuestionList',
         'Wei.view.questions.QuestionBankList',
         'Wei.view.questions.QuestionBankDetail',
         'Wei.view.questions.Index',
-        // answers
 
+        // answers
+        'Wei.view.custom.IndexViewModel',
+
+        'Wei.view.custom.IndexController',
+
+        'Wei.view.custom.UserAnswerGrid',
+        'Wei.view.custom.UserAnswerDetailGrid', 
+        'Wei.view.custom.UserAnswerList',
+        'Wei.view.custom.UserAnswerDetailList',
+        'Wei.view.custom.CustomDetail',
+
+        'Wei.view.custom.Index', 
+
+        // userinfo
+        'Wei.view.account.UserViewModel',
+        'Wei.view.account.UserController',
+        'Wei.view.account.UserGrid',
 
         //'Wei.Application'
     ]

@@ -54,5 +54,10 @@ namespace Wei.Web
             get { return _weixinAppSecret ?? (_weixinAppSecret = ConfigurationManager.AppSettings["WeixinAppSecret"]); }
         }
 
+        private static string _mediaDir;
+        public static string MediaDir
+        {
+            get { return _mediaDir ?? (_mediaDir = ConfigurationManager.AppSettings["MediaDir"]); }
+        }
     }
 }

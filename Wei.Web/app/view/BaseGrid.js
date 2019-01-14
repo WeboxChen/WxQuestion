@@ -12,7 +12,7 @@ Ext.define('Wei.view.BaseGrid', {
         selType: 'checkboxmodel',
         mode: 'SINGLE',
         showHeaderCheckbox: true,
-        checkOnly: true
+        // checkOnly: true
     },
     layout: 'fit',
     scrollable: true,

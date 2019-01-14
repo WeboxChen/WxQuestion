@@ -18,7 +18,7 @@ namespace Wei.Services.Questions
             _questionRepository = questionRepository;
         }
 
-        public Question GetQuestion(int questionbankid, int questionno)
+        public Question GetQuestion(int questionbankid, decimal questionno)
         {
             return this._questionRepository.Table.First(x => x.QuestionBank_Id == questionbankid && x.Sort == questionno);
         }
@@ -31,6 +31,25 @@ namespace Wei.Services.Questions
         public IList<QuestionBank> Query()
         {
             throw new NotImplementedException();
+        }
+
+        public IDictionary<string, QuestionBank> KeyWordQuestionBank()
+        {
+            IDictionary<string, QuestionBank> result = new Dictionary<string, QuestionBank>();
+            var list = _questionBankRepository.Table.Where(x => x.AutoResponse != null && x.AutoResponse.Value);
+            foreach(var item in list)
+            {
+                if (string.IsNullOrEmpty(item.ResponseKeyWords))
+                    continue;
+                string[] arr = item.ResponseKeyWords.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach(string key in arr)
+                {
+                    if (result.ContainsKey(key))
+                        continue;
+                    result.Add(key, item);
+                }
+            }
+            return result;
         }
     }
 }

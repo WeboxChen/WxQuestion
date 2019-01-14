@@ -122,6 +122,15 @@ namespace Wei.Services.Users
         }
 
         /// <summary>
+        /// 获取最后的用户
+        /// </summary>
+        /// <returns></returns>
+        public User GetLastWXinUser()
+        {
+            return this._userRepository.Table.Where(x=> !string.IsNullOrEmpty(x.OpenId)).OrderByDescending(x => x.Id).FirstOrDefault();
+        }
+
+        /// <summary>
         /// Get users by identifiers
         /// </summary>
         /// <param name="userIds">User identifiers</param>

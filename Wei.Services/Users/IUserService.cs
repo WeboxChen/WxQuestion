@@ -22,6 +22,12 @@ namespace Wei.Services.Users
         User GetUserById(string gid);
 
         /// <summary>
+        /// 获取最后的用户
+        /// </summary>
+        /// <returns></returns>
+        User GetLastWXinUser();
+
+        /// <summary>
         /// Get users by identifiers
         /// </summary>
         /// <param name="userIds">User identifiers</param>

@@ -46,7 +46,8 @@ Ext.define('Wei.store.NavigationTree', {
                 children: [
                     {
                         text: '答题记录',
-                        leaf: true
+                        leaf: true,
+                        viewType: 'custom'
                     }
                 ]
             },
@@ -56,7 +57,8 @@ Ext.define('Wei.store.NavigationTree', {
                 children: [
                     {
                         text: '用户信息',
-                        leaf: true
+                        leaf: true,
+                        viewType: 'account_usergrid'
                     }
                 ]
             },

@@ -28,6 +28,14 @@ namespace Wei.Core.Domain.Questions
         /// </summary>
         public string Remark { get; set; }
         /// <summary>
+        /// 自动响应
+        /// </summary>
+        public bool? AutoResponse { get; set; }
+        /// <summary>
+        /// 自动响应语句，多条用“|”隔开
+        /// </summary>
+        public string ResponseKeyWords { get; set; }
+        /// <summary>
         /// 状态 -1：删除 0：禁用 1：启用
         /// </summary>
         public int Status { get; set; }

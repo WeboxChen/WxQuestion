@@ -11,6 +11,10 @@
             type: 'questions_question',
             autoLoad: false
         },
+        questionanswerlist: {
+            type: 'questions_questionanswer',
+            autoLoad: false
+        },
 
         // 答题方式
         answertypelist: {
@@ -18,7 +22,8 @@
             data: [
                 { code: 'SingleCheck', name: '单选' },
                 { code: 'MultiCheck', name: '多选' },
-                { code: 'Text', name: '简答' }
+                { code: 'Text', name: '简答' },
+                { code: 'End', name: '结束' }
             ]
         },
         // 出题类型

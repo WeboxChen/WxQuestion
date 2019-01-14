@@ -12,7 +12,7 @@ namespace Wei.Core.Domain.Custom
         /// <summary>
         /// 题目编号
         /// </summary>
-        public int QuestionNo { get; set; }
+        public decimal QuestionNo { get; set; }
         /// <summary>
         /// 答案
         /// </summary>
@@ -20,7 +20,7 @@ namespace Wei.Core.Domain.Custom
         /// <summary>
         /// 下一题
         /// </summary>
-        public int? Next { get; set; }
+        public decimal? Next { get; set; }
         /// <summary>
         /// 提出问题时间
         /// </summary>

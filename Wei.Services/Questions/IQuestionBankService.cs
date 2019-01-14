@@ -9,6 +9,10 @@ namespace Wei.Services.Questions
 {
     public interface IQuestionBankService
     {
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <returns></returns>
         IList<QuestionBank> Query();
 
         /// <summary>
@@ -24,7 +28,12 @@ namespace Wei.Services.Questions
         /// <param name="questionbankid"></param>
         /// <param name="questionno"></param>
         /// <returns></returns>
-        Question GetQuestion(int questionbankid, int questionno);   
+        Question GetQuestion(int questionbankid, decimal questionno);
 
+        /// <summary>
+        /// 获取默认的
+        /// </summary>
+        /// <returns></returns>
+        IDictionary<string, QuestionBank> KeyWordQuestionBank();
     }
 }

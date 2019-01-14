@@ -159,7 +159,7 @@ namespace Wei.Core.Domain.Users
         /// <summary>
         /// 关注时间
         /// </summary>
-        public int Subscribe_Time { get; set; }
+        public long Subscribe_Time { get; set; }
         /// <summary>
         /// 标识id
         /// </summary>

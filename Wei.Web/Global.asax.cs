@@ -3,9 +3,11 @@ using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin;
 using Senparc.Weixin.Entities;
+using Senparc.Weixin.MP.Containers;
 using StackExchange.Profiling;
 using System;
 using System.Data.Entity;
+using System.Threading;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -80,6 +82,12 @@ namespace Wei.Web
 
             //微信全局注册，必须！！
             register.UseSenparcWeixin(senparcWeixinSetting, senparcSetting);
+            // 注册微信AppId
+            AccessTokenContainer.Register(WXinConfig.WeixinAppId, WXinConfig.WeixinAppSecret);
+            
+            // 异步执行
+            //new Thread(x => {
+            //}).Start();
             #endregion
 
             //初始化Aoc容器
@@ -101,8 +109,18 @@ namespace Wei.Web
             //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.
 
 
-
             var logger = EngineContext.Current.Resolve<ILogger>();
+            try
+            {
+                ViewServices.Users.UserViewService uservice = new ViewServices.Users.UserViewService();
+                uservice.SaveUserList(WXinConfig.WeixinAppId);
+            }
+            catch (Exception ex)
+            {
+                //var logger2 = EngineContext.Current.Resolve<ILogger>();
+                logger.Error(ex.Message, ex, null);
+            }
+
             logger.Information("Application started", null, null);
         }
 

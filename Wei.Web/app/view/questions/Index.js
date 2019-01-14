@@ -7,7 +7,10 @@
 
     itemId: 'questionsContainer',
 
-    layout: 'fit'
+    layout: 'fit',
+    listeners: {
+        show: 'onQuestionShow'
+    }
 
 
 });

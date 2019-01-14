@@ -125,6 +125,7 @@
     <Compile Include="Domain\Questions\AnswerType.cs" />
     <Compile Include="Domain\Questions\ModuleType.cs" />
     <Compile Include="Domain\Questions\Question.cs" />
+    <Compile Include="Domain\Questions\QuestionAnswer.cs" />
     <Compile Include="Domain\Questions\QuestionBank.cs" />
     <Compile Include="Domain\Questions\QuestionBankTag.cs" />
     <Compile Include="Domain\Questions\QuestionType.cs" />

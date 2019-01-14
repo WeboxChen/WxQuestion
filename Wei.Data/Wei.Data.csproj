@@ -67,6 +67,7 @@
     <Compile Include="Mapping\Media\DownloadMap.cs" />
     <Compile Include="Mapping\Media\PictureMap.cs" />
     <Compile Include="Mapping\Questions\ModuleTypeMap.cs" />
+    <Compile Include="Mapping\Questions\QuestionAnswerMap.cs" />
     <Compile Include="Mapping\Questions\QuestionBankMap.cs" />
     <Compile Include="Mapping\Questions\QuestionBankTagMap.cs" />
     <Compile Include="Mapping\Questions\QuestionMap.cs" />

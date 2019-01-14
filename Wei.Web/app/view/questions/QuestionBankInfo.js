@@ -8,6 +8,15 @@
         padding: '10 10 5 10',
         labelAlign: 'right'
     },
+    listeners: {
+
+        afterRender: function () {
+            var me = this;
+            if (me._record) {
+                me.loadRecord(me._record);
+            }
+        },
+    },
 
     items: [
         {
@@ -36,6 +45,17 @@
             xtype: 'textfield',
             fieldLabel: '备注',
             name: 'remark'
+        },
+        {
+            xtype: 'checkboxfield',
+            fieldLabel: '自动唤醒',
+            name: 'autoresponse'
+        },
+
+        {
+            xtype: 'textfield',
+            fieldLabel: '响应语句',
+            name: 'responsekeywords'
         },
         {
             xtype: 'combobox',

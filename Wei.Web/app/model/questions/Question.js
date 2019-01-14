@@ -9,7 +9,8 @@ Ext.define('Wei.model.questions.Question', {
         { type: 'string', name: 'text', persist: true },
         { type: 'string', name: 'imagecode', persist: true },
         { type: 'string', name: 'answer', persist: true },
-        { type: 'int', name: 'next1', persist: true },
-        { type: 'int', name: 'next2', persist: true }
+        { type: 'float', name: 'next1', persist: true },
+        { type: 'float', name: 'next2', persist: true },
+        { type: 'float', name: 'sort', persist: true }
     ]
 });

@@ -64,20 +64,25 @@
             tbar: [
                 {
                     text: '新增',
-                    handler: 'onAdd'
+                    handler: 'onQuestionBankAdd'
+                },
+                {
+                    text: '修改',
+                    handler: 'onQuestionBankEdit'
                 },
                 {
                     text: '查看',
-                    handler: 'onView'
+                    handler: 'onQuestionBankView'
                 },
                 {
                     text: '删除',
-                    handler: 'onDel'
+                    handler: 'onQuestionBankDel'
                 }
             ],
             bind: {
                 store: '{questionbanklist}'
             },
+            flex: 1,
             listeners: {
                 rowdblclick: 'onQuestionBankGridDblClick'
             }

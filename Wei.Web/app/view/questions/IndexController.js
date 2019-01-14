@@ -38,25 +38,47 @@ Ext.define('Wei.view.questions.IndexController', {
     init: function () {
         this.setCurrentView('questions_questionbanklist');
     },
+    onQuestionShow: function () {
+        this.setCurrentView('questions_questionbanklist');
+    },
 
     // question bank
     onDataQuery: function (t) {
         var store = that.getStore('questionbanklist');
         store.load();
     },
-    onAdd: function (t) {
+    onQuestionBankAdd: function (t) {
         var that = this;
         var store = that.getStore('questionbanklist');
-        this.alertFormObjWindow('questions_questionbankinfo', '添加试卷', {}, function (values) {
+        this.alertFormObjWindow('questions_questionbankinfo', '添加题卷', null, {}, function (values) {
             store.add(values);
             store.ypuSimpleSync({
                 success: function () {
                     store.reload();
                 }
             });
+            return true;
         });
     },
-    onView: function (t) {
+    onQuestionBankEdit: function (t) {
+        var that = this,
+            store = that.getStore('questionbanklist'),
+            grid = t.up('grid'),
+            selected = grid.getSelection();
+        if (selected && selected.length == 1) {
+            var record = selected[0];
+            this.alertFormObjWindow('questions_questionbankinfo', '修改题卷', record, {}, function (values) {
+                store.ypuSimpleSync({
+                    success: function () {
+                        store.reload();
+                    }
+                });
+                return true;
+            });
+        }
+        
+    },
+    onQuestionBankView: function (t) {
         var that = this,
             grid = t.up('grid'),
             selection = grid.getSelection();
@@ -65,7 +87,7 @@ Ext.define('Wei.view.questions.IndexController', {
         var record = selection[0];
         that.setCurrentView('questions_detail', { _questionbank: record });
     },
-    onDel: function (t) {
+    onQuestionBankDel: function (t) {
         var that = this,
             grid = t.up('grid'),
             store = grid.getStore(),
@@ -85,4 +107,5 @@ Ext.define('Wei.view.questions.IndexController', {
         var that = this;
         that.setCurrentView('questions_detail', { _questionbank: r });
     }
+    
 });

@@ -6,6 +6,7 @@ Ext.define('Wei.store.questions.Question', {
 
     _dataView: 'Q_Question',
     _operateTblName: 'Q_Question', 
+    sorters: 'sort',
 
     listeners: {
         beforeload: function (s, o) {

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Wei.Core.Domain.Questions
 {
     public class Question: BaseEntity
     {
+        private IList<QuestionAnswer> _questionAnswerList;
+
         /// <summary>
         /// 题库
         /// </summary>
@@ -63,14 +66,23 @@ namespace Wei.Core.Domain.Questions
         /// <summary>
         /// 答对后下一题
         /// </summary>
-        public int? Next1 { get; set; }
+        public decimal? Next1 { get; set; }
         /// <summary>
         /// 答错后下一题
         /// </summary>
-        public int? Next2 { get; set; }
+        public decimal? Next2 { get; set; }
         /// <summary>
         /// 序号
         /// </summary>
-        public int Sort { get; set; }
+        public decimal Sort { get; set; }
+
+        /// <summary>
+        /// 问题答案
+        /// </summary>
+        public virtual IList<QuestionAnswer> QuestionAnswerList
+        {
+            get { return _questionAnswerList ?? (_questionAnswerList = new List<QuestionAnswer>()); }
+            set { _questionAnswerList = value; }
+        }
     }
 }

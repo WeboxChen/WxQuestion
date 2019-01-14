@@ -16,6 +16,10 @@
         /// <summary>
         /// 文本
         /// </summary>
-        Text
+        Text,
+        /// <summary>
+        /// 结束语句
+        /// </summary>
+        End
     }
 }

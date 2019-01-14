@@ -65,6 +65,8 @@ Ext.define('Wei.view.questions.QuestionBankGrid', {
         { xtype: 'gridcolumn', text: '标题', dataIndex: 'title', hidden: false, editor: { xtype: 'textfield' } },
         { xtype: 'gridcolumn', text: '描述', dataIndex: 'description', hidden: false, editor: { xtype: 'textfield' } },
         { xtype: 'gridcolumn', text: '备注', dataIndex: 'remark', hidden: false, editor: { xtype: 'textfield' } },
+        { xtype: 'booleancolumn', text: '自动唤醒', dataIndex: 'autoresponse', trueText: '√', falseText: '', width: 100, hidden: false, editor: { xtype: 'checkboxfield' } },
+        { xtype: 'gridcolumn', text: '唤醒语句', dataIndex: 'responsekeywords', width: 160, hidden: false, editor: { xtype: 'textfield' } },
         {
             xtype: 'numbercolumn', text: '状态', dataIndex: 'status', format: '0', hidden: false,
             renderer: function (d) {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Senparc.Weixin.MP.Entities;
+using System;
 using System.Collections.Generic;
 using Wei.Core.Domain.Custom;
 using Wei.Core.Domain.Questions;
