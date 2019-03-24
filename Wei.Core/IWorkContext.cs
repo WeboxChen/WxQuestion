@@ -46,5 +46,6 @@ namespace Wei.Core
         /// tname / description / colname
         /// </summary>
         IDictionary<string, IDictionary<string, string>> ColDescription { get; }
+
     }
 }

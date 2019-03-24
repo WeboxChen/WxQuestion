@@ -6,12 +6,12 @@ Ext.define('Wei.view.questions.QuestionInfo', {
 
     items: [
         
-{ 
-    xtype: 'numberfield', 
-    emptyText: 'id', 
-    name: 'id', 
-    allowDecimals: false 
-},
+        { 
+            xtype: 'numberfield', 
+            emptyText: 'id', 
+            name: 'id', 
+            allowDecimals: false 
+        },
 
 
 

@@ -16,6 +16,21 @@
     layout: 'fit',
     items: [
         {
+            title: '基础信息',
+            xtype: 'questions_questionbankinfo',
+            listeners: {
+                render: 'onQuestionBankInfoRender'
+            },
+            bbar: [
+                '->',
+                {
+                    xtype: 'button',
+                    text: '保存',
+                    handler: 'onQuestionBankInfoSave'
+                }
+            ]
+        },
+        {
             title: '问卷题目',
             xtype: 'questions_questionlist'
         }

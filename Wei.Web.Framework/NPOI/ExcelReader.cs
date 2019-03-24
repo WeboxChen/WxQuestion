@@ -61,7 +61,8 @@ namespace Wei.Web.Framework.NPOI
         /// 获取数据
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="index"></param>
+        /// <param name="sheetname">可以为空，默认第一张sheet</param>
+        /// <param name="tname">导入的表名</param>
         /// <returns></returns>
         public IList<T> Read<T>(string sheetname, string tname, out string message)
         {

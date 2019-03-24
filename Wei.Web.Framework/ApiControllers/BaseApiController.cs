@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Http;
-using Wei.Web.Framework.ExtJs;
+using Wei.Core;
 
 namespace Wei.Web.Framework.ApiControllers
 {

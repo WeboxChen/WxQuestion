@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
 
 namespace Wei.Core
 {
@@ -76,5 +78,49 @@ namespace Wei.Core
             decimal.TryParse(obj.ToString(), out i);
             return i;
         }
+
+        //public static T ToBaseEntity<T>(this JObject jobject)
+        //{
+        //    T entity = Activator.CreateInstance<T>();
+        //    var properties = typeof(T).GetProperties();
+        //    var jproperties = jobject.Properties();
+        //    foreach(var prop in properties)
+        //    {
+        //        var jprop = jproperties.FirstOrDefault(x => string.Equals(x.Name, prop.Name, StringComparison.CurrentCultureIgnoreCase));
+        //        if (jprop == null)
+        //            continue;
+
+        //        switch (jprop.Value.Type)
+        //        {
+        //            case JTokenType.String:
+        //                prop.SetValue(entity, jprop.Value.Value<string>());
+        //                break;
+        //            case JTokenType.Integer:
+        //                prop.SetValue(entity, jprop.Value.Value<int>());
+        //                break;
+        //            case JTokenType.Float:
+        //                prop.SetValue(entity, jprop.Value.Value<float>());
+        //                break;
+        //            case JTokenType.Null:
+        //                continue;
+        //            case JTokenType.Object:
+        //                break;
+        //            case JTokenType.Date:
+        //                var tmpdate = jprop.Value.Value<DateTime>();
+        //                if (tmpdate > new DateTime(2000, 1, 1))
+        //                    prop.SetValue(entity, tmpdate);
+        //                break;
+        //            case JTokenType.Boolean:
+        //                prop.SetValue(entity, jprop.Value.Value<bool>());
+        //                break;
+        //            case JTokenType.Bytes:
+        //                prop.SetValue(entity, jprop.Value.Value<byte[]>());
+        //                break;
+
+        //        }
+               
+        //    }
+        //    return entity;
+        //}
     }
 }

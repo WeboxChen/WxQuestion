@@ -160,6 +160,7 @@
     <Content Include="app\data\base\BaseConfig.js" />
     <Content Include="app\data\base\User.js" />
     <Content Include="app\data\Simulated.js" />
+    <Content Include="app\model\account\UserAttribute.js" />
     <Content Include="app\model\Base.js" />
     <Content Include="app\model\custom\UserAnswer.js" />
     <Content Include="app\model\custom\UserAnswerDetail.js" />
@@ -175,6 +176,7 @@
     <Content Include="app\proxy\WeiApi.js" />
     <Content Include="app\proxy\WeiTreeApi.js" />
     <Content Include="app\store\account\User.js" />
+    <Content Include="app\store\account\UserAttribute.js" />
     <Content Include="app\store\BaseTreeStore.js" />
     <Content Include="app\store\custom\UserAnswer.js" />
     <Content Include="app\store\custom\UserAnswerDetail.js" />
@@ -185,6 +187,9 @@
     <Content Include="app\store\questions\Question.js" />
     <Content Include="app\store\questions\QuestionBank.js" />
     <Content Include="app\store\setting\QuestionBankTag.js" />
+    <Content Include="app\view\account\UserAttributeController.js" />
+    <Content Include="app\view\account\UserAttributeGrid.js" />
+    <Content Include="app\view\account\UserAttributeViewModel.js" />
     <Content Include="app\view\account\UserController.js" />
     <Content Include="app\view\account\UserGrid.js" />
     <Content Include="app\view\account\UserViewModel.js" />
@@ -225,6 +230,7 @@
     <Content Include="app\view\questions\IndexController.js" />
     <Content Include="app\view\questions\QuestionAnswerGrid.js" />
     <Content Include="app\view\questions\QuestionBankDetail.js" />
+    <Content Include="app\view\questions\QuestionBankDetailInfo.js" />
     <Content Include="app\view\questions\QuestionBankGrid.js" />
     <Content Include="app\view\questions\QuestionBankInfo.js" />
     <Content Include="app\view\questions\IndexViewModel.js" />
@@ -240,6 +246,7 @@
     <Content Include="app\view\setting\ModuleTypeGrid.js" />
     <Content Include="app\view\setting\ModuleTypeInfo.js" />
     <Content Include="app\view\setting\SettingModel.js" />
+    <Content Include="ClosePager.html" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
@@ -1562,6 +1569,7 @@
     <Content Include="resources\bootstrap.3.3.7\content\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="resources\bootstrap.3.3.7\content\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="resources\bootstrap.3.3.7\content\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="scripts\audio.min.js" />
     <Content Include="scripts\bootstrap.bundle.js" />
     <Content Include="scripts\bootstrap.bundle.min.js" />
     <Content Include="scripts\bootstrap.js" />
@@ -1589,9 +1597,11 @@
     <Content Include="scripts\jquery-3.0.0.min.js" />
     <Content Include="scripts\jquery-3.0.0.slim.js" />
     <Content Include="scripts\jquery-3.0.0.slim.min.js" />
+    <Content Include="scripts\libamr-2.0.1.min.js" />
     <Content Include="scripts\md5.min.js" />
     <Content Include="scripts\modernizr-2.6.2.js" />
     <Content Include="scripts\nw-extension.js" />
+    <Content Include="scripts\pcmdata-2.0.0.min.js" />
     <Content Include="scripts\popper-utils.js" />
     <Content Include="scripts\popper-utils.min.js" />
     <Content Include="scripts\popper.js" />
@@ -1600,6 +1610,7 @@
     <Content Include="scripts\umd\popper-utils.min.js" />
     <Content Include="scripts\umd\popper.js" />
     <Content Include="scripts\umd\popper.min.js" />
+    <Content Include="scripts\voice-2.0.js" />
     <Content Include="scripts\ZeroClipboard.min.js" />
     <Content Include="themes\admin-dashboard\classic\app.js" />
     <Content Include="themes\admin-dashboard\classic\resources\Admin-all.css" />
@@ -2125,16 +2136,19 @@
   <ItemGroup>
     <Compile Include="API\Controllers\CommonController.cs" />
     <Compile Include="API\Controllers\HomeController.cs" />
+    <Compile Include="API\Controllers\QuestionBankController.cs" />
     <Compile Include="API\Controllers\UserController.cs" />
     <Compile Include="API\Handlers\CustomMessageContent.cs" />
     <Compile Include="API\Handlers\CustomMessageHandler.cs" />
     <Compile Include="API\Handlers\CustomMessageHandler_Events.cs" />
+    <Compile Include="API\Models\QuestionBank\QuestionBankViewModel.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WXinConfig.cs" />
     <Compile Include="Controllers\AuthenticationController.cs" />
     <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\SettingController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WeiXinController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -2147,7 +2161,9 @@
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\Authentication\LoginViewModel.cs" />
+    <Compile Include="Models\BaseViewModel.cs" />
     <Compile Include="Models\Setting\ModuleTypeViewModel.cs" />
+    <Compile Include="Models\Users\UserAttributeValueViewModel.cs" />
     <Compile Include="Models\Users\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewServices\Users\UserViewService.cs" />
@@ -2317,6 +2333,8 @@
     <Content Include="scripts\popper-utils.min.js.map" />
     <Content Include="scripts\popper-utils.js.map" />
     <Content Include="Views\WeiXin\Error.cshtml" />
+    <Content Include="Views\User\UserInfo.cshtml" />
+    <Content Include="Views\User\NonUserSession.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2325,7 +2343,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="API\Models\" />
     <Folder Include="App_Data\" />
     <Folder Include="Views\Common\" />
     <Folder Include="Views\Setting\" />

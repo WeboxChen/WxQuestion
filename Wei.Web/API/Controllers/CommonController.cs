@@ -15,7 +15,6 @@ namespace Wei.Web.API.Controllers
     {
         private readonly ICommonService _commonService;
         private readonly IWorkContext _workContext;
-        private readonly IDbContext _dbContext;
         private readonly IDBService _dbService;
 
         public CommonController(ICommonService commonService
@@ -26,7 +25,6 @@ namespace Wei.Web.API.Controllers
         {
             this._commonService = commonService;
             this._workContext = workContext;
-            this._dbContext = dbContext;
             this._dbService = dbService;
         }
 

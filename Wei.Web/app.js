@@ -42,6 +42,7 @@
 
         // account
         'Wei.model.account.User',
+        'Wei.model.account.UserAttribute', 
 
         // custom
         'Wei.model.custom.UserAnswer',
@@ -61,6 +62,7 @@
 
         // account
         'Wei.store.account.User',
+        'Wei.store.account.UserAttribute',
 
         // custom
         'Wei.store.custom.UserAnswer',
@@ -143,6 +145,11 @@
         'Wei.view.account.UserViewModel',
         'Wei.view.account.UserController',
         'Wei.view.account.UserGrid',
+
+        // user attribute
+        'Wei.view.account.UserAttributeViewModel',
+        'Wei.view.account.UserAttributeController',
+        'Wei.view.account.UserAttributeGrid',
 
         //'Wei.Application'
     ]

@@ -707,6 +707,58 @@ namespace Wei.Core
             }
         }
 
+
+        /// <summary>
+        /// 获取session
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="code"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public T GetSessionObject<T>(string code, string token)
+        {
+            var list = this._httpContext.Application.Get(code) as Dictionary<string, CustSession<T>>;
+            if (list == null)
+            {
+                list = new Dictionary<string, CustSession<T>>();
+                this._httpContext.Application.Set(code, list);
+            }
+            if (list.ContainsKey(token))
+            {
+                var session = list[token];
+                if (session.EffectiveTime > DateTime.Now)
+                {
+                    // 用过的session移除
+                    //list.Remove(token);
+                    return session.Obj;
+                }
+            }
+            return default(T);
+        }
+
+        /// <summary>
+        /// 保存session
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="code"></param>
+        /// <param name="token"></param>
+        /// <param name="obj"></param>
+        public void SetSessionObject<T>(string code, string token, T obj, int timesout = 30)
+        {
+            var list = this._httpContext.Application.Get(code) as Dictionary<string, CustSession<T>>;
+            if (list == null)
+            {
+                list = new Dictionary<string, CustSession<T>>();
+                this._httpContext.Application.Set(code, list);
+            }
+            list.Add(token, new CustSession<T>
+            {
+                Obj = obj,
+                BeginTime = DateTime.Now,
+                EffectiveTime = DateTime.Now.AddMinutes(timesout),
+                Description = ""
+            });
+        }
         #endregion
     }
 }

@@ -67,14 +67,17 @@ namespace Wei.Web.Controllers
                     Phone = user.Phone,
                     OpenId = user.OpenId,
                     QQ = user.QQ,
-                    Remark = user.Remark,
-                    Sex = user.Sex
+                    Sex = user.Sex,
+                    Address = user.Address,
+                    Married = user.Married == null ? false : user.Married.Value,
+                    Education = user.Education,
+                    IdentityCard = user.IdentityCard
                 };
-                return Json(ResponseMessage.Success("", usermodel));
+                return Json(ResponseMessageExt.Success("", usermodel));
             }
             else
             {
-                return Json(ResponseMessage.Error(loginResult.ToString()));
+                return Json(ResponseMessageExt.Error(loginResult.ToString()));
             }
         }
         

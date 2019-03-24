@@ -28,5 +28,9 @@
             type: 'setting_questionbanktag',
             _autoload: true
         },
+        userattributelist: {
+            type: 'account_userattribute',
+            _autoload: true
+        }
     }
 });

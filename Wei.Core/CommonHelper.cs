@@ -385,6 +385,13 @@ namespace Wei.Core
             }
             return t;
         }
+        /// <summary>
+        /// 根据集合更新实例对象属性值
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t">被更新的对象</param>
+        /// <param name="data">新数据</param>
+        /// <returns></returns>
         public static T UpdateT<T>(T t, IDictionary<string, object> data) where T: class
         {
             var type = t.GetType();
@@ -399,6 +406,63 @@ namespace Wei.Core
                 if (value == null)
                     value = ptype.IsValueType ? Activator.CreateInstance(ptype) : null;
                 prop.SetValue(t, ConvertToObject(value, ptype));
+            }
+            return t;
+        }
+        /// <summary>
+        /// 更新对象数据，从别的对象中获取
+        /// </summary>
+        /// <typeparam name="T">需要更新的对象类型</typeparam>
+        /// <typeparam name="T1"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="t1"></param>
+        /// <returns></returns>
+        public static T UpdateT<T>(T t, JObject jobj)
+        {
+            var properties = typeof(T).GetProperties();
+            var jproperties = jobj.Properties();
+            foreach (var jprop in jproperties)
+            {
+                if (jprop.Name == "id")
+                    continue;
+                var prop = properties.FirstOrDefault(x => string.Equals(x.Name, jprop.Name, StringComparison.CurrentCultureIgnoreCase));
+                if (prop == null)
+                    continue;
+                try
+                {
+                    switch (jprop.Value.Type)
+                    {
+                        case JTokenType.String:
+                            prop.SetValue(t, jprop.Value.Value<string>());
+                            break;
+                        case JTokenType.Integer:
+                            prop.SetValue(t, jprop.Value.Value<int>());
+                            break;
+                        case JTokenType.Float:
+                            prop.SetValue(t, jprop.Value.Value<float>());
+                            break;
+                        case JTokenType.Null:
+                            continue;
+                        case JTokenType.Object:
+                            break;
+                        case JTokenType.Date:
+                            var tmpdate = jprop.Value.Value<DateTime>();
+                            if (tmpdate > new DateTime(2000, 1, 1))
+                                prop.SetValue(t, tmpdate);
+                            break;
+                        case JTokenType.Boolean:
+                            prop.SetValue(t, jprop.Value.Value<bool>());
+                            break;
+                        case JTokenType.Bytes:
+                            prop.SetValue(t, jprop.Value.Value<byte[]>());
+                            break;
+
+                    }
+                }
+                catch
+                {
+                    
+                }
             }
             return t;
         }
@@ -484,6 +548,30 @@ namespace Wei.Core
         }
 
         /// <summary>
+        /// 根据对象T2初始化相似类型的对象T1
+        /// 相同的属性自动赋值
+        /// </summary>
+        /// <typeparam name="T1">新对象类型</typeparam>
+        /// <typeparam name="T2">原对象类型</typeparam>
+        /// <param name="obj">原对象</param>
+        /// <returns></returns>
+        public static T1 InstanceBy<T1, T2>(T2 obj)
+        {
+            Type type1 = typeof(T1);
+            Type type2 = typeof(T2);
+            T1 entity = Activator.CreateInstance<T1>();
+            var properties1 = type1.GetProperties();
+            var properties2 = type2.GetProperties();
+            foreach (var prop in properties1)
+            {
+                var prop2 = properties2.FirstOrDefault(x => string.Equals(x.Name, prop.Name, StringComparison.CurrentCultureIgnoreCase) && x.PropertyType == prop.PropertyType);
+                if (prop2 != null)
+                    prop.SetValue(entity, prop2.GetValue(obj));
+            }
+            return entity;
+        }
+
+        /// <summary>
         /// 解密
         /// </summary>
         /// <param name="str"></param>
@@ -537,6 +625,30 @@ namespace Wei.Core
                     return token.Value<object>();
             }
             return token;
+        }
+
+        /// <summary>
+        /// 根据描述名称、枚举类型，获取枚举值
+        /// </summary>
+        /// <param name="desc"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static T GetEnumValueByDesc<T>(string desc)
+        {
+            Type type = typeof(T);
+            if (!type.IsEnum)
+                return default(T);
+            var fields = type.GetFields();
+            foreach(var field in fields)
+            {
+                var descAttr = field.GetCustomAttribute<DescriptionAttribute>();
+                if(descAttr != null && string.Equals(descAttr.Description, desc))
+                {
+                    var obj = (T)Enum.Parse(type, field.Name);
+                    return obj;
+                }
+            }
+            return default(T);
         }
     }
 }

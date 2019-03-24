@@ -5,8 +5,13 @@ using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MvcExtension;
 using System;
+using System.Web;
 using System.Web.Mvc;
+using Wei.Core;
+using Wei.Services.Custom;
 using Wei.Services.Logging;
+using Wei.Services.Questions;
+using Wei.Services.Users;
 using Wei.Web.API.Handlers;
 
 namespace Wei.Web.Controllers
@@ -14,13 +19,31 @@ namespace Wei.Web.Controllers
     public class WeiXinController : Controller
     {
         #region fields 
+        private readonly IUserService _userService;
+        private readonly IUserAnswerService _userAnswerService;
+        private readonly IQuestionBankService _questionBankService;
         private readonly ILogger _logger;
-        
+        private readonly IWebHelper _webHelper;
+        private readonly HttpContextBase _httpContext;
+        private readonly IWorkContext _workContext;
+
         #endregion
 
-        public WeiXinController(ILogger logger)
+        public WeiXinController(IUserService userService
+            , IUserAnswerService userAnswerService
+            , IQuestionBankService questionBankService
+            , IWebHelper webHelper
+            , HttpContextBase httpContext
+            , IWorkContext workContext
+            , ILogger logger)
         {
             this._logger = logger;
+            this._userService = userService;
+            this._userAnswerService = userAnswerService;
+            this._questionBankService = questionBankService;
+            this._webHelper = webHelper;
+            this._httpContext = httpContext;
+            this._workContext = workContext;
         }
 
         [HttpGet]
@@ -48,26 +71,34 @@ namespace Wei.Web.Controllers
         [HttpPost]
         public ActionResult Index(PostModel postModel)
         {
-            //校验签名
-            if (!CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, WXinConfig.WeixinToken))
-                return new WeixinResult("参数错误！");
-
-
-            postModel.AppId = WXinConfig.WeixinAppId;
-            postModel.EncodingAESKey = WXinConfig.WeixinEncodingAESKey;
-            postModel.Token = WXinConfig.WeixinToken;
-
-            //接收消息，自定义 MessageHandler，对微信请求进行处理
-            var messageHandler = new CustomMessageHandler(Request.InputStream, postModel);
-            //_logger.Warning(messageHandler.RequestMessage.MsgType.ToString());
             try
             {
+                //校验签名
+                if (!CheckSignature.Check(postModel.Signature, postModel.Timestamp, postModel.Nonce, WXinConfig.WeixinToken))
+                {
+                    this._logger.Information($"参数错误！Signature:{postModel.Signature},WeixinToken:{WXinConfig.WeixinToken}");
+                    return new WeixinResult("参数错误！");
+                }
+            
+
+                postModel.AppId = WXinConfig.WeixinAppId;
+                postModel.EncodingAESKey = WXinConfig.WeixinEncodingAESKey;
+                postModel.Token = WXinConfig.WeixinToken;
+
+                //接收消息，自定义 MessageHandler，对微信请求进行处理
+                var messageHandler = new CustomMessageHandler(Request.InputStream, postModel, _userService, _userAnswerService
+                    , _questionBankService, _webHelper, _httpContext, _logger);
+            
+                //_logger.Warning(messageHandler.RequestMessage.MsgType.ToString());
+           
                 //执行微信处理过程
                 messageHandler.Execute();
+                return new FixWeixinBugWeixinResult(messageHandler);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
+                return null;
             }
             //try
             //{
@@ -95,15 +126,14 @@ namespace Wei.Web.Controllers
             //    _logger.Error(ex.Message, ex);
             //}
             //返回处理结果
-            return new FixWeixinBugWeixinResult(messageHandler);
         }
 
-        [HttpGet]
-        public ActionResult Error()
-        {
-            var error = Server.GetLastError();
-            _logger.Error(error.Message, error);
-            return View();
-        }
+        //[HttpGet]
+        //public ActionResult Error()
+        //{
+        //    var error = Server.GetLastError();
+        //    _logger.Error(error.Message, error);
+        //    return View();
+        //}
     }
 }

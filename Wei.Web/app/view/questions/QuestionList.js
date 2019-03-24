@@ -19,6 +19,8 @@
                 showHeaderCheckbox: true
             },
             split: true,
+            maxWidth: 420,
+            minWidth: 220,
             bind: {
                 store: '{questionlist}',
             },
@@ -40,6 +42,34 @@
                 }, {
                     text: '保存',
                     handler: 'onQuestionSave'
+                }, {
+                    xtype: 'form',
+                    listeners: {
+                        afterrender: 'onFormAfterrender'
+                    },
+                    bodyPadding: '12 0 0',
+                    name: 'questionlist_frm_upload',
+                    items: [
+                        {
+                            xtype: 'hiddenfield',
+                            name: 'QuestionBank_Id',
+                            bind: {
+                                value: '{QuestionBank_Id}'
+                            }
+                        },
+                        {
+                            xtype: 'fileuploadfield',
+                            width: 50,
+                            buttonOnly: true,
+                            hideLabel: true,
+                            //disabled: true,
+                            buttonText: '导入',
+                            name: 'frm_btn_import',
+                            listeners: {
+                                change: "onQuestionListImport"
+                            }
+                        }
+                    ],
                 }
             ],
             listeners: {

@@ -13,6 +13,13 @@ namespace Wei.Data.Mapping.Questions
             this.HasRequired(x => x.ModuleType)
                 .WithMany()
                 .HasForeignKey(x => x.Type);
+
+            this.HasMany(x => x.QuestionList)
+                .WithRequired(x => x.QuestionBank)
+                .HasForeignKey(x => x.QuestionBank_Id);
+            this.HasMany(x => x.UserAttributeList)
+                .WithMany()
+                .Map(m => m.ToTable("Q_QuestionBank_UserAttribute_Mapping").MapLeftKey("QuestionBankId").MapRightKey("UserAttributeId"));
         }
     }
 }

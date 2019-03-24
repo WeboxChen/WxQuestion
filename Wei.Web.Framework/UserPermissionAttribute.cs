@@ -23,11 +23,10 @@ namespace Wei.Web.Framework
                 return;
             
             var workContext = EngineContext.Current.Resolve<IWorkContext>();
-
-            
-            var user = workContext.CurrentUser;
-
             var userService = EngineContext.Current.Resolve<IUserService>();
+
+
+            var user = workContext.CurrentUser;
             if (user == null)
             {
                 // 验证用户

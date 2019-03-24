@@ -76,7 +76,9 @@
     <Compile Include="Mapping\Users\LoginPermissionMap.cs" />
     <Compile Include="Mapping\Users\PermissionRecordMap.cs" />
     <Compile Include="Mapping\Users\RoleMap.cs" />
+    <Compile Include="Mapping\Users\UserAttributeValueMap.cs" />
     <Compile Include="Mapping\Users\UserMap.cs" />
+    <Compile Include="Mapping\Users\UserAttributeMap.cs" />
     <Compile Include="Mapping\WeiEntityTypeConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SqlServerDataProvider.cs" />

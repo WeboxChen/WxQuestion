@@ -137,18 +137,18 @@ namespace Wei.Web
                 return;
 
             //miniprofiler
-            MiniProfiler.Start();
-            HttpContext.Current.Items["wei.MiniProfilerStarted"] = true;
+            //MiniProfiler.Start();
+            //HttpContext.Current.Items["wei.MiniProfilerStarted"] = true;
         }
         protected void Application_EndRequest(object sender, EventArgs e)
         {
             //miniprofiler
-            var miniProfilerStarted = HttpContext.Current.Items.Contains("wei.MiniProfilerStarted") &&
-                 Convert.ToBoolean(HttpContext.Current.Items["wei.MiniProfilerStarted"]);
-            if (miniProfilerStarted)
-            {
-                MiniProfiler.Stop();
-            }
+            //var miniProfilerStarted = HttpContext.Current.Items.Contains("wei.MiniProfilerStarted") &&
+            //     Convert.ToBoolean(HttpContext.Current.Items["wei.MiniProfilerStarted"]);
+            //if (miniProfilerStarted)
+            //{
+            //    MiniProfiler.Stop();
+            //}
         }
 
 

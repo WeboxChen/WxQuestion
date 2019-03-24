@@ -6,6 +6,7 @@ namespace Wei.Core.Domain.Users
 {
     public class User:BaseEntity
     {
+        private ICollection<UserAttributeValue> _userAttributeList;
         private ICollection<Department> _departments;
         private ICollection<Role> _roles;
 
@@ -28,6 +29,10 @@ namespace Wei.Core.Domain.Users
         /// </summary>
         public string LastName { get; set; }
 
+        /// <summary>
+        /// 出身日期
+        /// </summary>
+        public DateTime? Birthdate { get; set; }
 
         /// <summary>
         /// 手机
@@ -87,13 +92,19 @@ namespace Wei.Core.Domain.Users
         /// </summary>
         public string LoginTicket { get; set; }
 
-        public ICollection<Department> Departments
+        public virtual ICollection<UserAttributeValue> UserAttributeList
+        {
+            get { return _userAttributeList ?? (_userAttributeList = new List<UserAttributeValue>()); }
+            protected set { _userAttributeList = value; }
+        }
+
+        public virtual ICollection<Department> Departments
         {
             get { return _departments ?? (_departments = new List<Department>()); }
             protected set { _departments = value; }
         }
 
-        public ICollection<Role> Roles
+        public virtual ICollection<Role> Roles
         {
             get { return _roles ?? (_roles = new List<Role>()); }
             protected set { _roles = value; }
@@ -201,5 +212,25 @@ namespace Wei.Core.Domain.Users
         /// </summary>
         public string QR_Scene_Str { get; set; }
         #endregion
+
+        /// <summary>
+        /// 婚姻状况
+        /// </summary>
+        public bool? Married { get; set; }
+
+        /// <summary>
+        /// 学历
+        /// </summary>
+        public string Education { get; set; }
+
+        /// <summary>
+        /// 身份证
+        /// </summary>
+        public string IdentityCard { get; set; }
+
+        /// <summary>
+        /// 详细住址
+        /// </summary>
+        public string Address { get; set; }
     }
 }

@@ -46,7 +46,9 @@ Ext.define('Wei.view.account.UserGrid', {
         //{ xtype: 'numbercolumn', text: '关注', dataIndex: 'subscribe', format: '0', hidden: false },
         { xtype: 'gridcolumn', text: '昵称', dataIndex: 'nickname', hidden: false },
         { xtype: 'numbercolumn', text: '性别', dataIndex: 'sex', format: '0', hidden: false },
-        //{ xtype: 'gridcolumn', text: '语言', dataIndex: 'language', hidden: false },
+
+        { xtype: 'datecolumn', text: '出生日期', dataIndex: 'birthdate', hidden: false, editor: { xtype: 'datefield' } },
+
         { xtype: 'gridcolumn', text: '城市', dataIndex: 'city', hidden: false, editor: { xtype: 'textfield' } },
         { xtype: 'gridcolumn', text: '省', dataIndex: 'province', hidden: false, editor: { xtype: 'textfield' } },
         { xtype: 'gridcolumn', text: '国家', dataIndex: 'country', hidden: false, editor: { xtype: 'textfield' } },
@@ -62,6 +64,21 @@ Ext.define('Wei.view.account.UserGrid', {
             }
         },
 
+        { xtype: 'gridcolumn', text: '详细地址', dataIndex: 'address', hidden: false, editor: { xtype: 'textfield' } },
+        { xtype: 'gridcolumn', text: '身份证号', dataIndex: 'identitycard', hidden: false, editor: { xtype: 'textfield' } },
+        { xtype: 'gridcolumn', text: '学历', dataIndex: 'education', hidden: false, editor: { xtype: 'textfield' } },
+        {
+            xtype: 'booleancolumn', text: '婚姻状况', dataIndex: 'married', hidden: false,
+            editor: {
+                xtype: 'combobox',
+                bind: {
+                    store: '{marriedstore}'
+                },
+                displayField: 'name',
+                valueField: 'value'
+            },
+            trueText: '已婚', falseText: '未婚'
+        },
 
         { xtype: 'gridcolumn', text: '备注', dataIndex: 'remark', hidden: false, editor: { xtype: 'textfield' } },
         { xtype: 'numbercolumn', text: '分组', dataIndex: 'groupid', format: '0', hidden: false, editor: { xtype: 'numberfield' } },

@@ -321,7 +321,8 @@ namespace Wei.Services.Users
             string session = GetUserSession();
 
             if (string.IsNullOrEmpty(session))
-                throw new ArgumentNullException("loginPermission.ssession");
+                return null;
+                // throw new ArgumentNullException("loginPermission.ssession");
             // 获取 loginpermission
             var oldP = (from loginpermission in _loginpermissionRepository.Table
                        where loginpermission.Session == session
@@ -397,8 +398,8 @@ namespace Wei.Services.Users
         private string GetUserSession()
         {
             var cookie = _httpContext.Request.Cookies["WEI_SESSION"];
-            if(cookie!=null)
-            return cookie.Value;
+            if (cookie != null)
+                return cookie.Value;
             return "";
         }
         private void SetUserSession(LoginPermission loginPermission)

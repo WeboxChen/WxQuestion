@@ -134,5 +134,12 @@ namespace Wei.Core
         /// Gets or sets a value that indicates whether the client is being redirected to a new location using POST
         /// </summary>
         bool IsPostBeingDone { get; set; }
+
+        /// <summary>
+        /// session 用戶
+        /// </summary>
+        T GetSessionObject<T>(string code, string token);
+
+        void SetSessionObject<T>(string code, string token, T obj, int timesout = 30);
     }
 }

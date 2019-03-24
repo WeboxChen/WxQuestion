@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Wei.Core.Domain.Logging;
 using Wei.Core.Domain.Users;
 
@@ -35,8 +36,13 @@ namespace Wei.Services.Logging
 
             if (logger.IsEnabled(level))
             {
-                string fullMessage = exception == null ? string.Empty : exception.ToString();
-                logger.InsertLog(level, message, fullMessage, user);
+                StringBuilder sbuilder = new StringBuilder();
+                while(exception != null)
+                {
+                    sbuilder.Append(exception.ToString());
+                    exception = exception.InnerException;
+                }
+                logger.InsertLog(level, message, sbuilder.ToString(), user);
             }
         }
     }

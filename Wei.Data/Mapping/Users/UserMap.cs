@@ -21,10 +21,15 @@ namespace Wei.Data.Mapping.Users
             this.Property(u => u.Email).HasMaxLength(200);
             this.Property(u => u.Channel).HasMaxLength(50);
             this.Property(u => u.LastLoginIp).HasMaxLength(20);
-            
+
+            this.HasMany(u => u.UserAttributeList)
+                .WithRequired(up => up.User)
+                .HasForeignKey(up => up.UserId).WillCascadeOnDelete(true);
+
             this.HasMany(u => u.Roles)
                 .WithMany()
                 .Map(m => m.ToTable("A_User_Role_Mapping"));
+
             this.HasMany(u => u.Departments)
                 .WithMany(x=>x.Users)
                 .Map(m => m.ToTable("A_User_Department_Mapping"));

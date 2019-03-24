@@ -12,6 +12,10 @@
         /// </summary>
         public string AnswerKeys { get; set; }
         /// <summary>
+        /// 答案描述
+        /// </summary>
+        public string AnswerDesc { get; set; }
+        /// <summary>
         /// 下一题题号
         /// </summary>
         public decimal? Next { get; set; }

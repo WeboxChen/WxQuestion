@@ -22,9 +22,10 @@ Ext.define('Wei.model.account.User', {
         { type: 'int', name: 'loginscount', persist: false },
         { type: 'int', name: 'subscribe', persist: false },
         { type: 'string', name: 'openid', persist: false },
-        { type: 'string', name: 'nickname', persist: false },
+        { type: 'string', name: 'nickname', persist: true },
         { type: 'int', name: 'sex', persist: false },
-        { type: 'string', name: 'language', persist: false },
+        { type: 'date', name: 'birthdate', persist: true },
+        { type: 'string', name: 'language', persist: true },
         { type: 'string', name: 'city', persist: true },
         { type: 'string', name: 'province', persist: true },
         { type: 'string', name: 'country', persist: true },
@@ -36,6 +37,10 @@ Ext.define('Wei.model.account.User', {
         { type: 'string', name: 'tagids', persist: true },
         { type: 'string', name: 'subscribe_scene', persist: false },
         { type: 'int', name: 'qr_scene', persist: false },
-        { type: 'string', name: 'qr_scene_str', persist: false }
+        { type: 'string', name: 'qr_scene_str', persist: false },
+        { type: 'string', name: 'address', persist: true },
+        { type: 'bool', name: 'married', persist: true },
+        { type: 'string', name: 'identitycard', persist: true },
+        { type: 'string', name: 'education', persist: true }
     ]
 });

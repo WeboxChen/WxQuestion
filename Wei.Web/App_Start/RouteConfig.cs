@@ -16,6 +16,11 @@ namespace Wei.Web
                 new[] { "Wei.Web.Controllers" }
             );
 
+            routes.MapRoute(
+                "Login", // Route name
+                "index.aspx" // URL with parameters
+            );
+
             //routes.MapRoute("login",
             //    "wxquestion/login",
             //    new { controller = "Authentication", action = "login" },

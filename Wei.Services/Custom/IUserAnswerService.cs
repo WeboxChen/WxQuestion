@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Wei.Core.Domain.Custom;
 using Wei.Core.Domain.Questions;
+using Wei.Core.Domain.Users;
 
 namespace Wei.Services.Custom
 {
@@ -60,7 +61,15 @@ namespace Wei.Services.Custom
         /// <param name="openid">用户</param>
         /// <param name="uanswer">答案</param>
         /// <returns></returns>
-        Question SaveAnswer(UserAnswer uanswer, string answer);
+        Question SaveAnswer(UserAnswer uanswer, string answer, User user, string voicepath = null);
+
+        /// <summary>
+        /// 用户是否做过改题卷
+        /// </summary>
+        /// <param name="bankid"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        bool IsAnswered(int bankid, User user);
 
     }
 }

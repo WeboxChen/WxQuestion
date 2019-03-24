@@ -29,5 +29,15 @@ namespace Wei.Core.Domain.Custom
         /// 回答问题时间
         /// </summary>
         public DateTime? End { get; set; }
+
+        /// <summary>
+        /// 语音路径
+        /// </summary>
+        public string VoicePath { get; set; }
+
+        /// <summary>
+        /// 问题代码
+        /// </summary>
+        public string QCode { get; set; }
     }
 }

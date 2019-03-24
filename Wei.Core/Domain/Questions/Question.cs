@@ -75,6 +75,10 @@ namespace Wei.Core.Domain.Questions
         /// 序号
         /// </summary>
         public decimal Sort { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
 
         /// <summary>
         /// 问题答案

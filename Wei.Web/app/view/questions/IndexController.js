@@ -51,13 +51,18 @@ Ext.define('Wei.view.questions.IndexController', {
         var that = this;
         var store = that.getStore('questionbanklist');
         this.alertFormObjWindow('questions_questionbankinfo', '添加题卷', null, {}, function (values) {
+            var flag = false;
             store.add(values);
             store.ypuSimpleSync({
                 success: function () {
+                    flag = true;
                     store.reload();
+                },
+                error: function () {
+                    flag = false;
                 }
             });
-            return true;
+            return flag;
         });
     },
     onQuestionBankEdit: function (t) {
@@ -67,7 +72,7 @@ Ext.define('Wei.view.questions.IndexController', {
             selected = grid.getSelection();
         if (selected && selected.length == 1) {
             var record = selected[0];
-            this.alertFormObjWindow('questions_questionbankinfo', '修改题卷', record, {}, function (values) {
+            this.alertFormObjWindow('questions_questionbankinfo', '修改题卷', record, { }, function (values) {
                 store.ypuSimpleSync({
                     success: function () {
                         store.reload();

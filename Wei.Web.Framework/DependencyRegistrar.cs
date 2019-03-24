@@ -90,6 +90,7 @@ namespace Wei.Web.Framework
             builder.RegisterType<DownloadService>().As<IDownloadService>().InstancePerLifetimeScope();
             builder.RegisterType<DBService>().As<IDBService>().InstancePerLifetimeScope();
             builder.RegisterType<UserService>().As<IUserService>().InstancePerLifetimeScope();
+            builder.RegisterType<UserAttributeService>().As<IUserAttributeService>().InstancePerLifetimeScope();
             builder.RegisterType<FormsAuthenticationService>().As<IAuthenticationService>().InstancePerLifetimeScope();
             builder.RegisterType<UserRegistrationService>().As<IUserRegistrationService>().InstancePerLifetimeScope();
             builder.RegisterType<DefaultLogger>().As<ILogger>().InstancePerLifetimeScope();

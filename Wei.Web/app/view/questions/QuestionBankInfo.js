@@ -58,6 +58,18 @@
             name: 'responsekeywords'
         },
         {
+            xtype: 'datefield',
+            fieldLabel: '有效起始日期',
+            name: 'expiredatebegin',
+            editable: false
+        },
+        {
+            xtype: 'datefield',
+            fieldLabel: '有效结束日期',
+            name: 'expiredateend',
+            editable: false
+        },
+        {
             xtype: 'combobox',
             fieldLabel: '状态',
             name: 'status',
@@ -69,6 +81,17 @@
             displayField: 'name',
             valueField: 'id',
             value: 0
-        }
+        },
+        //{
+        //    xtype: 'tagfield',
+        //    columnWidth: 1,
+        //    bind: {
+        //        store: '{userattributelist}',
+        //    },
+        //    valueField: 'id',
+        //    displayField: 'displayname',
+        //    name: 'userattributes',
+        //    fieldLabel: '用户属性关联'
+        //}
     ]
 });

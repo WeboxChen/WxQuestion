@@ -10,7 +10,10 @@ Ext.define('Wei.model.questions.QuestionBank', {
         { type: 'bool', name: 'autoresponse', persist: true },
         { type: 'string', name: 'responsekeywords', persist: true },
         { type: 'int', name: 'status', persist: true },
+        { type: 'date', name: 'expiredatebegin', persist: true },
+        { type: 'date', name: 'expiredateend', persist: true },
         { type: 'date', name: 'createtime', persist: false },
-        { type: 'int', name: 'creatorid', persist: false }
+        { type: 'int', name: 'creatorid', persist: false },
+        { type: 'string', name: 'userattributes', persist: true }
     ]
 });

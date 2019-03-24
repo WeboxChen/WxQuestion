@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wei.Core.Domain.Users;
 
 namespace Wei.Core.Domain.Questions
 {
@@ -8,7 +9,8 @@ namespace Wei.Core.Domain.Questions
     /// </summary>
     public class QuestionBank: BaseEntity
     {
-        private List<Question> _questionList;
+        private ICollection<Question> _questionList;
+        private ICollection<UserAttribute> _userAttributeList;
 
         /// <summary>
         /// 类型
@@ -40,6 +42,14 @@ namespace Wei.Core.Domain.Questions
         /// </summary>
         public int Status { get; set; }
         /// <summary>
+        /// 有效起始日期
+        /// </summary>
+        public DateTime? ExpireDateBegin { get; set; }
+        /// <summary>
+        /// 有效结束日期
+        /// </summary>
+        public DateTime? ExpireDateEnd { get; set; }
+        /// <summary>
         /// 创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
@@ -51,10 +61,18 @@ namespace Wei.Core.Domain.Questions
         /// <summary>
         /// 题目集合
         /// </summary>
-        public virtual List<Question> QuestionList
+        public virtual ICollection<Question> QuestionList
         {
             get { return _questionList ?? (_questionList = new List<Question>()); }
             set { _questionList = value; }
+        }
+        /// <summary>
+        /// 题库关联用户属性
+        /// </summary>
+        public virtual ICollection<UserAttribute> UserAttributeList
+        {
+            get { return _userAttributeList ?? (_userAttributeList = new List<UserAttribute>()); }
+            set { _userAttributeList = value; }
         }
     }
 }

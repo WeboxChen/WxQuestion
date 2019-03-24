@@ -6,8 +6,10 @@ using Wei.Core.Caching;
 using Wei.Core.Data;
 using Wei.Core.Domain.Custom;
 using Wei.Core.Domain.Questions;
+using Wei.Core.Domain.Users;
 using Wei.Services.Events;
 using Wei.Services.Questions;
+using Wei.Services.Users;
 
 namespace Wei.Services.Custom
 {
@@ -33,6 +35,8 @@ namespace Wei.Services.Custom
         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
         private readonly IQuestionBankService _questionBankService;
+        private readonly IUserAttributeService _userAttributeService;
+        private readonly IUserService _userService;
         #endregion
 
         #region Ctor
@@ -40,13 +44,17 @@ namespace Wei.Services.Custom
             , IRepository<UserAnswerDetail> userAnswerDetailRepository
             , ICacheManager cacheManager
             , IEventPublisher eventPublisher
-            , IQuestionBankService questionBankService)
+            , IQuestionBankService questionBankService
+            , IUserAttributeService userAttributeService
+            , IUserService userService)
         {
             _userAnswerRepository = userAnswerRepository;
             _userAnswerDetailRepository = userAnswerDetailRepository;
             _cacheManager = cacheManager;
             _eventPublisher = eventPublisher;
             _questionBankService = questionBankService;
+            _userAttributeService = userAttributeService;
+            _userService = userService;
         }
         #endregion
 
@@ -62,8 +70,15 @@ namespace Wei.Services.Custom
         private Question SingleCheckAnalysis(UserAnswer uanswer, Question question, string answer)
         {
             decimal next = decimal.Ceiling(question.Sort + 1);
-            var qamodel = question.QuestionAnswerList.OrderBy(x=>x.Sort)
-                .FirstOrDefault(x => string.Equals(answer, x.AnswerKeys, StringComparison.CurrentCultureIgnoreCase));
+            //var qamodel = question.QuestionAnswerList.OrderBy(x=>x.Sort)
+            //    .FirstOrDefault(x => string.Equals(answer, x.AnswerKeys, StringComparison.CurrentCultureIgnoreCase));
+            var qamodel = question.QuestionAnswerList.OrderBy(x => x.Sort)
+               .FirstOrDefault(x => {
+                    // 问题答案数组
+                    var tmpQ = x.AnswerKeys.Split('|');
+                    // 用户回答到了这个点，记录并引导进入下一题
+                    return tmpQ.Any(y => answer.IndexOf(y.ToLower()) >= 0);
+               });
             if (qamodel != null && qamodel.Next != null)
                 next = qamodel.Next.Value;
             Question nextq = this._questionBankService.GetQuestion(uanswer.QuestionBank_Id, next);
@@ -112,7 +127,7 @@ namespace Wei.Services.Custom
                     // 问题答案数组
                     var tmpQ = x.AnswerKeys.Split('|');
                     // 用户回答到了这个点，记录并引导进入下一题
-                    return tmpQ.Any(y => answer.IndexOf(y) >= 0);
+                    return tmpQ.Any(y => answer.IndexOf(y.ToLower()) >= 0);
                 });
             if (qamodel != null && qamodel.Next != null)
                 next = qamodel.Next.Value;
@@ -148,14 +163,17 @@ namespace Wei.Services.Custom
                 QuestionBank_Id = questionbankid,
                 BeginTime = DateTime.Now
             };
+            var question = this._questionBankService.GetQuestion(questionbankid);
+
             UserAnswerDetail uanswerdetail = new UserAnswerDetail()
             {
-                QuestionNo = 1,
+                QuestionNo = question.Sort,
                 Start = DateTime.Now
             };
             ua.UserAnswerDetailList.Add(uanswerdetail);
             this._userAnswerRepository.Insert(ua);
-            return this._questionBankService.GetQuestion(questionbankid, uanswerdetail.QuestionNo);
+            //var question = this._questionBankService.GetQuestion(questionbankid, uanswerdetail.QuestionNo)
+            return question;
         }
 
         /// <summary>
@@ -184,7 +202,7 @@ namespace Wei.Services.Custom
         /// <param name="uanswer"></param>
         /// <param name="answer"></param>
         /// <returns></returns>
-        public Question SaveAnswer(UserAnswer uanswer, string answer)
+        public Question SaveAnswer(UserAnswer uanswer, string answer, User user, string voicepath = null)
         {
             var uanswerdetail = uanswer.UserAnswerDetailList.FirstOrDefault(x => x.End == null);
             if(uanswerdetail == null)
@@ -195,10 +213,49 @@ namespace Wei.Services.Custom
             }
             uanswerdetail.Answer = answer;
             uanswerdetail.End = DateTime.Now;
+            uanswerdetail.VoicePath = voicepath;
+            Question nextQ = null;
+
+            //if (uanswerdetail.QuestionNo == 0)
+            //{
+            //    // 用户基础信息
+            //    nextQ = this._questionBankService.GetQuestion(uanswerdetail.UserAnswer.QuestionBank_Id, 0, user);
+            //    uanswer.UserAnswerDetailList.Add(new UserAnswerDetail()
+            //    {
+            //        QuestionNo = nextQ.Sort,
+            //        Start = DateTime.Now,
+            //        QCode = nextQ.Remark
+            //    });
+            //    this._userAnswerRepository.Update(uanswer);
+            //    return nextQ;
+            //}
+            
 
             // 获取当前问题
             var question = this._questionBankService.GetQuestion(uanswerdetail.UserAnswer.QuestionBank_Id, uanswerdetail.QuestionNo);
-            Question nextQ = null;
+            //if(!string.IsNullOrEmpty(question.Remark))
+            //{
+            //    UserAttribute uattr = this._userAttributeService.Get(question.Remark);
+            //    if(uattr != null)
+            //    {
+            //        UserAttributeValue uav = user.UserAttributeList.FirstOrDefault(x => x.UserAttributeId == uattr.Id);
+            //        if(uav == null)
+            //        {
+            //            user.UserAttributeList.Add(new UserAttributeValue()
+            //            {
+            //                UserId = user.Id,
+            //                UserAttributeId = uattr.Id,
+            //                Value = answer
+            //            });
+            //        }
+            //        else
+            //        {
+            //            uav.Value = answer;
+            //        }
+            //        this._userService.UpdateUser(user);
+            //    }
+            //}
+            answer = answer.ToLower();
             // 判断当前答案
             switch (question.AnswerType)
             {
@@ -226,7 +283,8 @@ namespace Wei.Services.Custom
                         uanswer.UserAnswerDetailList.Add(new UserAnswerDetail()
                         {
                             QuestionNo = nextQ.Sort,
-                            Start = DateTime.Now
+                            Start = DateTime.Now,
+                            QCode = nextQ.Remark
                         });
                         break;
                 }
@@ -259,6 +317,19 @@ namespace Wei.Services.Custom
             if (completedtime != default(DateTime))
                 query = query.Where(x => x.CompletedTime <= completedtime);
             return null;
+        }
+
+        /// <summary>
+        /// 是否答过题卷
+        /// </summary>
+        /// <param name="bankid"></param>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public bool IsAnswered(int bankid, User user)
+        {
+            if (this._userAnswerRepository.Table.Any(x => x.User_Id == user.Id && x.QuestionBank_Id == bankid))
+                return true;
+            return false;
         }
         #endregion
 

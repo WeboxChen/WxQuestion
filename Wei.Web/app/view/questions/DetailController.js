@@ -12,8 +12,30 @@
     onDetailBeforeRender: function (t) {
         var viewmodel = this.getViewModel();
         viewmodel.set('questionBankModel', t._questionbank);
+        viewmodel.set('QuestionBank_Id', t._questionbank.getId());
     },
 
+    //question bank info
+    onQuestionBankInfoRender: function (t) {
+        var that = this,
+            viewmodel = that.getViewModel(),
+            questionbankmodel = viewmodel.get('questionBankModel');
+        t._record = questionbankmodel;
+    },
+    onQuestionBankInfoSave: function (t) {
+        var that = this,
+            baseview = t.up('questions'),
+            form = t.up('questions_questionbankinfo'),
+            baseviewmodel = baseview.getViewModel(),
+            store = baseviewmodel.getStore('questionbanklist');
+        form.updateRecord();
+        store.ypuSimpleSync({
+
+            success: function () {
+                store.reload();
+            }
+        })
+    },
 
     // question list
     // 题目页面加载
@@ -41,6 +63,8 @@
     onQuestionGridSelect: function (t, r, i, eopts) {
         var that = this,
             store = that.getStore('questionanswerlist');
+        if (isNaN(r.getId()))
+            return;
         store.setRemoteFilter(true);
         store.filter('questionid', r.getId());
         store.load({
@@ -118,6 +142,35 @@
         if (index >= 0)
             return store.getAt(index).get('name');
         return '';
+    },
+    onFormAfterrender: function (t) {
+
+    },
+    // 导入题目
+    onQuestionListImport: function (t, v, eopts) {
+        if (v === '')
+            return;
+        var that = this,
+            form = t.up('form'),
+            viewmodel = that.getViewModel(),
+            questionbankmodel = viewmodel.get('questionBankModel');
+        form.submit({
+            url: 'api/questionbank/questionbankimport',
+            waitMsg: '上传中，请等待...',
+            //params: { _objId: questionbankmodel.getId() },
+            success: function (form, action) {
+                if (!action.result.msg) {
+                    that.alertSuccessMsg();
+                    var store = that.getStore('questionlist');
+                    store.reload();
+                } else {
+                    that.alertErrorMsg(action.result.msg);
+                }
+            },
+            failure: function (form, action) {
+                that.alertErrorMsg(action.result.msg);
+            }
+        });
     },
     // 题目表格问题类型列加载
     onQuestionGridQTypeRenderer : function(v, m, r) {

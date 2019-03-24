@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Wei.Core;
 
 namespace Wei.Web.Framework.ExtJs
 {

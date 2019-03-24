@@ -20,7 +20,11 @@
     <script type="text/javascript" src="ext/ext-all.js"></script>
     <script type="text/javascript" src="scripts/md5.min.js"></script>
     <script type="text/javascript" src="scripts/ZeroClipboard.min.js"></script>
-
+    
+    <script src="scripts/audio.min.js"></script>
+    <script src="scripts/voice-2.0.js"></script>
+<%--    <script src="scripts/pcmdata-2.0.0.min.js"></script>
+    <script src="scripts/libamr-2.0.1.min.js"></script>--%>
 
     <!-- 中文包 -->
     <script type="text/javascript" src="ext/classic/theme-triton/theme-triton.js"></script>
@@ -41,6 +45,12 @@
     <script type="text/javascript" src="ext/classic/locale/locale-zh_CN.js"></script>
     <script src="ext/classic/locale/Wei_locale-zh_CN.js"></script>
 
+
+    <script>
+      audiojs.events.ready(function() {
+        var as = audiojs.createAll();
+      });
+    </script>
 </head>
 <body>
 </body>

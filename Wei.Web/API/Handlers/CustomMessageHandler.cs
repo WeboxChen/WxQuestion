@@ -5,13 +5,17 @@ using Senparc.Weixin.MP.Containers;
 using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MessageHandlers;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Policy;
+using System.Web;
 using System.Xml.Linq;
 using Wei.Core;
 using Wei.Core.Domain.Questions;
+using Wei.Core.Domain.Users;
 using Wei.Core.Infrastructure;
 using Wei.Services.Custom;
 using Wei.Services.Logging;
@@ -22,35 +26,38 @@ namespace Wei.Web.API.Handlers
 {
     public partial class CustomMessageHandler: MessageHandler<CustomMessageContent>
     {
-        private IUserService _userService;
-        private IUserAnswerService _userAnswerService;
-        private IQuestionBankService _questionBankService;
-        private ILogger _logger;
-        private IWebHelper _webHelper;
+        private readonly IUserService _userService;
+        private readonly IUserAnswerService _userAnswerService;
+        private readonly IQuestionBankService _questionBankService;
+        private readonly ILogger _logger;
+        private readonly IWebHelper _webHelper;
+        private readonly HttpContextBase _httpContext;
         public static int REQUESTNO;
 
-        public CustomMessageHandler(Stream inputStream, PostModel postModel = null, int maxRecordCount = 0, DeveloperInfo developerInfo = null) 
-            : base(inputStream, postModel, maxRecordCount, developerInfo)
-        {
-            System.Threading.Interlocked.Increment(ref REQUESTNO);
+        //public CustomMessageHandler(Stream inputStream, PostModel postModel = null, int maxRecordCount = 0, DeveloperInfo developerInfo = null) 
+        //    : base(inputStream, postModel, maxRecordCount, developerInfo)
+        //{
+        //    System.Threading.Interlocked.Increment(ref REQUESTNO);
 
-            _logger = EngineContext.Current.Resolve<ILogger>();
-            _userService = EngineContext.Current.Resolve<IUserService>();
-            _userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
-            _questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
-            _webHelper = EngineContext.Current.Resolve<IWebHelper>();
-        }
+        //    //_logger = EngineContext.Current.Resolve<ILogger>();
+        //    //_userService = EngineContext.Current.Resolve<IUserService>();
+        //    //_userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
+        //    //_questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
+        //    //_webHelper = EngineContext.Current.Resolve<IWebHelper>();
+        //    //_httpContext = EngineContext.Current.Resolve<HttpContextBase>();
+        //}
 
         public CustomMessageHandler(XDocument requestDocument, PostModel postModel = null, int maxRecordCount = 0, DeveloperInfo developerInfo = null) 
             : base(requestDocument, postModel, maxRecordCount, developerInfo)
         {
             System.Threading.Interlocked.Increment(ref REQUESTNO);
 
-            _logger = EngineContext.Current.Resolve<ILogger>();
-            _userService = EngineContext.Current.Resolve<IUserService>();
-            _userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
-            _questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
-            _webHelper = EngineContext.Current.Resolve<IWebHelper>();
+            //_logger = EngineContext.Current.Resolve<ILogger>();
+            //_userService = EngineContext.Current.Resolve<IUserService>();
+            //_userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
+            //_questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
+            //_webHelper = EngineContext.Current.Resolve<IWebHelper>();
+            //_httpContext = EngineContext.Current.Resolve<HttpContextBase>();
         }
 
         public CustomMessageHandler(RequestMessageBase requestMessageBase, PostModel postModel = null, int maxRecordCount = 0, DeveloperInfo developerInfo = null) 
@@ -58,11 +65,32 @@ namespace Wei.Web.API.Handlers
         {
             System.Threading.Interlocked.Increment(ref REQUESTNO);
 
-            _logger = EngineContext.Current.Resolve<ILogger>();
-            _userService = EngineContext.Current.Resolve<IUserService>();
-            _userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
-            _questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
-            _webHelper = EngineContext.Current.Resolve<IWebHelper>();
+            //_logger = EngineContext.Current.Resolve<ILogger>();
+            //_userService = EngineContext.Current.Resolve<IUserService>();
+            //_userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
+            //_questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
+            //_webHelper = EngineContext.Current.Resolve<IWebHelper>();
+            //_httpContext = EngineContext.Current.Resolve<HttpContextBase>();
+        }
+
+        public CustomMessageHandler(Stream inputStream, PostModel postModel
+            , IUserService userService
+            , IUserAnswerService userAnswerService
+            , IQuestionBankService questionBankService
+            , IWebHelper webHelper
+            , HttpContextBase httpContext
+            //, IWorkContext workContext
+            , ILogger logger)
+            : base(inputStream, postModel, 0, null)
+        {
+            System.Threading.Interlocked.Increment(ref REQUESTNO);
+
+            _logger = logger;
+            _userService = userService;
+            _userAnswerService = userAnswerService;
+            _questionBankService = questionBankService;
+            _webHelper = webHelper;
+            _httpContext = httpContext;
         }
 
         /// <summary>
@@ -71,8 +99,9 @@ namespace Wei.Web.API.Handlers
         /// <param name="content"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        private IResponseMessageBase CustomResponse(string content, Wei.Core.Domain.Users.User user)
+        private IResponseMessageBase CustomResponse(string content, Wei.Core.Domain.Users.User user, string voicepath = null)
         {
+            this._logger.Information("CustomResponse");
             var responseMessage = base.CreateResponseMessage<ResponseMessageText>();
             
             if (user == null || user.Subscribe == 0)
@@ -84,11 +113,13 @@ namespace Wei.Web.API.Handlers
             var uanswer = this._userAnswerService.GetDoingQuestionAnswer(user.Id);
             if (uanswer == null)
             {
+                // 获取有效的题卷启动Keys
                 var defQuestionList = this._questionBankService.KeyWordQuestionBank();
                 QuestionBank questionBank = null;
+                string tmpContent = content.ToLower();
                 foreach (var key in defQuestionList.Keys)
                 {
-                    if (content.IndexOf(key) != -1)
+                    if (tmpContent.IndexOf(key.ToLower()) != -1)
                     {
                         questionBank = defQuestionList[key];
                         break;
@@ -96,8 +127,39 @@ namespace Wei.Web.API.Handlers
                 }
                 if (questionBank != null)
                 {
-                    var question = this._userAnswerService.BeginQuestion(user.Id, questionBank.Id);
-                    responseMessage.Content = question.Text;
+                    // 判断用户是否答过当前题卷
+                    if (this._userAnswerService.IsAnswered(questionBank.Id, user))
+                    {
+                        responseMessage.Content = "已答过改题卷，不能重复答题";
+                    }
+                    else
+                    {
+                        // 判断用户信息是否录入
+                        if (user.Status == 0)
+                        {
+                            var token = Guid.NewGuid();
+                            //_httpContext.Session.Add(token.ToString("N"), user);
+                            this._webHelper.SetSessionObject<User>("tokenuser", token.ToString("N"), user);
+                            string url = System.Configuration.ConfigurationManager.AppSettings["WebDomain"] + "/user/userinfo?tokens=" + token.ToString("N");
+                            responseMessage.Content = $"请先录入个人信息：{url}";
+                        }
+                        else
+                        {
+                            // 开始执行答题
+                            var question = this._userAnswerService.BeginQuestion(user.Id, questionBank.Id);
+                            var maxq = questionBank.QuestionList.Max(x => x.Sort);
+                            responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
+                        }
+                    }
+                    //// 开始前判断是否有必须录入的用户信息
+                    //// 任意个属性没有值，用户信息录入
+                    //if(questionBank.UserAttributeList.Any(x=> {
+                    //    var userattr = user.UserAttributeList.FirstOrDefault(ua => ua.UserAttributeId == x.Id);
+                    //    return userattr == null || string.IsNullOrEmpty(userattr.Value);
+                    //}))
+                    //{
+
+                    //}
                 }
                 else
                 {
@@ -107,14 +169,15 @@ namespace Wei.Web.API.Handlers
             else
             {
                 // 开始答题了， 当前消息为答案
-                var question = this._userAnswerService.SaveAnswer(uanswer, content);
+                var question = this._userAnswerService.SaveAnswer(uanswer, content, user, voicepath);
+                var maxq = question.QuestionBank.QuestionList.Max(x => x.Sort);
                 if (question == null)
                 {
                     responseMessage.Content = "答卷完成，感谢您的参与！";
                 }
                 else
                 {
-                    responseMessage.Content = question.Text;
+                    responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
                 }
             }
             return responseMessage;
@@ -290,7 +353,16 @@ namespace Wei.Web.API.Handlers
         public override IResponseMessageBase OnVoiceRequest(RequestMessageVoice requestMessage)
         {
             var user = this._userService.GetUserById(requestMessage.FromUserName);
-            Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, WXinConfig.MediaDir);
+            string voice = null;
+            Stream stream = null;
+            Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, stream);
+            if(stream != null)
+            {
+                byte[] bytes = bytes = new byte[stream.Length];
+                
+                stream.Read(bytes, 0, bytes.Length);
+                voice = Convert.ToBase64String(bytes);
+            }
             //// 获取当前答题信息
             //var uanswer = this._userAnswerService.GetDoingQuestionAnswer(user.Id);
             //if(uanswer != null)
@@ -304,7 +376,7 @@ namespace Wei.Web.API.Handlers
             //        return responseMessage;
             //    }
             //}
-            return CustomResponse(requestMessage.Recognition, user);
+            return CustomResponse(requestMessage.Recognition, user, voice);
         }
 
         /// <summary>

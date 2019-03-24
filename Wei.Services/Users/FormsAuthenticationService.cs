@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Security;
+using Wei.Core;
 using Wei.Core.Domain.Users;
 
 namespace Wei.Services.Users
@@ -19,6 +20,7 @@ namespace Wei.Services.Users
         private readonly HttpContextBase _httpContext;
         private readonly IUserService _userService;
         private readonly TimeSpan _expirationTimeSpan;
+        private readonly IWebHelper _webHelper;
 
         private User _cachedUser;
 
@@ -33,10 +35,12 @@ namespace Wei.Services.Users
         /// <param name="userService">User service</param>
         /// <param name="userSettings">User settings</param>
         public FormsAuthenticationService(HttpContextBase httpContext,
-            IUserService userService)
+            IUserService userService
+            , IWebHelper webHelper)
         {
             this._httpContext = httpContext;
             this._userService = userService;
+            this._webHelper = webHelper;
             this._expirationTimeSpan = FormsAuthentication.Timeout;
         }
 
@@ -125,9 +129,25 @@ namespace Wei.Services.Users
             if (_cachedUser != null)
                 return _cachedUser;
 
-            if (_httpContext == null ||
-                _httpContext.Request == null ||
-                !_httpContext.Request.IsAuthenticated ||
+            if(_httpContext == null || _httpContext.Request == null)
+            {
+                return null;
+            }
+
+            var token = this._httpContext.Request["tokens"];
+            if (!string.IsNullOrEmpty(token))
+            {
+
+                var tokenuser = this._webHelper.GetSessionObject<User>("tokenuser", token);
+                // 根据token获取当前用户
+                if (tokenuser == null)
+                {
+                    return null;
+                }
+                return tokenuser;
+            }
+
+            if (!_httpContext.Request.IsAuthenticated ||
                 !(_httpContext.User.Identity is FormsIdentity))
             {
                 return null;
