@@ -46,17 +46,29 @@ namespace Wei.Web.API.Controllers
         public object GetQuestionBankList(RequestPaging request)
         {
             IList<FilterModel> filterlist = null;
-            IList<SortModel> sortlist = null;
+            string title = null;
+            int type = -1;
+            //IList<SortModel> sortlist = null;
             if (!string.IsNullOrEmpty(request.Filter))
             {
                 filterlist = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<FilterModel>>(request.Filter);
             }
-            if(!string.IsNullOrEmpty(request.Sort))
+            //if(!string.IsNullOrEmpty(request.Sort))
+            //{
+            //    sortlist = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<SortModel>>(request.Sort);
+            //}
+            if(filterlist != null)
             {
-                sortlist = Newtonsoft.Json.JsonConvert.DeserializeObject<IList<SortModel>>(request.Sort);
+                var titleFilter = filterlist.FirstOrDefault(x => string.Equals(x.Property.ToLower(), "title"));
+                if (titleFilter != null)
+                    title = titleFilter.Value.ToStringN();
+
+                var typeFilter = filterlist.FirstOrDefault(x => string.Equals(x.Property.ToLower(), "type"));
+                if (typeFilter != null)
+                    type = typeFilter.Value.ToInt();
             }
-            
-            var table = _questionBankService.QueryByPaged(filterlist, sortlist, request.Page - 1, request.Limit);
+
+            var table = _questionBankService.QueryByPaged(title, type, null, request.Page - 1, request.Limit);
 
             var result = table.Select(x =>
             {

@@ -25,7 +25,7 @@ namespace Wei.Services.Questions
         /// <param name="pageindex"></param>
         /// <param name="pagesize"></param>
         /// <returns></returns>
-        IPagedList<QuestionBank> QueryByPaged(IList<FilterModel> filterlist = null, IList<SortModel> sortlist = null
+        IPagedList<QuestionBank> QueryByPaged(string title = null, int type = -1, int[] tags = null
             , int pageindex = 0, int pagesize = int.MaxValue, bool showDel = false);
 
         /// <summary>

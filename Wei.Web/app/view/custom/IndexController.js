@@ -97,9 +97,16 @@
 
     // user answer
     onDataQuery: function (t) {
-        var that = this;
-        var store = that.getStore('useranswerlist');
-        store.load();
+        var that = this,
+            view = that.getView().down('custom_useranswerlist'),
+            grid = view.down('gird'),
+            filterForm = view.down('#useranswer_form_filter'),
+            data = filterForm.getValues(),
+            store = that.getStore('useranswerlist');
+        //var store = that.getStore('useranswerlist');
+        //store.load();
+        store.setRemoteFilter(true);
+        that.sendFilter(store, data);
     },
     onUserAnswerView: function (t) {
         var that = this,
@@ -109,6 +116,9 @@
             return;
         var record = selection[0];
         that.setCurrentView('custom_detail', { _useranswer: record });
+    },
+    onUserAnswerDiscard: function (t) {
+
     },
 
     // user answer grid
@@ -142,11 +152,13 @@
     },
     onAnswerViocePlay: function (t) {
         var gpitem = t.up('buttongroup');
-        var path = gpitem.viewModel.get('record.voicepath');
-        
+        var path = gpitem._rowContext.record.get('voicepath');
+
+        if (path) {
+            RongIMLib.RongIMVoice.init();
+            RongIMLib.RongIMVoice.play(path);
+        }
         //console.log(path);
-        RongIMLib.RongIMVoice.init();
-        RongIMLib.RongIMVoice.play(path);
     },
     onAnswerVioceStop: function (t) {
         //console.log(t.data);

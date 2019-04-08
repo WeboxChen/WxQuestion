@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
@@ -15,14 +16,14 @@ namespace Wei.Web.Models.Users
         /// </summary>
         [DisplayName("姓氏：")]
         [AllowHtml]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "请输入姓氏！")]
         public string FirstName { get; set; }
         /// <summary>
         /// 名字
         /// </summary>
         [DisplayName("名字：")]
         [AllowHtml]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "请输入名字！")]
         public string LastName { get; set; }
         public string UserName { get { return FirstName + LastName; } }
         /// <summary>
@@ -30,7 +31,7 @@ namespace Wei.Web.Models.Users
         /// </summary>
         [DisplayName("邮箱：")]
         [AllowHtml]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "请输入邮箱信息！")]
         [RegularExpression(@"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$", ErrorMessage = "请输入正确的电子邮箱地址！")]
         public string Email { get; set; }
         /// <summary>
@@ -38,7 +39,7 @@ namespace Wei.Web.Models.Users
         /// </summary>
         [DisplayName("电话：")]
         [AllowHtml]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "请输入电话！")]
         [StringLength(15, MinimumLength = 8)]
         public string Phone { get; set; }
         /// <summary>
@@ -46,7 +47,6 @@ namespace Wei.Web.Models.Users
         /// </summary>
         [DisplayName("QQ：")]
         [AllowHtml]
-        [Required]
         [StringLength(20, MinimumLength = 5)]
         public string QQ { get; set; }
         public int IsAdmin { get; set; }
@@ -64,18 +64,24 @@ namespace Wei.Web.Models.Users
         [AllowHtml]
         public string Language { get; set; }
         /// <summary>
+        /// 出身日期
+        /// </summary>
+        [DisplayName("出身日期：")]
+        [AllowHtml]
+        [Required(ErrorMessage = "请输入出身日期！")]
+        public DateTime Birthdate { get; set; }
+        /// <summary>
         /// 家庭地址
         /// </summary>
         [DisplayName("家庭地址：")]
         [AllowHtml]
-        [Required]
         public string Address { get; set; }
         /// <summary>
         /// 学历
         /// </summary>
         [DisplayName("学历：")]
         [AllowHtml]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "请输入学历！")]
         public string Education { get; set; }
         /// <summary>
         /// 婚姻
@@ -88,7 +94,7 @@ namespace Wei.Web.Models.Users
         /// </summary>
         [DisplayName("身份证：")]
         [AllowHtml]
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "请输入身份证！")]
         [StringLength(18)]
         public string IdentityCard { get; set; }
         

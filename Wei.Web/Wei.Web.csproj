@@ -2137,6 +2137,7 @@
     <Compile Include="API\Controllers\CommonController.cs" />
     <Compile Include="API\Controllers\HomeController.cs" />
     <Compile Include="API\Controllers\QuestionBankController.cs" />
+    <Compile Include="API\Controllers\UserAnswerController.cs" />
     <Compile Include="API\Controllers\UserController.cs" />
     <Compile Include="API\Handlers\CustomMessageContent.cs" />
     <Compile Include="API\Handlers\CustomMessageHandler.cs" />
@@ -2163,6 +2164,7 @@
     <Compile Include="Models\Authentication\LoginViewModel.cs" />
     <Compile Include="Models\BaseViewModel.cs" />
     <Compile Include="Models\Setting\ModuleTypeViewModel.cs" />
+    <Compile Include="Models\UserAnswer\UserAnswerViewModel.cs" />
     <Compile Include="Models\Users\UserAttributeValueViewModel.cs" />
     <Compile Include="Models\Users\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,7 @@
 ﻿using Senparc.Weixin.MP.Entities;
 using System;
 using System.Collections.Generic;
+using Wei.Core;
 using Wei.Core.Domain.Custom;
 using Wei.Core.Domain.Questions;
 using Wei.Core.Domain.Users;
@@ -25,6 +26,17 @@ namespace Wei.Services.Custom
         /// <returns></returns>
         IList<UserAnswer> QueryByUser(int userid, int questionbankid = 0
             , DateTime begintime = default(DateTime), DateTime completedtime = default(DateTime));
+        
+        /// <summary>
+        /// 分页获取数据
+        /// </summary>
+        /// <param name="filterlist"></param>
+        /// <param name="sortlist"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        IPagedList<UserAnswer> QueryByPaged(string nickname = null, string title = null, int type = -1
+            , int pageindex = 0, int pagesize = int.MaxValue);
 
         /// <summary>
         /// 根据id获取答题记录

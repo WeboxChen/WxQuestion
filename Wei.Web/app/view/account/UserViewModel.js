@@ -23,6 +23,17 @@
                 { name: '未婚', value: false },
                 { name: '已婚', value: true }
             ]
+        },
+
+        sexstore: {
+            fields: [
+                { name: 'text', type: 'string' },
+                { name: 'value', type: 'int' }
+            ],
+            data: [
+                { name: '男', value: 1 },
+                { name: '女', value: 2 }
+            ]
         }
     }
 });

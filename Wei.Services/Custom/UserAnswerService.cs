@@ -148,6 +148,34 @@ namespace Wei.Services.Custom
         }
 
         /// <summary>
+        /// 分页获取数据
+        /// </summary>
+        /// <param name="filterlist"></param>
+        /// <param name="sortlist"></param>
+        /// <param name="pageindex"></param>
+        /// <param name="pagesize"></param>
+        /// <returns></returns>
+        public IPagedList<UserAnswer> QueryByPaged(string nickname = null, string title = null, int type = -1
+            , int pageindex = 0, int pagesize = int.MaxValue)
+        {
+            var query = _userAnswerRepository.Table;
+
+            if (nickname != null)
+                query = query.Where(x => x.User.NickName.ToLower().IndexOf(nickname.ToLower()) != -1);
+
+            if (title != null)
+                query = query.Where(x => x.QuestionBank.Title.ToLower().IndexOf(title.ToLower()) != -1);
+
+            if (type != -1)
+                query = query.Where(x => x.QuestionBank.Type == type);
+
+            query = query.OrderByDescending(x => x.Id);
+
+            var result = new PagedList<UserAnswer>(query, pageindex, pagesize);
+            return result;
+        }
+
+        /// <summary>
         /// 开始答题
         /// </summary>
         /// <param name="userid"></param>

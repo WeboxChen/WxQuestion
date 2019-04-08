@@ -13,6 +13,9 @@ namespace Wei.Data.Mapping.Custom
             this.HasRequired(x => x.User)
                 .WithMany()
                 .HasForeignKey(x => x.User_Id);
+            this.HasRequired(x => x.QuestionBank)
+                .WithMany()
+                .HasForeignKey(x => x.QuestionBank_Id);
         }
     }
 }

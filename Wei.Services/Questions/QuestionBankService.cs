@@ -36,36 +36,45 @@ namespace Wei.Services.Questions
         /// <param name="pagesize"></param>
         /// <param name="showDel"></param>
         /// <returns></returns>
-        public IPagedList<QuestionBank> QueryByPaged(IList<FilterModel> filterlist = null, IList<SortModel> sortlist = null
+        public IPagedList<QuestionBank> QueryByPaged(string title = null, int type = -1, int[] tags = null
             , int pageindex = 0, int pagesize = int.MaxValue, bool showDel = false)
         {
             var query = _questionBankRepository.Table;
             if (!showDel)
                 query = query.Where(x => x.Status > -1);
 
-            if(filterlist != null && filterlist.Count > 0)
-            {
-                foreach(var filter in filterlist)
-                {
-                    query = filter.GetFiltered<QuestionBank>(query);
-                }
-            }
-            if(sortlist != null && sortlist.Count > 0)
-            {
-                IOrderedQueryable<QuestionBank> sortedlist = null;
-                foreach (var sort in sortlist)
-                {
-                    var tmp = sort.GetSorted<QuestionBank>(query);
-                    if (tmp != null)
-                        sortedlist = tmp;
-                }
-                if (sortlist != null)
-                    query = sortedlist;
-            }
-            else
-            {
-                query = query.OrderBy(x => x.Id);
-            }
+            if (title != null)
+                query = query.Where(x => x.Title.ToLower().IndexOf(title.ToLower()) != -1);
+
+            if (type != -1)
+                query = query.Where(x => x.Type == type);
+
+            query = query.OrderByDescending(x => x.Id);
+            //if(tags != null)
+            //    query.Where(x=> x.)
+            //if(filterlist != null && filterlist.Count > 0)
+            //{
+            //    foreach(var filter in filterlist)
+            //    {
+            //        query = filter.GetFiltered<QuestionBank>(query);
+            //    }
+            //}
+            //if(sortlist != null && sortlist.Count > 0)
+            //{
+            //    IOrderedQueryable<QuestionBank> sortedlist = null;
+            //    foreach (var sort in sortlist)
+            //    {
+            //        var tmp = sort.GetSorted<QuestionBank>(query);
+            //        if (tmp != null)
+            //            sortedlist = tmp;
+            //    }
+            //    if (sortlist != null)
+            //        query = sortedlist;
+            //}
+            //else
+            //{
+            //    query = query.OrderBy(x => x.Id);
+            //}
 
             var result = new PagedList<QuestionBank>(query, pageindex, pagesize);
             return result;
@@ -143,10 +152,16 @@ namespace Wei.Services.Questions
             return this._questionBankRepository.GetById(id);
         }
 
+        /// <summary>
+        /// 获取有效的题库关键词
+        /// </summary>
+        /// <returns></returns>
         public IDictionary<string, QuestionBank> KeyWordQuestionBank()
         {
             IDictionary<string, QuestionBank> result = new Dictionary<string, QuestionBank>();
-            var list = _questionBankRepository.Table.Where(x => x.Status == 0 && x.AutoResponse != null && x.AutoResponse.Value);
+            var list = _questionBankRepository.Table.Where(x => x.Status == 0 && x.AutoResponse != null && x.AutoResponse.Value
+                && (x.ExpireDateBegin == null || x.ExpireDateBegin.Value.Date <= DateTime.Now.Date) 
+                && (x.ExpireDateEnd == null || x.ExpireDateEnd.Value.Date >= DateTime.Now.Date));
             foreach(var item in list)
             {
                 if (string.IsNullOrEmpty(item.ResponseKeyWords))

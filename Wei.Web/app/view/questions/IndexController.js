@@ -44,8 +44,15 @@ Ext.define('Wei.view.questions.IndexController', {
 
     // question bank
     onDataQuery: function (t) {
-        var store = that.getStore('questionbanklist');
-        store.load();
+        var that = this,
+            view = that.getView().down('questions_questionbanklist'),
+            grid = view.down('gird'),
+            filterForm = view.down('#questionbank_form_filter'),
+            data = filterForm.getValues(),
+            store = that.getStore('questionbanklist');
+        store.setRemoteFilter(true);
+        that.sendFilter(store, data);
+        //store.load();
     },
     onQuestionBankAdd: function (t) {
         var that = this;

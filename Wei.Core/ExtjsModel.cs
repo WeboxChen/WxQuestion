@@ -19,7 +19,7 @@ namespace Wei.Core
             PropertyInfo pinfo = null;
             foreach (var prop in properties)
             {
-                if (string.Equals(prop.Name, Property))
+                if (string.Equals(prop.Name, Property, StringComparison.CurrentCultureIgnoreCase))
                 {
                     pinfo = prop;
                     break;
@@ -47,7 +47,7 @@ namespace Wei.Core
             PropertyInfo pinfo = null;
             foreach (var prop in properties)
             {
-                if (string.Equals(prop.Name, Property))
+                if (string.Equals(prop.Name, Property, StringComparison.CurrentCultureIgnoreCase))
                 {
                     pinfo = prop;
                     break;
@@ -87,7 +87,7 @@ namespace Wei.Core
             PropertyInfo pinfo = null;
             foreach (var prop in properties)
             {
-                if (string.Equals(prop.Name, Property))
+                if (string.Equals(prop.Name, Property, StringComparison.CurrentCultureIgnoreCase))
                 {
                     pinfo = prop;
                     break;
@@ -95,8 +95,167 @@ namespace Wei.Core
             }
             if (pinfo == null)
                 return query;
+            var ptype = pinfo.PropertyType;
 
-            query = query.Where(x => CompareValue(pinfo.GetValue(x), pinfo.PropertyType));
+            //query = query.Where(x => CompareValue(pinfo.GetValue(x), pinfo.PropertyType));
+            //query = from q in query
+            //        where CompareValue(pinfo.GetValue(q), pinfo.PropertyType)
+            //        select q;
+
+            switch (Operator)
+            {
+                case "lt":
+                case "<":
+                    if (ptype == typeof(int))
+                        //return value1.ToInt() < Value.ToInt();
+                        return query.Where(x => pinfo.GetValue(x).ToInt() < Value.ToInt());
+                    if (ptype == typeof(long))
+                        //return value1.ToLong() < Value.ToLong();
+                        return query.Where(x => pinfo.GetValue(x).ToLong() < Value.ToLong());
+                    if (ptype == typeof(decimal))
+                        //return value1.ToDecimal() < Value.ToDecimal();
+                        return query.Where(x => pinfo.GetValue(x).ToDecimal() < Value.ToDecimal());
+                    if (ptype == typeof(double))
+                        //return value1.ToDouble() < Value.ToDouble();
+                        return query.Where(x => pinfo.GetValue(x).ToDouble() < Value.ToDouble());
+                    if (ptype == typeof(float))
+                        //return value1.ToFloat() < Value.ToFloat();
+                        return query.Where(x => pinfo.GetValue(x).ToFloat() < Value.ToFloat());
+                    if (ptype == typeof(DateTime))
+                        //return value1.ToDateTime() < Value.ToDateTime();
+                        return query.Where(x => pinfo.GetValue(x).ToDateTime() < Value.ToDateTime());
+                    //return false;
+                    break;
+                case "gt":
+                case ">":
+                    if (ptype == typeof(int))
+                        //return value1.ToInt() > Value.ToInt();
+                        return query.Where(x => pinfo.GetValue(x).ToInt() > Value.ToInt());
+                    if (ptype == typeof(long))
+                        //return value1.ToLong() > Value.ToLong();
+                        return query.Where(x => pinfo.GetValue(x).ToLong() > Value.ToLong());
+                    if (ptype == typeof(decimal))
+                        //return value1.ToDecimal() > Value.ToDecimal();
+                        return query.Where(x => pinfo.GetValue(x).ToDecimal() > Value.ToDecimal());
+                    if (ptype == typeof(double))
+                        //return value1.ToDouble() > Value.ToDouble();
+                        return query.Where(x => pinfo.GetValue(x).ToDouble() > Value.ToDouble());
+                    if (ptype == typeof(float))
+                        //return value1.ToFloat() > Value.ToFloat();
+                        return query.Where(x => pinfo.GetValue(x).ToFloat() > Value.ToFloat());
+                    if (ptype == typeof(DateTime))
+                        //return value1.ToDateTime() > Value.ToDateTime();
+                        return query.Where(x => pinfo.GetValue(x).ToDateTime() > Value.ToDateTime());
+                    break;
+                case "lteq":
+                case "<=":
+                    if (ptype == typeof(int))
+                        //return value1.ToInt() <= Value.ToInt();
+                        return query.Where(x => pinfo.GetValue(x).ToInt() <= Value.ToInt());
+                    if (ptype == typeof(long))
+                        //return value1.ToLong() <= Value.ToLong();
+                        return query.Where(x => pinfo.GetValue(x).ToLong() <= Value.ToLong());
+                    if (ptype == typeof(decimal))
+                        //return value1.ToDecimal() <= Value.ToDecimal();
+                        return query.Where(x => pinfo.GetValue(x).ToDecimal() <= Value.ToDecimal());
+                    if (ptype == typeof(double))
+                        //return value1.ToDouble() <= Value.ToDouble();
+                        return query.Where(x => pinfo.GetValue(x).ToDouble() <= Value.ToDouble());
+                    if (ptype == typeof(float))
+                        //return value1.ToFloat() <= Value.ToFloat();
+                        return query.Where(x => pinfo.GetValue(x).ToFloat() <= Value.ToFloat());
+                    if (ptype == typeof(DateTime))
+                        //return value1.ToDateTime() <= Value.ToDateTime();
+                        return query.Where(x => pinfo.GetValue(x).ToDateTime() <= Value.ToDateTime());
+                    break;
+                case "gteq":
+                case ">=":
+                    if (ptype == typeof(int))
+                        //return value1.ToInt() >= Value.ToInt();
+                        return query.Where(x => pinfo.GetValue(x).ToInt() > Value.ToInt());
+                    if (ptype == typeof(long))
+                        //return value1.ToLong() >= Value.ToLong();
+                        return query.Where(x => pinfo.GetValue(x).ToLong() > Value.ToLong());
+                    if (ptype == typeof(decimal))
+                        //return value1.ToDecimal() >= Value.ToDecimal();
+                        return query.Where(x => pinfo.GetValue(x).ToDecimal() > Value.ToDecimal());
+                    if (ptype == typeof(double))
+                        //return value1.ToDouble() >= Value.ToDouble();
+                        return query.Where(x => pinfo.GetValue(x).ToDouble() > Value.ToDouble());
+                    if (ptype == typeof(float))
+                        //return value1.ToFloat() >= Value.ToFloat();
+                        return query.Where(x => pinfo.GetValue(x).ToFloat() > Value.ToFloat());
+                    if (ptype == typeof(DateTime))
+                        //return value1.ToDateTime() >= Value.ToDateTime();
+                        return query.Where(x => pinfo.GetValue(x).ToDateTime() > Value.ToDateTime());
+                    break;
+                case "noteq":
+                case "!=":
+                    if (ptype == typeof(int))
+                        //return value1.ToInt() != Value.ToInt();
+                        return query.Where(x => pinfo.GetValue(x).ToInt() != Value.ToInt());
+                    if (ptype == typeof(long))
+                        //return value1.ToLong() != Value.ToLong();
+                        return query.Where(x => pinfo.GetValue(x).ToLong() != Value.ToLong());
+                    if (ptype == typeof(decimal))
+                        //return value1.ToDecimal() != Value.ToDecimal();
+                        return query.Where(x => pinfo.GetValue(x).ToDecimal() != Value.ToDecimal());
+                    if (ptype == typeof(double))
+                        //return value1.ToDouble() != Value.ToDouble();
+                        return query.Where(x => pinfo.GetValue(x).ToDouble() != Value.ToDouble());
+                    if (ptype == typeof(float))
+                        //return value1.ToFloat() != Value.ToFloat();
+                        return query.Where(x => pinfo.GetValue(x).ToFloat() != Value.ToFloat());
+                    if (ptype == typeof(DateTime))
+                        //return value1.ToDateTime() != Value.ToDateTime();
+                        return query.Where(x => pinfo.GetValue(x).ToDateTime() != Value.ToDateTime());
+                    if (ptype == typeof(string))
+                        //return value1.ToStringN() != Value.ToStringN();
+                        return query.Where(x => pinfo.GetValue(x).ToString() != Value.ToString());
+                    break;
+                case "like":
+                    if (ptype == typeof(string))
+                        //return value1.ToStringN().IndexOf(Value.ToStringN(), StringComparison.CurrentCultureIgnoreCase) != -1;
+                        return query.Where(x => pinfo.GetValue(x).ToString().ToLower().IndexOf(Value.ToString().ToLower()) != -1);
+                    break;
+                case "in":
+                    //if (Value is Newtonsoft.Json.Linq.JArray)
+                    //{
+                    //    var filterarr = (Newtonsoft.Json.Linq.JArray)Value;
+                    //    foreach (JToken i in filterarr)
+                    //    {
+                    //        if (string.Equals(i.ToStringN(), Value.ToStringN(), StringComparison.CurrentCultureIgnoreCase))
+                    //            return true;
+                    //    }
+                    //}
+                    break; ;
+                case "eq":
+                case "=":
+                default:
+                    if (ptype == typeof(int))
+                        //return value1.ToInt() == Value.ToInt();
+                        return query.Where(x => pinfo.GetValue(x).ToInt() == Value.ToInt());
+                    if (ptype == typeof(long))
+                        //return value1.ToLong() == Value.ToLong();
+                        return query.Where(x => pinfo.GetValue(x).ToLong() == Value.ToLong());
+                    if (ptype == typeof(decimal))
+                        //return value1.ToDecimal() == Value.ToDecimal();
+                        return query.Where(x => pinfo.GetValue(x).ToDecimal() == Value.ToDecimal());
+                    if (ptype == typeof(double))
+                        //return value1.ToDouble() == Value.ToDouble();
+                        return query.Where(x => pinfo.GetValue(x).ToDouble() == Value.ToDouble());
+                    if (ptype == typeof(float))
+                        //return value1.ToFloat() == Value.ToFloat();
+                        return query.Where(x => pinfo.GetValue(x).ToFloat() == Value.ToFloat());
+                    if (ptype == typeof(DateTime))
+                        //return value1.ToDateTime() == Value.ToDateTime();
+                        return query.Where(x => pinfo.GetValue(x).ToDateTime().Date == Value.ToDateTime().Date);
+                    if (ptype == typeof(string))
+                        //return string.Equals(value1.ToStringN(), Value.ToStringN(), StringComparison.CurrentCultureIgnoreCase);
+                        return query.Where(x => string.Equals(pinfo.GetValue(x).ToStringN(), Value.ToStringN(), StringComparison.CurrentCultureIgnoreCase));
+                    break;
+            }
+
             return query;
             //switch (Operator)
             //{
@@ -231,7 +390,7 @@ namespace Wei.Core
                     return false;
                 case "like":
                     if (type == typeof(string))
-                        return value1.ToStringN().IndexOf(Value.ToStringN(), StringComparison.CurrentCultureIgnoreCase) != -1;
+                        return value1.ToStringN().ToLower().IndexOf(Value.ToStringN().ToLower()) != -1;
                     return false;
                 case "in":
                     if (Value is Newtonsoft.Json.Linq.JArray)

@@ -45,7 +45,23 @@ Ext.define('Wei.view.account.UserGrid', {
 
         //{ xtype: 'numbercolumn', text: '关注', dataIndex: 'subscribe', format: '0', hidden: false },
         { xtype: 'gridcolumn', text: '昵称', dataIndex: 'nickname', hidden: false },
-        { xtype: 'numbercolumn', text: '性别', dataIndex: 'sex', format: '0', hidden: false },
+        {
+            xtype: 'numbercolumn', text: '性别',
+            dataIndex: 'sex', format: '0', hidden: false,
+            editor: {
+                xtype: 'combobox',
+                bind: {
+                    store: '{sexstore}'
+                },
+                displayField: 'name',
+                valueField: 'value'
+            },
+            renderer: function (d) {
+                if (d == 2)
+                    return "女";
+                return "男";
+            }
+        },
 
         { xtype: 'datecolumn', text: '出生日期', dataIndex: 'birthdate', hidden: false, editor: { xtype: 'datefield' } },
 

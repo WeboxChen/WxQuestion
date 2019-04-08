@@ -30,6 +30,7 @@ Ext.define('Wei.view.account.UserController', {
             grid = t.up('grid'),
             store = grid.getStore(),
             selection = grid.getSelection();
+        // 开启单行编辑模式
         that.onGridBaseMultiRowEditor(grid, false);
         store.remove(selection);
     },

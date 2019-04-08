@@ -5,6 +5,14 @@ Ext.define('Wei.store.custom.UserAnswer', {
     model: 'Wei.model.custom.UserAnswer',
 
     _dataView: 'V_UserAnswer',
-    _operateTblName: 'C_UserAnswer'
+    _operateTblName: 'C_UserAnswer',
+
+    pageSize: 25,
+
+    proxy: {
+        api: {
+            read: 'api/useranswer/GetUserAnswerList'
+        }
+    }
 
 });

@@ -11,6 +11,7 @@
         {
             xtype: 'form',
             cls: 'form_filter',
+            itemId: 'questionbank_form_filter',
             layout: {
                 type: 'hbox',
                 align: 'stretch'
@@ -50,7 +51,8 @@
                     multiSelect: true,
                     displayField: 'name',
                     valueField: 'id',
-                    filterPickList: true
+                    filterPickList: true,
+                    hidden: true
                 },
                 {
                     xtype: 'button',

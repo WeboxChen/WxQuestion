@@ -5,6 +5,7 @@ Ext.define('Wei.model.custom.UserAnswer', {
         { type: 'int', name: 'id', persist: true },
         { type: 'int', name: 'questionbank_id', persist: false },
         { type: 'int', name: 'user_id', persist: false },
+        { type: 'string', name: 'nickname', persist: false },
         { type: 'date', name: 'begintime', persist: false },
         { type: 'date', name: 'completedtime', persist: false },
         { type: 'string', name: 'questionbank', persist: false },

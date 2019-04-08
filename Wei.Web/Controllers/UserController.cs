@@ -65,15 +65,21 @@ namespace Wei.Web.Controllers
                 QQ = user.QQ,
                 Phone = user.Phone,
                 Language = user.Language,
-                OpenId = user.OpenId
+                OpenId = user.OpenId,
+                Birthdate = user.Birthdate == null? new DateTime(2000, 1,1) : user.Birthdate.Value
             };
             
             return View(usermodel);
         }
 
         [HttpPost]
+        [ValidateInput(true)]
         public ActionResult UserInfo(UserViewModel uimodel, FormCollection form)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(uimodel);
+            }
             var usertoen = _workContext.CurrentUser;
             var user = this._userService.GetUserById(usertoen.Id);
             user.FirstName = uimodel.FirstName;
@@ -87,6 +93,7 @@ namespace Wei.Web.Controllers
             user.Phone = uimodel.Phone;
             user.Married = uimodel.Married;
             user.Status = 1;
+            user.Birthdate = uimodel.Birthdate;
 
             this._userService.UpdateUser(user);
             return Redirect("~/closepager.html");

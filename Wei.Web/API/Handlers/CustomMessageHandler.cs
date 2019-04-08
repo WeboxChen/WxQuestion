@@ -115,22 +115,13 @@ namespace Wei.Web.API.Handlers
             {
                 // 获取有效的题卷启动Keys
                 var defQuestionList = this._questionBankService.KeyWordQuestionBank();
-                QuestionBank questionBank = null;
-                string tmpContent = content.ToLower();
-                foreach (var key in defQuestionList.Keys)
+                if (defQuestionList.ContainsKey(content))
                 {
-                    if (tmpContent.IndexOf(key.ToLower()) != -1)
-                    {
-                        questionBank = defQuestionList[key];
-                        break;
-                    }
-                }
-                if (questionBank != null)
-                {
+                    QuestionBank questionBank = defQuestionList[content];
                     // 判断用户是否答过当前题卷
                     if (this._userAnswerService.IsAnswered(questionBank.Id, user))
                     {
-                        responseMessage.Content = "已答过改题卷，不能重复答题";
+                        responseMessage.Content = "已答过该题卷，不能重复答题";
                     }
                     else
                     {
@@ -151,16 +142,52 @@ namespace Wei.Web.API.Handlers
                             responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
                         }
                     }
-                    //// 开始前判断是否有必须录入的用户信息
-                    //// 任意个属性没有值，用户信息录入
-                    //if(questionBank.UserAttributeList.Any(x=> {
-                    //    var userattr = user.UserAttributeList.FirstOrDefault(ua => ua.UserAttributeId == x.Id);
-                    //    return userattr == null || string.IsNullOrEmpty(userattr.Value);
-                    //}))
-                    //{
-
-                    //}
                 }
+                //string tmpContent = content.ToLower();
+                //foreach (var key in defQuestionList.Keys)
+                //{
+                //    if (tmpContent.IndexOf(key.ToLower()) != -1)
+                //    {
+                //        questionBank = defQuestionList[key];
+                //        break;
+                //    }
+                //}
+                //if (questionBank != null)
+                //{
+                //    // 判断用户是否答过当前题卷
+                //    if (this._userAnswerService.IsAnswered(questionBank.Id, user))
+                //    {
+                //        responseMessage.Content = "已答过该题卷，不能重复答题";
+                //    }
+                //    else
+                //    {
+                //        // 判断用户信息是否录入
+                //        if (user.Status == 0)
+                //        {
+                //            var token = Guid.NewGuid();
+                //            //_httpContext.Session.Add(token.ToString("N"), user);
+                //            this._webHelper.SetSessionObject<User>("tokenuser", token.ToString("N"), user);
+                //            string url = System.Configuration.ConfigurationManager.AppSettings["WebDomain"] + "/user/userinfo?tokens=" + token.ToString("N");
+                //            responseMessage.Content = $"请先录入个人信息：{url}";
+                //        }
+                //        else
+                //        {
+                //            // 开始执行答题
+                //            var question = this._userAnswerService.BeginQuestion(user.Id, questionBank.Id);
+                //            var maxq = questionBank.QuestionList.Max(x => x.Sort);
+                //            responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
+                //        }
+                //    }
+                //    //// 开始前判断是否有必须录入的用户信息
+                //    //// 任意个属性没有值，用户信息录入
+                //    //if(questionBank.UserAttributeList.Any(x=> {
+                //    //    var userattr = user.UserAttributeList.FirstOrDefault(ua => ua.UserAttributeId == x.Id);
+                //    //    return userattr == null || string.IsNullOrEmpty(userattr.Value);
+                //    //}))
+                //    //{
+
+                //    //}
+                //}
                 else
                 {
                     responseMessage.Content = "我是复读机!..." + content;

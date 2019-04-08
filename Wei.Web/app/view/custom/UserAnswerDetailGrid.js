@@ -53,9 +53,9 @@ Ext.define('Wei.view.custom.UserAnswerDetailGrid', {
             width: 120,
             widget: {
                 xtype: 'buttongroup',
-                bind: {
-                    _wei: '{record.viocepath}'
-                },
+                //bind: {
+                //    _wei: '{record.viocepath}'
+                //},
                 items: [
                     {
                         xtype: 'button',

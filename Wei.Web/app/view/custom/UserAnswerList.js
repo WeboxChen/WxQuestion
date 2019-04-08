@@ -11,6 +11,7 @@
         {
             xtype: 'form',
             cls: 'form_filter',
+            itemId: 'useranswer_form_filter',
             layout: {
                 type: 'hbox',
                 align: 'stretch'
@@ -22,7 +23,16 @@
             },
             items: [
                 {
-                    emptyText: '标题',
+                    //fieldLabel: '用户',
+                    //labelWidth: 60,
+                    emptyText: '用户',
+                    name: 'nickname.like',
+                    width: 120
+                },
+                {
+                    //fieldLabel: '题库标题',
+                    //labelWidth: 60,
+                    emptyText: '题库标题',
                     name: 'title.like',
                     width: 120
                 },
@@ -51,6 +61,10 @@
                 {
                     text: '查看',
                     handler: 'onUserAnswerView'
+                },
+                {
+                    text: '作废',
+                    handler: 'onUserAnswerDiscard'
                 }
             ],
             bind: {

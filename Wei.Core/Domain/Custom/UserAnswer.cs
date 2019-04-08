@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wei.Core.Domain.Questions;
 
 namespace Wei.Core.Domain.Custom
 {
@@ -15,7 +16,7 @@ namespace Wei.Core.Domain.Custom
         /// 题库Id
         /// </summary>
         public int QuestionBank_Id { get; set; }
-        //public virtual QuestionBank QuestionBank { get; set; }
+        public virtual QuestionBank QuestionBank { get; set; }
         /// <summary>
         /// 开始答题时间
         /// </summary>
