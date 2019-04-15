@@ -10,7 +10,8 @@ Ext.define('Wei.model.custom.UserAnswer', {
         { type: 'date', name: 'completedtime', persist: false },
         { type: 'string', name: 'questionbank', persist: false },
         { type: 'int', name: 'questionbanktype', persist: false },
-        { type: 'string', name: 'questionbanktypename', persist: false }
+        { type: 'string', name: 'questionbanktypename', persist: false },
+        { type: 'string', name: 'status', persist: false }
 
     ]
 });

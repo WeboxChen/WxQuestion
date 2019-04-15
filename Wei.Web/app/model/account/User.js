@@ -8,6 +8,7 @@ Ext.define('Wei.model.account.User', {
         { type: 'string', name: 'passwordsalt', persist: false },
         { type: 'string', name: 'firstname', persist: true },
         { type: 'string', name: 'lastname', persist: true },
+        { type: 'string', name: 'fullname', persist: false },
         { type: 'string', name: 'phone', persist: true },
         { type: 'string', name: 'qq', persist: true },
         { type: 'string', name: 'email', persist: true },
@@ -41,6 +42,7 @@ Ext.define('Wei.model.account.User', {
         { type: 'string', name: 'address', persist: true },
         { type: 'bool', name: 'married', persist: true },
         { type: 'string', name: 'identitycard', persist: true },
-        { type: 'string', name: 'education', persist: true }
+        { type: 'string', name: 'education', persist: true },
+        { type: 'date', name: 'lastanswertime', persist: false }
     ]
 });

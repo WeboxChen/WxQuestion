@@ -23,6 +23,10 @@ Ext.define('Wei.view.custom.UserAnswerGrid', {
             hidden: false,
             width: 140
         },
-
+        {
+            xtype: 'gridcolumn',
+            text: '状态',
+            dataIndex: 'status'
+        }
     ]
 });

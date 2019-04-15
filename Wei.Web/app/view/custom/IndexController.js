@@ -112,13 +112,34 @@
         var that = this,
             grid = t.up('grid'),
             selection = grid.getSelection();
-        if (selection.length == 0)
+        if (selection.length == 0) {
+            that.alertErrorMsg("请选中一条记录！");
             return;
+        }
         var record = selection[0];
         that.setCurrentView('custom_detail', { _useranswer: record });
     },
     onUserAnswerDiscard: function (t) {
-
+        var that = this,
+            view = that.getView().down('custom_useranswerlist'),
+            grid = view.down('custom_useranswergrid'),
+            store = grid.getStore(),
+            selection = grid.getSelection();
+        if (selection.length == 0) {
+            that.alertErrorMsg("请选中一条记录！");
+            return;
+        }
+        var ids = [];
+        selection.forEach(function (item) {
+            ids.push(item.getId());
+        });
+        that.postJsonSync('useranswer/discard', {
+                ids: ids
+            }, function (obj, response, eopts) {
+                store.reload();
+            }, function (response, eopts) {
+                store.reload();
+            });
     },
 
     // user answer grid

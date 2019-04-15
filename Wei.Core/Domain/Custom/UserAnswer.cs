@@ -27,6 +27,16 @@ namespace Wei.Core.Domain.Custom
         public DateTime? CompletedTime { get; set; }
 
         /// <summary>
+        /// 状态，  0：正常， -1：作废， 2： 挂起待作废， 1： 完成
+        /// </summary>
+        public int Status { get; set; }
+        public UserAnswerStatus UserAnswerStatus
+        {
+            get { return (UserAnswerStatus)Status; }
+            set { Status = (int)value; }
+        }
+
+        /// <summary>
         /// 本轮试题答案
         /// </summary>
         public virtual List<UserAnswerDetail> UserAnswerDetailList

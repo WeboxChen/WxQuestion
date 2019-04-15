@@ -14,6 +14,9 @@ namespace Wei.Data.Mapping.Questions
                 .WithMany()
                 .HasForeignKey(x => x.Type);
 
+            this.HasRequired(x => x.Creator)
+                .WithMany()
+                .HasForeignKey(x => x.CreatorId);
             this.HasMany(x => x.QuestionList)
                 .WithRequired(x => x.QuestionBank)
                 .HasForeignKey(x => x.QuestionBank_Id);

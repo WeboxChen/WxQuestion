@@ -1,22 +1,16 @@
 ﻿using Senparc.NeuChar.Entities;
-using Senparc.NeuChar.Entities.Request;
 using Senparc.Weixin.MP.AppStore;
-using Senparc.Weixin.MP.Containers;
 using Senparc.Weixin.MP.Entities;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MessageHandlers;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Web;
 using System.Xml.Linq;
 using Wei.Core;
 using Wei.Core.Domain.Questions;
 using Wei.Core.Domain.Users;
-using Wei.Core.Infrastructure;
 using Wei.Services.Custom;
 using Wei.Services.Logging;
 using Wei.Services.Questions;
@@ -138,6 +132,11 @@ namespace Wei.Web.API.Handlers
                         {
                             // 开始执行答题
                             var question = this._userAnswerService.BeginQuestion(user.Id, questionBank.Id);
+                            string qtext = question.Text;
+                            if(question.AnswerType == AnswerType.SingleCheck || question.AnswerType == AnswerType.MultiCheck)
+                            {
+                                qtext += (Environment.NewLine + string.Join(Environment.NewLine, question.QuestionItemList.Select(x=>x.Text).ToArray())); 
+                            }
                             var maxq = questionBank.QuestionList.Max(x => x.Sort);
                             responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
                         }
@@ -195,16 +194,70 @@ namespace Wei.Web.API.Handlers
             }
             else
             {
-                // 开始答题了， 当前消息为答案
-                var question = this._userAnswerService.SaveAnswer(uanswer, content, user, voicepath);
-                var maxq = question.QuestionBank.QuestionList.Max(x => x.Sort);
-                if (question == null)
+                // 没有作答
+                if (string.IsNullOrEmpty(content))
                 {
-                    responseMessage.Content = "答卷完成，感谢您的参与！";
+                    responseMessage.Content = "无法检测您在说什么，请确认是否有作答或者语言清晰！";
+                }
+                else if (string.Equals("放弃答题", content))
+                {
+                    if(uanswer.UserAnswerStatus == Core.Domain.Custom.UserAnswerStatus.挂起)
+                    {
+                        uanswer.CompletedTime = DateTime.Now;
+                        uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.已作废;
+                        this._userAnswerService.Save(uanswer);
+                        responseMessage.Content = "谢谢您的参与！";
+                    }
+                    else
+                    {
+                        uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.挂起;
+                        this._userAnswerService.Save(uanswer);
+                        responseMessage.Content = "是否确定放弃本次答题（本次答题数据将作废）？";
+                    }
                 }
                 else
                 {
-                    responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
+                    if(uanswer.UserAnswerStatus == Core.Domain.Custom.UserAnswerStatus.挂起)
+                    {
+                        if(string.Equals(content, "是") || string.Equals(content, "是的") || string.Equals(content, "确定")
+                            || string.Equals(content, "放弃") || string.Equals(content, "放弃答题"))
+                        {
+                            uanswer.CompletedTime = DateTime.Now;
+                            uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.已作废;
+                            this._userAnswerService.Save(uanswer);
+                        }
+                        else
+                        {
+                            uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.答题中;
+                            this._userAnswerService.Save(uanswer);
+
+                            // 开始答题了， 当前消息为答案
+                            var question = this._userAnswerService.SaveAnswer(uanswer, content, user, voicepath);
+                            var maxq = uanswer.QuestionBank.QuestionList.Max(x => x.Sort);
+                            if (question == null)
+                            {
+                                responseMessage.Content = "您的回答似乎不符，请尝试重新作答！";
+                            }
+                            else
+                            {
+                                responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // 开始答题了， 当前消息为答案
+                        var question = this._userAnswerService.SaveAnswer(uanswer, content, user, voicepath);
+                        var maxq = question.QuestionBank.QuestionList.Max(x => x.Sort);
+                        if (question == null)
+                        {
+                            responseMessage.Content = "您的回答似乎不符，请尝试重新作答！";
+                        }
+                        else
+                        {
+                            responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
+                        }
+                    }
                 }
             }
             return responseMessage;

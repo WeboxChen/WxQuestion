@@ -39,6 +39,7 @@
         'Wei.model.questions.Question',
         'Wei.model.questions.QuestionBank',
         'Wei.model.questions.QuestionAnswer',
+        'Wei.model.questions.QuestionItem',
 
         // account
         'Wei.model.account.User',
@@ -59,6 +60,7 @@
         'Wei.store.questions.Question',
         'Wei.store.questions.QuestionBank',
         'Wei.store.questions.QuestionAnswer',
+        'Wei.store.questions.QuestionItem',
 
         // account
         'Wei.store.account.User',
@@ -122,6 +124,7 @@
         'Wei.view.questions.QuestionGrid',
         'Wei.view.questions.QuestionAnswerGrid',
         'Wei.view.questions.QuestionInfo',
+        'Wei.view.questions.QuestionItemGrid',
 
         'Wei.view.questions.QuestionList',
         'Wei.view.questions.QuestionBankList',
@@ -145,6 +148,7 @@
         'Wei.view.account.UserViewModel',
         'Wei.view.account.UserController',
         'Wei.view.account.UserGrid',
+        'Wei.view.account.UserList',
 
         // user attribute
         'Wei.view.account.UserAttributeViewModel',

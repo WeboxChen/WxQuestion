@@ -5,6 +5,7 @@ namespace Wei.Core.Domain.Questions
 {
     public class Question: BaseEntity
     {
+        private IList<QuestionItem> _questionItemList;
         private IList<QuestionAnswer> _questionAnswerList;
 
         /// <summary>
@@ -79,6 +80,15 @@ namespace Wei.Core.Domain.Questions
         /// 备注
         /// </summary>
         public string Remark { get; set; }
+
+        /// <summary>
+        /// 选择题选项
+        /// </summary>
+        public virtual IList<QuestionItem> QuestionItemList
+        {
+            get { return _questionItemList ?? (_questionItemList = new List<QuestionItem>()); }
+            set { _questionItemList = value; }
+        }
 
         /// <summary>
         /// 问题答案

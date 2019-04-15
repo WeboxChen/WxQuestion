@@ -80,6 +80,11 @@
                     text: '删除',
                     handler: 'onQuestionBankDel'
                 }
+                , '-',
+                {
+                    text: '邀请答题',
+                    handler: 'onRequestUserAnswer'
+                }
             ],
             bind: {
                 store: '{questionbanklist}'

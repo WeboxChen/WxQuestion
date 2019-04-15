@@ -11,10 +11,15 @@
             type: 'questions_question',
             autoLoad: false
         },
+        questionitemlist: {
+            type: 'questions_questionitem',
+            autoLoad: false
+        },
         questionanswerlist: {
             type: 'questions_questionanswer',
             autoLoad: false
         },
+
 
         // 答题方式
         answertypelist: {

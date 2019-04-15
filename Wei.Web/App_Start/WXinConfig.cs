@@ -59,5 +59,11 @@ namespace Wei.Web
         {
             get { return _mediaDir ?? (_mediaDir = ConfigurationManager.AppSettings["MediaDir"]); }
         }
+
+        private static string _invitationText;
+        public static string InvitationText
+        {
+            get { return _invitationText ?? (_invitationText = ConfigurationManager.AppSettings["InvitationText"]); }
+        }
     }
 }

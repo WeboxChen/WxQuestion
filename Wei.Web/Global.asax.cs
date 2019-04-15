@@ -8,6 +8,7 @@ using StackExchange.Profiling;
 using System;
 using System.Data.Entity;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -108,18 +109,22 @@ namespace Wei.Web
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
             //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.
 
-
+            Task t = new Task(() =>
+            {
+                var tlogger = EngineContext.Current.Resolve<ILogger>();
+                try
+                {
+                    ViewServices.Users.UserViewService uservice = new ViewServices.Users.UserViewService();
+                    uservice.SaveUserList(WXinConfig.WeixinAppId);
+                }
+                catch (Exception ex)
+                {
+                    //var logger2 = EngineContext.Current.Resolve<ILogger>();
+                    tlogger.Error(ex.Message, ex, null);
+                }
+            });
+            t.Start();
             var logger = EngineContext.Current.Resolve<ILogger>();
-            try
-            {
-                ViewServices.Users.UserViewService uservice = new ViewServices.Users.UserViewService();
-                uservice.SaveUserList(WXinConfig.WeixinAppId);
-            }
-            catch (Exception ex)
-            {
-                //var logger2 = EngineContext.Current.Resolve<ILogger>();
-                logger.Error(ex.Message, ex, null);
-            }
 
             logger.Information("Application started", null, null);
         }

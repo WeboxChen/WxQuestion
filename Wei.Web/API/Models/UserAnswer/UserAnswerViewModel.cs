@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wei.Web.Models.UserAnswer
+namespace Wei.Web.API.Models.UserAnswer
 {
     public class UserAnswerViewModel
     {
@@ -13,5 +13,6 @@ namespace Wei.Web.Models.UserAnswer
         public string questionbank { get; set; }
         public int questionbanktype { get; set; }
         public string questionbanktypename { get; set; }
+        public string status { get; set; }
     }
 }

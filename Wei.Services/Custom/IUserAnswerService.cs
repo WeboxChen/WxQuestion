@@ -76,6 +76,12 @@ namespace Wei.Services.Custom
         Question SaveAnswer(UserAnswer uanswer, string answer, User user, string voicepath = null);
 
         /// <summary>
+        /// 保存用户答案
+        /// </summary>
+        /// <param name="uanswer"></param>
+        void Save(UserAnswer uanswer);
+
+        /// <summary>
         /// 用户是否做过改题卷
         /// </summary>
         /// <param name="bankid"></param>

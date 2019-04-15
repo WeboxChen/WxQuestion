@@ -62,14 +62,26 @@
     // question grid
     onQuestionGridSelect: function (t, r, i, eopts) {
         var that = this,
-            store = that.getStore('questionanswerlist');
+            qanswerstore = that.getStore('questionanswerlist'),
+            qitemstore = that.getStore('questionitemlist');
         if (isNaN(r.getId()))
             return;
-        store.setRemoteFilter(true);
-        store.filter('questionid', r.getId());
-        store.load({
+
+        // 加载选项
+        qitemstore.setRemoteFilter(true);
+        qitemstore.filter('questionid', r.getId());
+        qitemstore.load({
             callback: function (records, oper, s) {
-                store.setRemoteFilter(false);
+                qitemstore.setRemoteFilter(false);
+            }
+        });
+
+        // 加载答案
+        qanswerstore.setRemoteFilter(true);
+        qanswerstore.filter('questionid', r.getId());
+        qanswerstore.load({
+            callback: function (records, oper, s) {
+                qanswerstore.setRemoteFilter(false);
             }
         });
     },
@@ -172,6 +184,9 @@
             }
         });
     },
+
+    // question item
+
     // 题目表格问题类型列加载
     onQuestionGridQTypeRenderer : function(v, m, r) {
         var store = this.getStore('questiontypelist');
@@ -238,4 +253,58 @@
             that.onGridBaseEditor(grid, false);
         }
     },
+
+    onQuestionItemAdd: function (t) {
+        var that = this,
+            qgrid = that.getView().down('questions_questiongrid'),
+            qselection = qgrid.getSelection(),
+            grid = t.up('grid'),
+            store = grid.getStore();
+        if (!qselection || qselection.length == 0)
+            return;
+        store.add({
+            questionid: qselection[0].getId()
+        });
+        that.onQuestionAnswerEdit(t);
+    },
+    onQuestionItemEdit: function (t) {
+        var that = this,
+            grid = t.up('grid');
+        that.onGridBaseMultiRowEditor(grid, false);
+    },
+    onQuestionItemDel: function (t) {
+        var that = this,
+            grid = t.up('grid'),
+            store = grid.getStore(),
+            selection = grid.getSelection();
+        that.onGridBaseMultiRowEditor(grid, false);
+        store.remove(selection);
+    },
+    onQuestionItemCancel: function (t) {
+        var that = this,
+            grid = t.up('grid'),
+            store = grid.getStore();
+        // 禁止编辑
+        that.onGridBaseEditor(grid, false);
+        store.reload();
+    },
+    onQuestionItemSave: function (t) {
+        var that = this,
+            grid = t.up('grid'),
+            store = grid.getStore();
+
+        var mrecords = store.getModifiedRecords();
+        var rrecords = store.getRemovedRecords();
+
+        if (mrecords.length > 0 || rrecords.length > 0) {
+            store.ypuSimpleSync({
+                success: function () {
+                    that.onGridBaseEditor(grid, false);
+                    store.reload();
+                }
+            });
+        } else {
+            that.onGridBaseEditor(grid, false);
+        }
+    }
 });

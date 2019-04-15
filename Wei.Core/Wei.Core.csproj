@@ -115,6 +115,7 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="DBHelp.cs" />
     <Compile Include="DBStructCaching.cs" />
+    <Compile Include="Domain\Custom\UserAnswerStatus.cs" />
     <Compile Include="Domain\Logging\ActionRecordType.cs" />
     <Compile Include="Domain\Localization\Language.cs" />
     <Compile Include="Domain\Localization\LocaleStringResource.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="Domain\Questions\QuestionAnswer.cs" />
     <Compile Include="Domain\Questions\QuestionBank.cs" />
     <Compile Include="Domain\Questions\QuestionBankTag.cs" />
+    <Compile Include="Domain\Questions\QuestionItem.cs" />
     <Compile Include="Domain\Questions\QuestionType.cs" />
     <Compile Include="Domain\Custom\UserAnswer.cs" />
     <Compile Include="Domain\Custom\UserAnswerDetail.cs" />

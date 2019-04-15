@@ -8,5 +8,7 @@
             type: 'questions_questionbank',
             autoLoad: true
         }
+
+
     }
 });

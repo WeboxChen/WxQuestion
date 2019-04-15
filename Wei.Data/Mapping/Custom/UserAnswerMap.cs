@@ -16,6 +16,8 @@ namespace Wei.Data.Mapping.Custom
             this.HasRequired(x => x.QuestionBank)
                 .WithMany()
                 .HasForeignKey(x => x.QuestionBank_Id);
+
+            this.Ignore(x => x.UserAnswerStatus);
         }
     }
 }

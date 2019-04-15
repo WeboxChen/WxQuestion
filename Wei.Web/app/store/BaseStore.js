@@ -121,7 +121,7 @@
                     if (!error)
                         continue;
                     if (error.response) {
-                        var response = JSON.parse(error.response);
+                        var response = JSON.parse(error.response.responseText);
                         Ext.Msg.alert('Error' + error['status'], response.Message);
                     } else {
                         Ext.Msg.alert('Error', error['status'] + ': ' + error['statusText']);

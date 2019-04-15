@@ -50,6 +50,10 @@ namespace Wei.Web.API.Models.QuestionBank
         /// 创建人
         /// </summary>
         public int creatorid { get; set; }
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public string creatorname { get; set; }
 
         /// <summary>
         /// 题卷必须的用户属性

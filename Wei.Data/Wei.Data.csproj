@@ -70,6 +70,7 @@
     <Compile Include="Mapping\Questions\QuestionAnswerMap.cs" />
     <Compile Include="Mapping\Questions\QuestionBankMap.cs" />
     <Compile Include="Mapping\Questions\QuestionBankTagMap.cs" />
+    <Compile Include="Mapping\Questions\QuestionItemMap.cs" />
     <Compile Include="Mapping\Questions\QuestionMap.cs" />
     <Compile Include="Mapping\Custom\UserAnswerMap.cs" />
     <Compile Include="Mapping\Users\DepartmentMap.cs" />

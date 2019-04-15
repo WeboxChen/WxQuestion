@@ -2,31 +2,7 @@ Ext.define('Wei.view.account.UserGrid', {
     extend: 'Wei.view.BaseGrid',
     alias: 'widget.account_usergrid',
 
-    controller: 'account',
-    viewModel: 'account',
-    bind: {
-        store: '{userlist}',
-    },
 
-    listeners: {
-        render: 'onAccountGridRender'
-    },
-
-    tbar: [
-        {
-            text: '修改',
-            handler: 'onEdit'
-        }, {
-            text: '删除',
-            handler: 'onDel'
-        }, {
-            text: '取消',
-            handler: 'onCancel'
-        }, {
-            text: '保存',
-            handler: 'onSave'
-        }
-    ],
 
     columns: [
         { xtype: 'numbercolumn', text: 'id', dataIndex: 'id', format: '0', hidden: false },
@@ -44,6 +20,8 @@ Ext.define('Wei.view.account.UserGrid', {
 
 
         //{ xtype: 'numbercolumn', text: '关注', dataIndex: 'subscribe', format: '0', hidden: false },
+        { xtype: 'gridcolumn', text: '姓氏', dataIndex: 'firstname', hidden: false },
+        { xtype: 'gridcolumn', text: '名称', dataIndex: 'lastname', hidden: false },
         { xtype: 'gridcolumn', text: '昵称', dataIndex: 'nickname', hidden: false },
         {
             xtype: 'numbercolumn', text: '性别',
@@ -95,6 +73,8 @@ Ext.define('Wei.view.account.UserGrid', {
             },
             trueText: '已婚', falseText: '未婚'
         },
+
+        { xtype: 'datecolumn', text: '最后答题时间', dataIndex: 'lastanswertime', format: 'Y-m-d', hidden: false },
 
         { xtype: 'gridcolumn', text: '备注', dataIndex: 'remark', hidden: false, editor: { xtype: 'textfield' } },
         { xtype: 'numbercolumn', text: '分组', dataIndex: 'groupid', format: '0', hidden: false, editor: { xtype: 'numberfield' } },

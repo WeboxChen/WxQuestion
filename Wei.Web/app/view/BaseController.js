@@ -652,7 +652,7 @@
             if (fn2)
                 fn2(response, eopts);
         };
-        requestObj['error'] = function (response, eopts) {
+        requestObj['failure'] = function (response, eopts) {
             winmsg.close();
             if (response.status === 401) return;
             that.alertErrorMsg(response.status + ': ' + response.statusText);
@@ -676,7 +676,7 @@
             if (fn2)
                 fn2(response, eopts);
         };
-        requestObj['error'] = function (response, eopts) {
+        requestObj['failure'] = function (response, eopts) {
             if (response.status === 401) return;
             that.alertErrorMsg(response.status + ': ' + response.statusText);
             if (fn2)
@@ -684,10 +684,44 @@
         };
         Ext.Ajax.request(requestObj);
     },
+    alertWindow: function (title, ctrObj, fn1) {
+        var that = this;
+        var cfg = {
+            xtype: 'common_window',
+            width: '80%',
+            height: '80%',
+            header: {
+                title: title
+            },
+            items: [
+                ctrObj
+            ],
+            bbar: [
+                '->',
+                {
+                    xtype: 'button',
+                    text: '确定',
+                    handler: function (t) {
+                        if (fn1) {
+                            fn1(t);
+                        }
+                    }
+                },
+                {
+                    xtype: 'button',
+                    text: '关闭',
+                    handler: function (t) {
+                        t.up('window').close();
+                    }
+                }
+            ]
+        };
+        Ext.create(cfg);
+    },
     // 传入数组，弹出窗口   
     // data = [{name:'', value:''}, {name:'', value:''}]
     // fn 关闭窗体需要回调的代码
-    alertWindow: function (data, fn) {
+    alertComboWindow: function (data, fn) {
         var that = this;
         var store = Ext.create('Ext.data.Store', {
             fields: ['name', 'value'],

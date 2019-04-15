@@ -9,7 +9,6 @@
     listeners: {
         render: 'onQuestionListRender',
     },
-
     items: [
         {
             xtype: 'questions_questiongrid',
@@ -19,7 +18,7 @@
                 showHeaderCheckbox: true
             },
             split: true,
-            maxWidth: 420,
+            //maxWidth: 420,
             minWidth: 220,
             bind: {
                 store: '{questionlist}',
@@ -78,30 +77,73 @@
             }
         },
         {
-            xtype: 'questions_questionanswergrid',
-            bind: {
-                store: '{questionanswerlist}'
-            },
-            flex: 1,
+            xtype: 'container',
+            flex: 2,
             split: true,
-            tbar: [
+
+            layout: {
+                type: 'vbox',
+                align: 'stretch'
+            },
+            items: [
                 {
-                    text: '添加',
-                    handler: 'onQuestionAnswerAdd'
-                }, {
-                    text: '修改',
-                    handler: 'onQuestionAnswerEdit'
-                }, {
-                    text: '删除',
-                    handler: 'onQuestionAnswerDel'
-                }, {
-                    text: '取消',
-                    handler: 'onQuestionAnswerCancel'
-                }, {
-                    text: '保存',
-                    handler: 'onQuestionAnswerSave'
+                    xtype: 'questions_questionitemgrid',
+                    title: '选择题答案',
+                    bind: {
+                        store: '{questionitemlist}',
+                    },
+                    flex: 1,
+                    split: true,
+
+                    tbar: [
+                        {
+                            text: '添加',
+                            handler: 'onQuestionItemAdd'
+                        }, {
+                            text: '修改',
+                            handler: 'onQuestionItemEdit'
+                        }, {
+                            text: '删除',
+                            handler: 'onQuestionItemDel'
+                        }, {
+                            text: '取消',
+                            handler: 'onQuestionItemCancel'
+                        }, {
+                            text: '保存',
+                            handler: 'onQuestionItemSave'
+                        }
+                    ],
+                },
+                {
+                    xtype: 'questions_questionanswergrid',
+                    title: '题目答案',
+                    bind: {
+                        store: '{questionanswerlist}'
+                    },
+                    flex: 1,
+                    split: true,
+                    tbar: [
+                        {
+                            text: '添加',
+                            handler: 'onQuestionAnswerAdd'
+                        }, {
+                            text: '修改',
+                            handler: 'onQuestionAnswerEdit'
+                        }, {
+                            text: '删除',
+                            handler: 'onQuestionAnswerDel'
+                        }, {
+                            text: '取消',
+                            handler: 'onQuestionAnswerCancel'
+                        }, {
+                            text: '保存',
+                            handler: 'onQuestionAnswerSave'
+                        }
+                    ]
                 }
+
             ]
-        },
+        }
+        
     ]
 });

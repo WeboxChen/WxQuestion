@@ -166,6 +166,7 @@
     <Content Include="app\model\custom\UserAnswerDetail.js" />
     <Content Include="app\model\DataXY.js" />
     <Content Include="app\model\questions\QuestionAnswer.js" />
+    <Content Include="app\model\questions\QuestionItem.js" />
     <Content Include="app\model\setting\ModuleType.js" />
     <Content Include="app\model\questions\Question.js" />
     <Content Include="app\model\questions\QuestionBank.js" />
@@ -183,6 +184,7 @@
     <Content Include="app\store\NavigationTree.js" />
     <Content Include="app\store\BaseStore.js" />
     <Content Include="app\store\questions\QuestionAnswer.js" />
+    <Content Include="app\store\questions\QuestionItem.js" />
     <Content Include="app\store\setting\ModuleType.js" />
     <Content Include="app\store\questions\Question.js" />
     <Content Include="app\store\questions\QuestionBank.js" />
@@ -192,6 +194,7 @@
     <Content Include="app\view\account\UserAttributeViewModel.js" />
     <Content Include="app\view\account\UserController.js" />
     <Content Include="app\view\account\UserGrid.js" />
+    <Content Include="app\view\account\UserList.js" />
     <Content Include="app\view\account\UserViewModel.js" />
     <Content Include="app\view\authentication\AuthenticationController.js" />
     <Content Include="app\view\authentication\AuthenticationModel.js" />
@@ -235,6 +238,7 @@
     <Content Include="app\view\questions\QuestionBankInfo.js" />
     <Content Include="app\view\questions\IndexViewModel.js" />
     <Content Include="app\view\questions\QuestionBankList.js" />
+    <Content Include="app\view\questions\QuestionItemGrid.js" />
     <Content Include="app\view\questions\QuestionList.js" />
     <Content Include="app\view\questions\QuestionModel.js" />
     <Content Include="app\view\setting\QuestionBankTagController.js" />
@@ -2143,6 +2147,7 @@
     <Compile Include="API\Handlers\CustomMessageHandler.cs" />
     <Compile Include="API\Handlers\CustomMessageHandler_Events.cs" />
     <Compile Include="API\Models\QuestionBank\QuestionBankViewModel.cs" />
+    <Compile Include="API\Models\QuestionBank\RequestUserAnswerViewModel.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="App_Start\WXinConfig.cs" />
@@ -2164,7 +2169,8 @@
     <Compile Include="Models\Authentication\LoginViewModel.cs" />
     <Compile Include="Models\BaseViewModel.cs" />
     <Compile Include="Models\Setting\ModuleTypeViewModel.cs" />
-    <Compile Include="Models\UserAnswer\UserAnswerViewModel.cs" />
+    <Compile Include="API\Models\UserAnswer\UserAnswerDiscardRequestModel.cs" />
+    <Compile Include="API\Models\UserAnswer\UserAnswerViewModel.cs" />
     <Compile Include="Models\Users\UserAttributeValueViewModel.cs" />
     <Compile Include="Models\Users\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

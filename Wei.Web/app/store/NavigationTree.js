@@ -58,7 +58,7 @@ Ext.define('Wei.store.NavigationTree', {
                     {
                         text: '用户信息',
                         leaf: true,
-                        viewType: 'account_usergrid'
+                        viewType: 'account_userlist'
                     //}, {
                     //    text: '客户属性',
                     //    leaf: true,

@@ -57,6 +57,7 @@ namespace Wei.Core.Domain.Questions
         /// 创建人
         /// </summary>
         public int CreatorId { get; set; }
+        public virtual Users.User Creator { get; set; }
 
         /// <summary>
         /// 题目集合

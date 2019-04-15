@@ -6,7 +6,7 @@ using Wei.Core;
 using Wei.Services.Custom;
 using Wei.Web.Framework.ApiControllers;
 using Wei.Web.Framework.ExtJs;
-using Wei.Web.Models.UserAnswer;
+using Wei.Web.API.Models.UserAnswer;
 
 namespace Wei.Web.API.Controllers
 {
@@ -71,7 +71,8 @@ namespace Wei.Web.API.Controllers
                     user_id = x.User_Id,
                     questionbank_id = x.QuestionBank_Id, 
                     questionbanktype = x.QuestionBank.Type,
-                    questionbank = x.QuestionBank.Title
+                    questionbank = x.QuestionBank.Title,
+                    status = x.UserAnswerStatus.ToString()
                 };
             }).ToList();
             return new
@@ -79,6 +80,29 @@ namespace Wei.Web.API.Controllers
                 total = table.TotalCount,
                 data = result
             };
+        }
+
+        /// <summary>
+        /// 作废
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ResponseMessageExt Discard(UserAnswerDiscardRequestModel model)
+        {
+            if(model == null || model.ids.Length == 0)
+            {
+                return ResponseMessageExt.Error("参数错误");
+            }
+            foreach(var id in model.ids)
+            {
+                var useranswer = this._userAnswerService.GetUserAnswerById(id);
+                if (useranswer == null)
+                    continue;
+                useranswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.已作废;
+                this._userAnswerService.Save(useranswer);
+            }
+            return ResponseMessageExt.Success();
         }
     }
 }

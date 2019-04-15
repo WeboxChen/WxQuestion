@@ -2,7 +2,7 @@ Ext.define('Wei.view.account.UserController', {
     extend: 'Wei.view.BaseController',
     alias: 'controller.account',
 
-    onAccountGridRender: function (t) {
+    onAccountUserListRender: function (t) {
         var that = this,
             store = that.getStore('userlist');
         store.load();

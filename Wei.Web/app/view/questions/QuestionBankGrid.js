@@ -80,6 +80,6 @@ Ext.define('Wei.view.questions.QuestionBankGrid', {
             }
         },
         { xtype: 'datecolumn', text: '创建时间', dataIndex: 'createtime', format: 'Y-m-d H:i', hidden: false },
-        { xtype: 'numbercolumn', text: '创建人', dataIndex: 'creatorid', format: '0', hidden: false }
+        { xtype: 'gridcolumn', text: '创建人', dataIndex: 'creatorname', hidden: false }
     ]
 });

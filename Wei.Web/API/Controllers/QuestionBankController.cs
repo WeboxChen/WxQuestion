@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Web;
 using System.Web.Http;
 using Wei.Core;
@@ -23,17 +24,23 @@ namespace Wei.Web.API.Controllers
     public class QuestionBankController : BaseApiController
     {
         private readonly IQuestionBankService _questionBankService;
+        private readonly IUserService _userService;
         private readonly IUserAttributeService _userAttributeService;
+        private readonly IWorkContext _workContext;
         private readonly HttpRequestBase _request;
         private readonly ILogger _logger;
 
         public QuestionBankController(IQuestionBankService questionBankService
+            , IUserService userService
             , IUserAttributeService userAttributeService
+            , IWorkContext workContext
             , HttpRequestBase request
             , ILogger logger)
         {
             this._questionBankService = questionBankService;
+            this._userService = userService;
             this._userAttributeService = userAttributeService;
+            this._workContext = workContext;
             this._request = request;
             this._logger = logger;
         }
@@ -73,6 +80,7 @@ namespace Wei.Web.API.Controllers
             var result = table.Select(x =>
             {
                 var entity = CommonHelper.InstanceBy<QuestionBankViewModel, QuestionBank>(x);
+                entity.creatorname = x.Creator.UserName;
                 entity.userattributes = string.Join(",", x.UserAttributeList.Select(ua => ua.Id.ToString()).ToArray());
                 return entity;
             }).ToList();
@@ -236,6 +244,7 @@ namespace Wei.Web.API.Controllers
 
             string msg;
             var questionlist = ereader.Read<Question>("Questions", "Q_Question", out msg);
+            var questionitemlist = ereader.Read<QuestionItem>("QuestionItems", "Q_QuestionItem", out msg);
             var answerlist = ereader.Read<QuestionAnswer>("Answers", "Q_QuestionAnswer", out msg);
             foreach(var q in questionlist)
             {
@@ -243,10 +252,57 @@ namespace Wei.Web.API.Controllers
                 q.QType = default(QuestionType).ToString();
                 q.AType = CommonHelper.GetEnumValueByDesc<AnswerType>(q.AType).ToString();
                 q.QuestionAnswerList = answerlist.Where(x => x.Sort == q.Sort).ToList();
+                q.QuestionItemList = questionitemlist.Where(x=>x.Sort == q.Sort).ToList();
             }
             _questionBankService.ImportQuestion(questionlist);
             return Wei.Web.Framework.ExtJs.ResponseMessageExt.Success();
         }
 
+        /// <summary>
+        /// 邀请用户答题
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ResponseMessageExt RequestUserAnswer(RequestUserAnswerRequestModel model)
+        {
+            if(model.questionbankid ==0 || model.userids == null || model.userids.Length == 0)
+            {
+                return ResponseMessageExt.Error("参数错误！");
+            }
+            
+            var questionbank = this._questionBankService.GetQuestionBankById(model.questionbankid);
+            if(questionbank == null)
+            {
+                return ResponseMessageExt.Error("参数错误！");
+            }
+            if (string.IsNullOrEmpty(questionbank.ResponseKeyWords))
+            {
+                return ResponseMessageExt.Error("没有唤醒语句！");
+            }
+
+            StringBuilder sbulder = new StringBuilder();
+            string msg = WXinConfig.InvitationText.Replace("{title}", questionbank.Title).Replace("{responsekeywords}", questionbank.ResponseKeyWords.Split('|')[0]);
+            foreach (var userid in model.userids)
+            {
+                var user = this._userService.GetUserById(userid);
+                if (user == null || string.IsNullOrEmpty(user.OpenId))
+                    continue;
+                try
+                {
+                    var result = Senparc.Weixin.MP.AdvancedAPIs.CustomApi.SendText(WXinConfig.WeixinAppId, user.OpenId, msg);
+                    if(result.errcode != Senparc.Weixin.ReturnCode.请求成功)
+                    {
+                        sbulder.AppendLine($"【{user.UserName}】消息发送失败，{result.errmsg}");
+                    }
+                }
+                catch(Exception ex)
+                {
+                    sbulder.AppendLine($"【{user.UserName}】消息发送失败，{ex.Message}");
+                    this._logger.Warning("推送消息发送失败。", ex, user);
+                }
+            }
+            return ResponseMessageExt.Success(sbulder.ToString());
+        }
     }
 }
