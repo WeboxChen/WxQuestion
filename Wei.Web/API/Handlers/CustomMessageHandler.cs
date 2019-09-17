@@ -9,6 +9,7 @@ using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 using Wei.Core;
+using Wei.Core.Domain.Custom;
 using Wei.Core.Domain.Questions;
 using Wei.Core.Domain.Users;
 using Wei.Services.Custom;
@@ -28,43 +29,16 @@ namespace Wei.Web.API.Handlers
         private readonly HttpContextBase _httpContext;
         public static int REQUESTNO;
 
-        //public CustomMessageHandler(Stream inputStream, PostModel postModel = null, int maxRecordCount = 0, DeveloperInfo developerInfo = null) 
-        //    : base(inputStream, postModel, maxRecordCount, developerInfo)
-        //{
-        //    System.Threading.Interlocked.Increment(ref REQUESTNO);
-
-        //    //_logger = EngineContext.Current.Resolve<ILogger>();
-        //    //_userService = EngineContext.Current.Resolve<IUserService>();
-        //    //_userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
-        //    //_questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
-        //    //_webHelper = EngineContext.Current.Resolve<IWebHelper>();
-        //    //_httpContext = EngineContext.Current.Resolve<HttpContextBase>();
-        //}
-
         public CustomMessageHandler(XDocument requestDocument, PostModel postModel = null, int maxRecordCount = 0, DeveloperInfo developerInfo = null) 
             : base(requestDocument, postModel, maxRecordCount, developerInfo)
         {
             System.Threading.Interlocked.Increment(ref REQUESTNO);
-
-            //_logger = EngineContext.Current.Resolve<ILogger>();
-            //_userService = EngineContext.Current.Resolve<IUserService>();
-            //_userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
-            //_questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
-            //_webHelper = EngineContext.Current.Resolve<IWebHelper>();
-            //_httpContext = EngineContext.Current.Resolve<HttpContextBase>();
         }
 
         public CustomMessageHandler(RequestMessageBase requestMessageBase, PostModel postModel = null, int maxRecordCount = 0, DeveloperInfo developerInfo = null) 
             : base(requestMessageBase, postModel, maxRecordCount, developerInfo)
         {
             System.Threading.Interlocked.Increment(ref REQUESTNO);
-
-            //_logger = EngineContext.Current.Resolve<ILogger>();
-            //_userService = EngineContext.Current.Resolve<IUserService>();
-            //_userAnswerService = EngineContext.Current.Resolve<IUserAnswerService>();
-            //_questionBankService = EngineContext.Current.Resolve<IQuestionBankService>();
-            //_webHelper = EngineContext.Current.Resolve<IWebHelper>();
-            //_httpContext = EngineContext.Current.Resolve<HttpContextBase>();
         }
 
         public CustomMessageHandler(Stream inputStream, PostModel postModel
@@ -73,7 +47,6 @@ namespace Wei.Web.API.Handlers
             , IQuestionBankService questionBankService
             , IWebHelper webHelper
             , HttpContextBase httpContext
-            //, IWorkContext workContext
             , ILogger logger)
             : base(inputStream, postModel, 0, null)
         {
@@ -93,18 +66,17 @@ namespace Wei.Web.API.Handlers
         /// <param name="content"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        private IResponseMessageBase CustomResponse(string content, Wei.Core.Domain.Users.User user, string voicepath = null)
+        private IResponseMessageBase CustomResponse(string content, Wei.Core.Domain.Users.User user, MediaType mediaType = MediaType.None, string mediaContent = null)
         {
-            this._logger.Information("CustomResponse");
             var responseMessage = base.CreateResponseMessage<ResponseMessageText>();
-            
+
             if (user == null || user.Subscribe == 0)
             {
                 responseMessage.Content = "请先关注公众号！";
                 return responseMessage;
             }
             // 获取当前答题信息
-            var uanswer = this._userAnswerService.GetDoingQuestionAnswer(user.Id);
+            var uanswer = this._userAnswerService.GetDoingUserAnswer(user.Id);
             if (uanswer == null)
             {
                 // 获取有效的题卷启动Keys
@@ -113,17 +85,13 @@ namespace Wei.Web.API.Handlers
                 {
                     QuestionBank questionBank = defQuestionList[content];
                     // 判断用户是否答过当前题卷
-                    if (this._userAnswerService.IsAnswered(questionBank.Id, user))
-                    {
-                        responseMessage.Content = "已答过该题卷，不能重复答题";
-                    }
-                    else
+                    var qanswer = this._userAnswerService.GetUserAnswerByQBId(user.Id, questionBank.Id);
+                    if(qanswer == null)
                     {
                         // 判断用户信息是否录入
                         if (user.Status == 0)
                         {
                             var token = Guid.NewGuid();
-                            //_httpContext.Session.Add(token.ToString("N"), user);
                             this._webHelper.SetSessionObject<User>("tokenuser", token.ToString("N"), user);
                             string url = System.Configuration.ConfigurationManager.AppSettings["WebDomain"] + "/user/userinfo?tokens=" + token.ToString("N");
                             responseMessage.Content = $"请先录入个人信息：{url}";
@@ -132,61 +100,27 @@ namespace Wei.Web.API.Handlers
                         {
                             // 开始执行答题
                             var question = this._userAnswerService.BeginQuestion(user.Id, questionBank.Id);
-                            string qtext = question.Text;
-                            if(question.AnswerType == AnswerType.SingleCheck || question.AnswerType == AnswerType.MultiCheck)
-                            {
-                                qtext += (Environment.NewLine + string.Join(Environment.NewLine, question.QuestionItemList.Select(x=>x.Text).ToArray())); 
-                            }
-                            var maxq = questionBank.QuestionList.Max(x => x.Sort);
-                            responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
+                            responseMessage.Content = question.QuestionText;
+                            this._logger.Warning($"text: {question.Text}, questiontext: {question.QuestionText}");
+                        }
+                    }
+                    else
+                    {
+                        switch (qanswer.UserAnswerStatus)
+                        {
+                            case UserAnswerStatus.挂起:
+                                // 开始执行答题
+                                var question = this._userAnswerService.BeginQuestion(user, uanswer);
+                                responseMessage.Content = question.QuestionText;
+                                break;
+                            case UserAnswerStatus.答题完成:
+                                responseMessage.Content = "已答过该题卷，不能重复答题！";
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }
-                //string tmpContent = content.ToLower();
-                //foreach (var key in defQuestionList.Keys)
-                //{
-                //    if (tmpContent.IndexOf(key.ToLower()) != -1)
-                //    {
-                //        questionBank = defQuestionList[key];
-                //        break;
-                //    }
-                //}
-                //if (questionBank != null)
-                //{
-                //    // 判断用户是否答过当前题卷
-                //    if (this._userAnswerService.IsAnswered(questionBank.Id, user))
-                //    {
-                //        responseMessage.Content = "已答过该题卷，不能重复答题";
-                //    }
-                //    else
-                //    {
-                //        // 判断用户信息是否录入
-                //        if (user.Status == 0)
-                //        {
-                //            var token = Guid.NewGuid();
-                //            //_httpContext.Session.Add(token.ToString("N"), user);
-                //            this._webHelper.SetSessionObject<User>("tokenuser", token.ToString("N"), user);
-                //            string url = System.Configuration.ConfigurationManager.AppSettings["WebDomain"] + "/user/userinfo?tokens=" + token.ToString("N");
-                //            responseMessage.Content = $"请先录入个人信息：{url}";
-                //        }
-                //        else
-                //        {
-                //            // 开始执行答题
-                //            var question = this._userAnswerService.BeginQuestion(user.Id, questionBank.Id);
-                //            var maxq = questionBank.QuestionList.Max(x => x.Sort);
-                //            responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
-                //        }
-                //    }
-                //    //// 开始前判断是否有必须录入的用户信息
-                //    //// 任意个属性没有值，用户信息录入
-                //    //if(questionBank.UserAttributeList.Any(x=> {
-                //    //    var userattr = user.UserAttributeList.FirstOrDefault(ua => ua.UserAttributeId == x.Id);
-                //    //    return userattr == null || string.IsNullOrEmpty(userattr.Value);
-                //    //}))
-                //    //{
-
-                //    //}
-                //}
                 else
                 {
                     responseMessage.Content = "我是复读机!..." + content;
@@ -195,71 +129,47 @@ namespace Wei.Web.API.Handlers
             else
             {
                 // 没有作答
-                if (string.IsNullOrEmpty(content))
+                if (mediaType == MediaType.Voice && string.IsNullOrEmpty(content))
                 {
                     responseMessage.Content = "无法检测您在说什么，请确认是否有作答或者语言清晰！";
                 }
                 else if (string.Equals("放弃答题", content))
                 {
-                    if(uanswer.UserAnswerStatus == Core.Domain.Custom.UserAnswerStatus.挂起)
-                    {
-                        uanswer.CompletedTime = DateTime.Now;
-                        uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.已作废;
-                        this._userAnswerService.Save(uanswer);
-                        responseMessage.Content = "谢谢您的参与！";
-                    }
-                    else
-                    {
-                        uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.挂起;
-                        this._userAnswerService.Save(uanswer);
-                        responseMessage.Content = "是否确定放弃本次答题（本次答题数据将作废）？";
-                    }
+                    uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.挂起;
+                    this._userAnswerService.Save(uanswer);
+                    responseMessage.Content = $"答题已暂停，在有效期内（{uanswer.QuestionBank.ExpireDateEnd.Value.ToString("yyyyMMdd")}）对我说题卷关键字可以继续作答。谢谢您的参与！";
                 }
                 else
                 {
-                    if(uanswer.UserAnswerStatus == Core.Domain.Custom.UserAnswerStatus.挂起)
-                    {
-                        if(string.Equals(content, "是") || string.Equals(content, "是的") || string.Equals(content, "确定")
-                            || string.Equals(content, "放弃") || string.Equals(content, "放弃答题"))
-                        {
-                            uanswer.CompletedTime = DateTime.Now;
-                            uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.已作废;
-                            this._userAnswerService.Save(uanswer);
-                        }
-                        else
-                        {
-                            uanswer.UserAnswerStatus = Core.Domain.Custom.UserAnswerStatus.答题中;
-                            this._userAnswerService.Save(uanswer);
-
-                            // 开始答题了， 当前消息为答案
-                            var question = this._userAnswerService.SaveAnswer(uanswer, content, user, voicepath);
-                            var maxq = uanswer.QuestionBank.QuestionList.Max(x => x.Sort);
-                            if (question == null)
-                            {
-                                responseMessage.Content = "您的回答似乎不符，请尝试重新作答！";
-                            }
-                            else
-                            {
-                                responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
-                            }
-                        }
-                    }
-                    else
+                    try
                     {
                         // 开始答题了， 当前消息为答案
-                        var question = this._userAnswerService.SaveAnswer(uanswer, content, user, voicepath);
-                        var maxq = question.QuestionBank.QuestionList.Max(x => x.Sort);
-                        if (question == null)
+                        var question = this._userAnswerService.SaveAnswer(uanswer, content, user, mediaType, mediaContent);
+                        if(question.Sort.ToDouble().ToString().IndexOf('.') != -1)
                         {
-                            responseMessage.Content = "您的回答似乎不符，请尝试重新作答！";
+                            // 获取刚刚的答案
+                            var uanswerdetail = uanswer.UserAnswerDetailList.Where(x=>x.End != null).OrderByDescending(x => x.Id).FirstOrDefault();
+                            string qcode = null;
+                            if (uanswerdetail != null)
+                                qcode = uanswerdetail.QCode;
+                            if(qcode  == null)
+                                qcode = "";
+                            responseMessage.Content = question.QuestionText.Replace("{CODE}", qcode);
                         }
                         else
                         {
-                            responseMessage.Content = string.Format("【{0}/{1}】{2}", question.Sort, maxq, question.Text);
+                            responseMessage.Content = question.QuestionText;
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        this._logger.Error(ex.Message, ex);
                     }
                 }
             }
+
+            if (string.IsNullOrEmpty(responseMessage.Content))
+                responseMessage.MsgType = Senparc.NeuChar.ResponseMsgType.NoResponse;
             return responseMessage;
         }
 
@@ -280,25 +190,8 @@ namespace Wei.Web.API.Handlers
             }
 
 
-            responseMessage.Content = $"【{REQUESTNO}】您好，目前使用的微信公众号仍处于开发阶段，现已接入了【图灵机器人】，您可以尝试和他（她）交流。";
+            responseMessage.Content = $"【{REQUESTNO}】您好，目前使用的微信公众号仍处于开发阶段,DefaultMessage。";
             return responseMessage;
-            //var defaultResponseMessage = base.CreateResponseMessage<ResponseMessageText>();
-
-            //if (requestMessage is RequestMessageText)
-            //{
-            //    var requestMsg = requestMessage as RequestMessageText;
-            //    var requestHandler = requestMsg.StartHandler().Keyword("陈恩曦", () => {
-            //        defaultResponseMessage.Content = "大笨蛋";
-            //        return defaultResponseMessage;
-            //    }).Keyword("陈京邑", () => {
-            //        defaultResponseMessage.Content = "小金鱼";
-            //        return defaultResponseMessage;
-            //    }).Default(() => {
-            //        defaultResponseMessage.Content = "啦啦啦 (～￣▽￣)～ ";
-            //        return defaultResponseMessage;
-            //    });
-            //}
-            //return defaultResponseMessage;
         }
 
         /// <summary>
@@ -310,95 +203,6 @@ namespace Wei.Web.API.Handlers
         {
             var user = this._userService.GetUserById(requestMessage.FromUserName);
             return CustomResponse(requestMessage.Content, user);
-            //var responseMessage = base.CreateResponseMessage<ResponseMessageText>();
-
-            //if (user == null || user.Subscribe == 0)
-            //{
-            //    responseMessage.Content = "请先关注公众号！";
-            //    return responseMessage;
-            //}
-            //// 获取当前答题信息
-            //var uanswer = this._userAnswerService.GetDoingQuestionAnswer(user.Id);
-            //if(uanswer == null)
-            //{
-            //    //int questionbankid = this._webHelper.QueryString<int>("qbid");
-            //    //if (questionbankid == 0)
-            //    //    questionbankid = 1;
-            //    var defQuestionList = this._questionBankService.KeyWordQuestionBank();
-            //    QuestionBank questionBank = null;
-            //    foreach(var key in defQuestionList.Keys)
-            //    {
-            //        if(requestMessage.Content.IndexOf(key) != -1)
-            //        {
-            //            questionBank = defQuestionList[key];
-            //            //var question = this._userAnswerService.BeginQuestion(user.Id, defQuestionList[key].Id);
-            //            //responseMessage.Content = question.Text;
-            //            break;
-            //        }
-            //    }
-            //    if(questionBank != null)
-            //    {
-            //        var question = this._userAnswerService.BeginQuestion(user.Id, questionBank.Id);
-            //        responseMessage.Content = question.Text;
-            //    }
-            //    else
-            //    {
-            //        responseMessage.Content = "不清楚呢，请告诉你是要答题吗？";
-            //    }
-            //    // 没有开始答题
-            //    //requestMessage.StartHandler().Keywords(defQuestionList.Keys.ToArray(), () => {
-                    
-            //    //        //var question = this._userAnswerService.BeginQuestion(user.Id, defQuestionList[]);
-            //    //        responseMessage.Content = question.Text;
-            //    //    //}
-            //    //    //else
-            //    //    //{
-            //    //    //    // 授权获取用户信息
-            //    //    //    responseMessage.Content = $"{System.Configuration.ConfigurationManager.AppSettings["WebDomain"]}/authentication/useroauth";
-            //    //    //}
-            //    //    return responseMessage;
-            //    //});
-            //    //if (string.IsNullOrEmpty(responseMessage.Content))
-            //    //{
-            //    //    responseMessage.Content = "不清楚呢，请告诉你是要答题吗？";
-            //    //}
-            //    //{
-            //    //    var question = this._userAnswerService.BeginQuestion(user.Id, 1);
-            //    //    responseMessage.Content = question.Answer;
-            //    //}
-            //    //else
-            //    //{
-            //    //    responseMessage.Content = "不清楚呢，请告诉你是要答题吗？";
-            //    //}
-            //}
-            //else
-            //{
-            //    // 开始答题了， 当前消息为答案
-            //    var question = this._userAnswerService.SaveAnswer(uanswer, requestMessage.Content);
-            //    if(question == null)
-            //    {
-            //        responseMessage.Content = "答卷完成，感谢您的参与！";
-            //    }
-            //    else
-            //    {
-            //        responseMessage.Content = question.Text;
-            //    }
-            //}
-            
-            ////requestMessage.StartHandler().Keyword("开始答题")
-            ////var requestHandler = requestMessage.StartHandler().Keyword("陈恩曦", ()=> {
-            ////    defaultResponseMessage.Content = "大笨蛋";
-            ////    return defaultResponseMessage;
-            ////}).Keyword("陈京邑", ()=> {
-            ////    defaultResponseMessage.Content = "小金鱼";
-            ////    return defaultResponseMessage;
-            ////}).Default(()=> {
-            ////    defaultResponseMessage.Content = "啦啦啦 (～￣▽￣)～ ";
-            ////    return defaultResponseMessage;
-            ////});
-            ////var responseMessage = base.CreateResponseMessage<ResponseMessageText>();
-            ////responseMessage.Content = $"【{REQUESTNO}】您刚才发送的文字信息是：{requestMessage.Content}。";  //\r\n用于换行，requestMessage.Content即用户发过来的文字内容
-            //return responseMessage;
         }
 
         /// <summary>
@@ -408,8 +212,60 @@ namespace Wei.Web.API.Handlers
         /// <returns></returns>
         public override IResponseMessageBase OnImageRequest(RequestMessageImage requestMessage)
         {
-            var responseMessage = base.CreateResponseMessage<ResponseMessageText>(); //ResponseMessageText也可以是News等其他类型
-            responseMessage.Content = $"【{REQUESTNO}】您好，Image。";
+            var user = this._userService.GetUserById(requestMessage.FromUserName);
+            var responseMessage = base.CreateResponseMessage<ResponseMessageText>();
+
+            if (user == null || user.Subscribe == 0)
+            {
+                responseMessage.Content = "请先关注公众号！";
+                return responseMessage;
+            }
+            // 下载图片
+            string image = null;
+            Stream stream = null;
+            try
+            {
+                string filedir = Path.Combine(WXinConfig.MediaDir, "image\\");
+                if (!Directory.Exists(filedir))
+                    Directory.CreateDirectory(filedir);
+                string filepath = Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, filedir);
+                stream = File.OpenRead(filepath);
+            }
+            catch (Exception ex)
+            {
+                this._logger.Information(string.Format("WXinConfig.WeixinAppId:{0}; requestMessage.MediaId:{1}", WXinConfig.WeixinAppId, requestMessage.MediaId));
+                this._logger.Error(ex.Message, ex);
+            }
+            if (stream != null)
+            {
+                byte[] bytes = bytes = new byte[stream.Length];
+
+                stream.Read(bytes, 0, bytes.Length);
+                image = Convert.ToBase64String(bytes);
+                stream.Close();
+            }
+            
+            // 获取当前答题信息
+            var uanswer = this._userAnswerService.GetDoingUserAnswer(user.Id);
+            if (uanswer == null)
+            {
+                responseMessage.Content = "";
+            }
+            else
+            {
+                if (uanswer.UserAnswerStatus == Core.Domain.Custom.UserAnswerStatus.挂起)
+                {
+ 
+                    responseMessage.Content = "当前答题已暂停，请确认是否继续答题【继续（Y）/放弃（N）】！";
+                }
+                else
+                {
+                    // 开始答题了， 当前消息为答案
+                    var question = this._userAnswerService.SaveAnswerImage(uanswer, user, image);
+
+                    responseMessage.Content = question.QuestionText;
+                }
+            }
             return responseMessage;
         }
 
@@ -421,7 +277,7 @@ namespace Wei.Web.API.Handlers
         public override IResponseMessageBase OnFileRequest(RequestMessageFile requestMessage)
         {
             var responseMessage = base.CreateResponseMessage<ResponseMessageText>(); //ResponseMessageText也可以是News等其他类型
-            responseMessage.Content = $"【{REQUESTNO}】您好，File。";
+            responseMessage.Content = $"【{REQUESTNO}】您好，暂不支持文件上传。";
             return responseMessage;
         }
 
@@ -435,28 +291,29 @@ namespace Wei.Web.API.Handlers
             var user = this._userService.GetUserById(requestMessage.FromUserName);
             string voice = null;
             Stream stream = null;
-            Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, stream);
+            try
+            {
+                string filedir = Path.Combine(WXinConfig.MediaDir, "voice\\");
+                if (!Directory.Exists(filedir))
+                    Directory.CreateDirectory(filedir);
+                string filepath = Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, filedir);
+                stream = File.OpenRead(filepath);
+            }
+            catch (Exception ex)
+            {
+                this._logger.Information(string.Format("WXinConfig.WeixinAppId:{0}; requestMessage.MediaId:{1}", WXinConfig.WeixinAppId, requestMessage.MediaId));
+                this._logger.Error(ex.Message, ex);
+            }
             if(stream != null)
             {
                 byte[] bytes = bytes = new byte[stream.Length];
                 
                 stream.Read(bytes, 0, bytes.Length);
                 voice = Convert.ToBase64String(bytes);
+                stream.Close();
             }
-            //// 获取当前答题信息
-            //var uanswer = this._userAnswerService.GetDoingQuestionAnswer(user.Id);
-            //if(uanswer != null)
-            //{
-            //    var uanswerdetail = uanswer.UserAnswerDetailList.LastOrDefault();
-            //    var currq = this._questionBankService.GetQuestion(uanswer.QuestionBank_Id, uanswerdetail.QuestionNo);
-            //    if(currq.AnswerType == AnswerType.SingleCheck || currq.AnswerType == AnswerType.MultiCheck)
-            //    {
-            //        var responseMessage = base.CreateResponseMessage<ResponseMessageText>();
-            //        responseMessage.Content = "选择题暂不支持语音答题，请手写输入！";
-            //        return responseMessage;
-            //    }
-            //}
-            return CustomResponse(requestMessage.Recognition, user, voice);
+
+            return CustomResponse(requestMessage.Recognition.TrimEnd('。'), user, MediaType.Voice, voice);
         }
 
         /// <summary>
@@ -467,7 +324,7 @@ namespace Wei.Web.API.Handlers
         public override IResponseMessageBase OnVideoRequest(RequestMessageVideo requestMessage)
         {
             var responseMessage = base.CreateResponseMessage<ResponseMessageText>(); //ResponseMessageText也可以是News等其他类型
-            responseMessage.Content = $"【{REQUESTNO}】您好，Video。";
+            responseMessage.Content = $"【{REQUESTNO}】您好，暂不支持视频功能。";
             return responseMessage;
         }
     }

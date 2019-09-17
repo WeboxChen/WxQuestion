@@ -428,41 +428,66 @@ namespace Wei.Core
                 var prop = properties.FirstOrDefault(x => string.Equals(x.Name, jprop.Name, StringComparison.CurrentCultureIgnoreCase));
                 if (prop == null)
                     continue;
-                try
-                {
-                    switch (jprop.Value.Type)
-                    {
-                        case JTokenType.String:
-                            prop.SetValue(t, jprop.Value.Value<string>());
-                            break;
-                        case JTokenType.Integer:
-                            prop.SetValue(t, jprop.Value.Value<int>());
-                            break;
-                        case JTokenType.Float:
-                            prop.SetValue(t, jprop.Value.Value<float>());
-                            break;
-                        case JTokenType.Null:
-                            continue;
-                        case JTokenType.Object:
-                            break;
-                        case JTokenType.Date:
-                            var tmpdate = jprop.Value.Value<DateTime>();
-                            if (tmpdate > new DateTime(2000, 1, 1))
-                                prop.SetValue(t, tmpdate);
-                            break;
-                        case JTokenType.Boolean:
-                            prop.SetValue(t, jprop.Value.Value<bool>());
-                            break;
-                        case JTokenType.Bytes:
-                            prop.SetValue(t, jprop.Value.Value<byte[]>());
-                            break;
+                var type = prop.PropertyType;
 
-                    }
-                }
-                catch
+                if(prop.PropertyType == typeof(string))
                 {
-                    
+                    prop.SetValue(t, jprop.Value.Value<object>().ToStringN());
                 }
+                else if(prop.PropertyType == typeof(int) || prop.PropertyType == typeof(int?))
+                {
+                    prop.SetValue(t, jprop.Value.Value<object>().ToInt());
+                }
+                else if (prop.PropertyType == typeof(float) || prop.PropertyType == typeof(float?))
+                {
+                    prop.SetValue(t, jprop.Value.Value<object>().ToFloat());
+                }
+                else if (prop.PropertyType == typeof(double) || prop.PropertyType == typeof(double?))
+                {
+                    prop.SetValue(t, jprop.Value.Value<object>().ToDecimal());
+                }
+                else if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?))
+                {
+                    var tmpdate = jprop.Value.Value<object>().ToDateTime();
+                    if (tmpdate > new DateTime(2000, 1, 1))
+                        prop.SetValue(t, tmpdate);
+                }
+                else if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
+                {
+                    prop.SetValue(t, jprop.Value.Value<object>().ToBoolean());
+                }
+                else
+                {
+                    throw new WeiException("【CommonHelper.UpdateT<T>】 json类型不匹配，转换失败！");
+                }
+                //switch (prop.PropertyType.Name.ToLower())
+                //{
+                //    case "string":
+                //        prop.SetValue(t, jprop.Value.Value<object>().ToStringN());
+                //        break;
+                //    case "int":
+                //        prop.SetValue(t, jprop.Value.Value<object>().ToInt());
+                //        break;
+                //    case "float":
+                //        prop.SetValue(t, jprop.Value.Value<object>().ToFloat());
+                //        break;
+                //    //case JTokenType.Null:
+                //    //    continue;
+                //    //case JTokenType.Object:
+                //    //    break;
+                //    case "datetime":
+                //        var tmpdate = jprop.Value.Value<object>().ToDateTime();
+                //        if (tmpdate > new DateTime(2000, 1, 1))
+                //            prop.SetValue(t, tmpdate);
+                //        break;
+                //    case "bool":
+                //        prop.SetValue(t, jprop.Value.Value<object>().ToBoolean());
+                //        break;
+                //    //case JTokenType.Bytes:
+                //    //    prop.SetValue(t, jprop.Value.Value<byte[]>());
+                //    //    break;
+
+             
             }
             return t;
         }

@@ -81,6 +81,7 @@ namespace Wei.Web.API.Controllers
             {
                 var entity = CommonHelper.InstanceBy<QuestionBankViewModel, QuestionBank>(x);
                 entity.creatorname = x.Creator.UserName;
+                entity.id = x.Id.ToString();
                 entity.userattributes = string.Join(",", x.UserAttributeList.Select(ua => ua.Id.ToString()).ToArray());
                 return entity;
             }).ToList();
@@ -113,6 +114,13 @@ namespace Wei.Web.API.Controllers
                         qbmodel.UserAttributeList.Add(ua);
                     }
                 }
+                qbmodel.CreateTime = DateTime.Now;
+                qbmodel.CreatorId = this._workContext.CurrentUser.Id;
+                if (qbmodel.ExpireDateBegin == DateTime.MinValue)
+                    qbmodel = null;
+                if (qbmodel.ExpireDateEnd == DateTime.MinValue)
+                    qbmodel = null;
+
                 this._questionBankService.CreateQuestionBank(qbmodel);
             }
             else if(obj is JArray)
@@ -149,7 +157,7 @@ namespace Wei.Web.API.Controllers
             {
                 JObject jobj = obj as JObject;
                 var qbviewmodel = jobj.ToObject<QuestionBankViewModel>(); 
-                QuestionBank qbmodel = this._questionBankService.GetQuestionBankById(qbviewmodel.id);
+                QuestionBank qbmodel = this._questionBankService.GetQuestionBankById(qbviewmodel.id.ToInt());
                 if (qbmodel == null)
                     return ResponseMessageExt.Error("参数错误！");
                 CommonHelper.UpdateT<QuestionBank>(qbmodel, jobj);
@@ -173,7 +181,7 @@ namespace Wei.Web.API.Controllers
                 foreach (JObject jobj in jarray)
                 {
                     var qbviewmodel = jobj.ToObject<QuestionBankViewModel>();
-                    QuestionBank qbmodel = this._questionBankService.GetQuestionBankById(qbviewmodel.id);
+                    QuestionBank qbmodel = this._questionBankService.GetQuestionBankById(qbviewmodel.id.ToInt());
                     if (qbmodel == null)
                         return ResponseMessageExt.Error("参数错误！");
                     CommonHelper.UpdateT<QuestionBank>(qbmodel, jobj);

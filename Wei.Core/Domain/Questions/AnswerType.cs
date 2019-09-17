@@ -26,6 +26,16 @@ namespace Wei.Core.Domain.Questions
         /// 结束
         /// </summary>
         [Description("结束")]
-        End
+        End,
+        /// <summary>
+        /// 提示
+        /// </summary>
+        [Description("提示")]
+        Tips,
+        /// <summary>
+        /// 终止
+        /// </summary>
+        [Description("终止")]
+        Break
     }
 }

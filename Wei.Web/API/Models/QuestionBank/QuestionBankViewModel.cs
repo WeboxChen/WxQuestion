@@ -5,7 +5,7 @@ namespace Wei.Web.API.Models.QuestionBank
 {
     public class QuestionBankViewModel : BaseViewModel
     {
-        public int id { get; set; }
+        public string id { get; set; }
         /// <summary>
         /// 类型
         /// </summary>

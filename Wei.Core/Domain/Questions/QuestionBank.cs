@@ -38,7 +38,7 @@ namespace Wei.Core.Domain.Questions
         /// </summary>
         public string ResponseKeyWords { get; set; }
         /// <summary>
-        /// 状态 -1：删除 0：禁用 1：启用
+        /// 状态 -1：禁用 0：启用 
         /// </summary>
         public int Status { get; set; }
         /// <summary>

@@ -8,6 +8,7 @@ using Wei.Core.Domain.Custom;
 using Wei.Core.Domain.Questions;
 using Wei.Core.Domain.Users;
 using Wei.Services.Events;
+using Wei.Services.Logging;
 using Wei.Services.Questions;
 using Wei.Services.Users;
 
@@ -32,29 +33,35 @@ namespace Wei.Services.Custom
         #region Fields
         private readonly IRepository<UserAnswer> _userAnswerRepository;
         private readonly IRepository<UserAnswerDetail> _userAnswerDetailRepository;
+        private readonly IRepository<UserAnswerDetail_Media> _userAnswerDetailMediaRepository;
         private readonly ICacheManager _cacheManager;
         private readonly IEventPublisher _eventPublisher;
         private readonly IQuestionBankService _questionBankService;
         private readonly IUserAttributeService _userAttributeService;
         private readonly IUserService _userService;
+        private readonly ILogger _logger;
         #endregion
 
         #region Ctor
         public UserAnswerService(IRepository<UserAnswer> userAnswerRepository
             , IRepository<UserAnswerDetail> userAnswerDetailRepository
+            , IRepository<UserAnswerDetail_Media> userAnswerDetailMediaRepository
             , ICacheManager cacheManager
             , IEventPublisher eventPublisher
             , IQuestionBankService questionBankService
             , IUserAttributeService userAttributeService
-            , IUserService userService)
+            , IUserService userService
+            , ILogger logger)
         {
-            _userAnswerRepository = userAnswerRepository;
-            _userAnswerDetailRepository = userAnswerDetailRepository;
-            _cacheManager = cacheManager;
-            _eventPublisher = eventPublisher;
-            _questionBankService = questionBankService;
-            _userAttributeService = userAttributeService;
-            _userService = userService;
+            this._userAnswerRepository = userAnswerRepository;
+            this._userAnswerDetailRepository = userAnswerDetailRepository;
+            this._userAnswerDetailMediaRepository = userAnswerDetailMediaRepository;
+            this._cacheManager = cacheManager;
+            this._eventPublisher = eventPublisher;
+            this._questionBankService = questionBankService;
+            this._userAttributeService = userAttributeService;
+            this._userService = userService;
+            this._logger = logger;
         }
         #endregion
 
@@ -67,35 +74,45 @@ namespace Wei.Services.Custom
         /// <param name="question">问题对象</param>
         /// <param name="answer">用户答案文本</param>
         /// <returns>下一题</returns>
-        private Question SingleCheckAnalysis(UserAnswer uanswer, Question question, string answer)
+        private decimal SingleCheckAnalysis(UserAnswerDetail uanswer, Question question)
         {
             decimal next = decimal.Ceiling(question.Sort + 1);
-            //var qamodel = question.QuestionAnswerList.OrderBy(x=>x.Sort)
-            //    .FirstOrDefault(x => string.Equals(answer, x.AnswerKeys, StringComparison.CurrentCultureIgnoreCase));
-            var qamodel = question.QuestionAnswerList.OrderBy(x => x.Sort)
-               .FirstOrDefault(x => {
-                   //// 问题答案数组
-                   //var tmpQ = x.AnswerKeys.Split('|');
-                   //// 用户回答到了这个点，记录并引导进入下一题
-                   //return tmpQ.Any(y => answer.IndexOf(y.ToLower()) >= 0);
+            var qalist = question.QuestionAnswerList.OrderBy(x => x.Sort);
+            string answer = DataConvertHelper.ChineseNumberAnalysis(uanswer.Answer).ToLower();
+            string keycode = null;
+            QuestionAnswer qamodel = null;
+            foreach(var qanswer in qalist)
+            {
+                var tmpQ = qanswer.AnswerKeys.ToLower().Split('|');
+                keycode = tmpQ.FirstOrDefault(y =>
+                {
+                    if (string.IsNullOrEmpty(y))
+                        return false;
+                    if (y == "*")
+                        return true;
 
-                   // 问题答案数组
-                   var tmpQ = x.AnswerKeys.ToLower().Split('|');
-                   // 用户回答到了这个点，记录并引导进入下一题
-                   return tmpQ.Any(y =>
-                   {
-                       if (string.IsNullOrEmpty(y) || y == "*")
-                           return true;
+                    var tmp2 = y.ToLower().Split('&');
+                    bool result = !tmp2.Any(z => answer.IndexOf(z) == -1);
+                    return result;
+                });
+                if (!string.IsNullOrEmpty(keycode))
+                {
+                    qamodel = qanswer;
+                    break;
+                }
+            }
 
-                       var tmp2 = y.Split('&');
-                       bool result = !tmp2.Any(z => answer.IndexOf(z) == -1);
-                       return result;
-                   });
-               });
-            if (qamodel != null && qamodel.Next != null)
-                next = qamodel.Next.Value;
-            Question nextq = this._questionBankService.GetQuestion(uanswer.QuestionBank_Id, next);
-            return nextq;
+            if (qamodel == null)
+            {
+                next = -1;
+            }
+            else
+            {
+                uanswer.QCode = keycode;
+                if (qamodel.Next != null)
+                    next = qamodel.Next.Value;
+            } 
+            return next;
         }
 
         /// <summary>
@@ -106,35 +123,46 @@ namespace Wei.Services.Custom
         /// <param name="question">问题对象</param>
         /// <param name="answer">用户答案文本</param>
         /// <returns>下一题</returns>
-        private Question MultiCheckAnalysis(UserAnswer uanswer, Question question, string answer)
+        private decimal MultiCheckAnalysis(UserAnswerDetail uanswer, Question question)
         {
             decimal next = decimal.Ceiling(question.Sort + 1);
             // 用户的答案数组
-            var tmpU = answer.ToCharArray().Distinct().Except(CommonHelper.SPECIALCHARACTERS);
-            var qamodel = question.QuestionAnswerList.OrderBy(x=>x.Sort)
-                .FirstOrDefault(x => {
-                    //// 问题答案数组
-                    //var tmpQ = x.AnswerKeys.ToCharArray().Distinct().Except(CommonHelper.SPECIALCHARACTERS);
-                    //// 取相差数为0
-                    //return tmpQ.Except(tmpU).Count() == 0;
+            //var tmpU = uanswer.Answer.ToCharArray().Distinct().Except(CommonHelper.SPECIALCHARACTERS);
+            var qalist = question.QuestionAnswerList.OrderBy(x => x.Sort);
+            string answer = DataConvertHelper.ChineseNumberAnalysis(uanswer.Answer).ToLower();
+            string keycode = null;
+            QuestionAnswer qamodel = null;
+            foreach(var qanswer in qalist)
+            {
+                var tmpQ = qanswer.AnswerKeys.ToLower().Split('|');
+                keycode = tmpQ.FirstOrDefault(y =>
+                {
+                    if (string.IsNullOrEmpty(y))
+                        return false;
+                    if (y == "*")
+                        return true;
 
-                    // 问题答案数组
-                    var tmpQ = x.AnswerKeys.ToLower().Split('|');
-                    // 用户回答到了这个点，记录并引导进入下一题
-                    return tmpQ.Any(y =>
-                    {
-                        if (string.IsNullOrEmpty(y) || y == "*")
-                            return true;
-
-                        var tmp2 = y.Split('&');
-                        bool result = !tmp2.Any(z => answer.IndexOf(z) == -1);
-                        return result;
-                    });
+                    var tmp2 = y.ToLower().Split('&');
+                    bool result = !tmp2.Any(z => answer.IndexOf(z) == -1);
+                    return result;
                 });
-            if (qamodel != null && qamodel.Next != null)
-                next = qamodel.Next.Value;
-            Question nextq = this._questionBankService.GetQuestion(uanswer.QuestionBank_Id, next);
-            return nextq;
+                if (!string.IsNullOrEmpty(keycode))
+                {
+                    qamodel = qanswer;
+                    break;
+                }
+            }
+            if (qamodel == null)
+            {
+                next = -1;
+            }
+            else
+            {
+                uanswer.QCode = keycode;
+                if (qamodel.Next != null)
+                    next = qamodel.Next.Value;
+            }
+            return next;
         }
 
         /// <summary>
@@ -144,31 +172,61 @@ namespace Wei.Services.Custom
         /// <param name="uanswer">用户答题对象</param>
         /// <param name="question">问题对象</param>
         /// <param name="answer">用户答案文本</param>
-        /// <returns>下一题</returns>
-        private Question TextAnalysis(UserAnswer uanswer, Question question, string answer)
+        /// <returns>下一题 (-2：挂起; -1：重新回答; 0：不做反馈; >0：获取题目)</returns>
+        private decimal TextAnalysis(UserAnswerDetail uanswer, Question question)
         {
             decimal next = decimal.Ceiling(question.Sort + 1);
-            var qamodel = question.QuestionAnswerList.OrderBy(x=>x.Sort)
-                .FirstOrDefault(x => {
-                    // 问题答案数组
-                    var tmpQ = x.AnswerKeys.ToLower().Split('|');
-                    // 用户回答到了这个点，记录并引导进入下一题
-                    return tmpQ.Any(y =>
-                    {
-                        if (string.IsNullOrEmpty(y) || y == "*")
-                            return true;
+            string answer = uanswer.Answer.ToLower();
+            var qalist = question.QuestionAnswerList.OrderBy(x => x.Sort);
+            string keycode = null;
+            QuestionAnswer qamodel = null;
+            foreach(var qanswer in qalist)
+            {
+                var tmpQ = qanswer.AnswerKeys.ToLower().Split('|');
+                keycode = tmpQ.FirstOrDefault(y =>
+                {
+                    if (string.IsNullOrEmpty(y) || y == "*")
+                        return true;
 
-                        var tmp2 = y.Split('&');
-                        bool result = !tmp2.Any(z => answer.IndexOf(z) == -1);
-                        return result;
-                    });
+                    var tmp2 = y.ToLower().Split('&');
+                    bool result = !tmp2.Any(z => answer.IndexOf(z) == -1);
+                    return result;
                 });
-            if (qamodel == null)
-                return null;
-            if (qamodel != null && qamodel.Next != null)
-                next = qamodel.Next.Value;
-            Question nextq = this._questionBankService.GetQuestion(uanswer.QuestionBank_Id, next);
-            return nextq;
+                if (!string.IsNullOrEmpty(keycode))
+                {
+                    qamodel = qanswer;
+                    break;
+                }
+            }
+            if (qamodel != null)
+            {
+                uanswer.QCode = keycode;
+                if (qamodel.Next != null)
+                    next = qamodel.Next.Value;
+            }
+            return next;
+        }
+
+        /// <summary>
+        /// 提示符答题
+        /// </summary>
+        /// <param name="uanswer"></param>
+        /// <param name="question"></param>
+        /// <returns></returns>
+        private decimal TipsAnalysis(UserAnswerDetail uanswer, Question question)
+        {
+            decimal next = decimal.Ceiling(question.Sort + 1);
+            if(string.Equals(uanswer.Answer, "终止") 
+                || string.Equals(uanswer.Answer, "N", StringComparison.CurrentCultureIgnoreCase))
+            {
+                return -2;
+            }
+            if (string.Equals(uanswer.Answer, "继续")
+                || string.Equals(uanswer.Answer, "Y", StringComparison.CurrentCultureIgnoreCase))
+            {
+                return next;
+            }
+            return -1;
         }
         #endregion
 
@@ -219,7 +277,7 @@ namespace Wei.Services.Custom
         /// <returns></returns>
         public Question BeginQuestion(int userid, int questionbankid)
         {
-            if (GetDoingQuestionAnswer(userid) != null)
+            if (GetDoingUserAnswer(userid) != null)
                 throw new WeiException("当前有未完成的题卷！");
             UserAnswer ua = new UserAnswer()
             {
@@ -236,41 +294,22 @@ namespace Wei.Services.Custom
             };
             ua.UserAnswerDetailList.Add(uanswerdetail);
             this._userAnswerRepository.Insert(ua);
-            //var question = this._questionBankService.GetQuestion(questionbankid, uanswerdetail.QuestionNo)
             return question;
         }
 
         /// <summary>
-        /// 获取正在做的题卷 (进行中的答题或挂起的答题)
+        /// 继续答题
         /// </summary>
         /// <param name="userid"></param>
+        /// <param name="qanswer"></param>
         /// <returns></returns>
-        public UserAnswer GetDoingQuestionAnswer(int userid)
+        public Question BeginQuestion(User user, UserAnswer uanswer)
         {
-            return this._userAnswerRepository.Table.FirstOrDefault(x => x.User_Id == userid && x.CompletedTime == null 
-                && (x.UserAnswerStatus == UserAnswerStatus.答题中 || x.UserAnswerStatus == UserAnswerStatus.挂起));
-        }
+            uanswer.UserAnswerStatus = UserAnswerStatus.答题中;
+            // 获取当前的答题
 
-        /// <summary>
-        /// 获取最近一次的答题记录
-        /// </summary>
-        /// <param name="userid"></param>
-        /// <returns></returns>
-        public UserAnswer GetLastQuestionAnswer(int userid)
-        {
-            return (from t in this._userAnswerRepository.Table where t.User_Id == userid orderby t.Id descending select t).FirstOrDefault();
-        }
-
-        /// <summary>
-        /// 保存答案并获取下一题
-        /// </summary>
-        /// <param name="uanswer"></param>
-        /// <param name="answer"></param>
-        /// <returns></returns>
-        public Question SaveAnswer(UserAnswer uanswer, string answer, User user, string voicepath = null)
-        {
             var uanswerdetail = uanswer.UserAnswerDetailList.FirstOrDefault(x => x.End == null);
-            if(uanswerdetail == null)
+            if (uanswerdetail == null)
             {
                 uanswer.CompletedTime = DateTime.Now;
                 uanswer.UserAnswerStatus = UserAnswerStatus.答题完成;
@@ -281,95 +320,225 @@ namespace Wei.Services.Custom
                     AnswerType = AnswerType.End
                 };
             }
-            uanswerdetail.Answer = answer;
-            uanswerdetail.End = DateTime.Now;
-            uanswerdetail.VoicePath = voicepath;
-            Question nextQ = null;
-
-            //if (uanswerdetail.QuestionNo == 0)
-            //{
-            //    // 用户基础信息
-            //    nextQ = this._questionBankService.GetQuestion(uanswerdetail.UserAnswer.QuestionBank_Id, 0, user);
-            //    uanswer.UserAnswerDetailList.Add(new UserAnswerDetail()
-            //    {
-            //        QuestionNo = nextQ.Sort,
-            //        Start = DateTime.Now,
-            //        QCode = nextQ.Remark
-            //    });
-            //    this._userAnswerRepository.Update(uanswer);
-            //    return nextQ;
-            //}
-            
-
-            // 获取当前问题
+            // 获取当前题目
             var question = this._questionBankService.GetQuestion(uanswerdetail.UserAnswer.QuestionBank_Id, uanswerdetail.QuestionNo);
-            //if(!string.IsNullOrEmpty(question.Remark))
-            //{
-            //    UserAttribute uattr = this._userAttributeService.Get(question.Remark);
-            //    if(uattr != null)
-            //    {
-            //        UserAttributeValue uav = user.UserAttributeList.FirstOrDefault(x => x.UserAttributeId == uattr.Id);
-            //        if(uav == null)
-            //        {
-            //            user.UserAttributeList.Add(new UserAttributeValue()
-            //            {
-            //                UserId = user.Id,
-            //                UserAttributeId = uattr.Id,
-            //                Value = answer
-            //            });
-            //        }
-            //        else
-            //        {
-            //            uav.Value = answer;
-            //        }
-            //        this._userService.UpdateUser(user);
-            //    }
-            //}
-            answer = answer.ToLower();
-            // 判断当前答案
-            switch (question.AnswerType)
+            // 如果为提示类型，自动跳过
+            if(question.AnswerType == AnswerType.Tips)
             {
-                case AnswerType.SingleCheck:
-                    nextQ = this.SingleCheckAnalysis(uanswer, question, answer);
+                question = SaveAnswer(uanswer, "Y", user);
+            }
+
+            return question;
+        }
+
+        /// <summary>
+        /// 获取正在做的题卷 (进行中的答题或挂起的答题)
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public UserAnswer GetDoingUserAnswer(int userid)
+        {
+            return this._userAnswerRepository.Table.FirstOrDefault(x => x.User_Id == userid && x.CompletedTime == null 
+                && (x.Status == (int)UserAnswerStatus.答题中));
+        }
+
+        /// <summary>
+        /// 获取最近一次的答题记录
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public UserAnswer GetLastUserAnswer(int userid)
+        {
+            return (from t in this._userAnswerRepository.Table where t.User_Id == userid orderby t.Id descending select t).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 根据用户，题库id获取用户答题数据
+        /// 排除作废的数据
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="qid"></param>
+        /// <returns></returns>
+        public UserAnswer GetUserAnswerByQBId(int userid, int qid)
+        {
+            return this._userAnswerRepository.Table.FirstOrDefault(x =>
+                x.User_Id == userid && x.QuestionBank_Id == qid && x.Status != (int)UserAnswerStatus.已作废
+            );
+        }
+
+        /// <summary>
+        /// 保存答案并获取下一题
+        /// </summary>
+        /// <param name="uanswer"></param>
+        /// <param name="answer"></param>
+        /// <returns></returns>
+        public Question SaveAnswer(UserAnswer uanswer, string answer, User user, MediaType mediaType = MediaType.None, string mediaContent = null)
+        {
+            var uanswerdetail = uanswer.UserAnswerDetailList.FirstOrDefault(x => x.End == null);
+            if (uanswerdetail == null)
+            {
+                uanswer.CompletedTime = DateTime.Now;
+                uanswer.UserAnswerStatus = UserAnswerStatus.答题完成;
+                this._userAnswerRepository.Update(uanswer);
+                return new Question()
+                {
+                    Text = "题卷已完成，感谢您的参与！",
+                    AnswerType = AnswerType.End
+                };
+            }
+            // 获取当前题目
+            var question = this._questionBankService.GetQuestion(uanswerdetail.UserAnswer.QuestionBank_Id, uanswerdetail.QuestionNo);
+
+            decimal nextQ = 0;
+            // 文本答题，判断是否为下一题
+            if (question.AnswerType == AnswerType.Text 
+                && (answer.Length < 20 && answer.IndexOf("下一题") != -1))
+            {
+                // 文本题，跳转下一题
+                uanswerdetail.End = DateTime.Now;
+                nextQ = this.TextAnalysis(uanswerdetail, question);
+            }
+            else
+            {
+                // 保存语音
+                if (mediaType != MediaType.None)
+                {
+                    // 写入多媒体答案
+                    var mediaObj = new UserAnswerDetail_Media()
+                    {
+                        MediaType = mediaType,
+                        CreateTime = DateTime.Now,
+                        MediaContent = mediaContent,
+                        Text = answer,
+                        UserAnswerDetail_Id = uanswerdetail.Id
+                    };
+                    this.SaveUserAnswerDetailMedia(mediaObj);
+                }
+
+                answer = answer.ToLower();
+                // 判断当前答案
+                switch (question.AnswerType)
+                {
+                    case AnswerType.SingleCheck:
+                        uanswerdetail.Answer = answer;
+                        nextQ = this.SingleCheckAnalysis(uanswerdetail, question);
+                        break;
+                    case AnswerType.MultiCheck:
+                        uanswerdetail.Answer = answer;
+                        nextQ = this.MultiCheckAnalysis(uanswerdetail, question);
+                        break;
+                    case AnswerType.Tips:
+                        nextQ = this.TipsAnalysis(uanswerdetail, question);
+                        break;
+                    default:
+                        if (uanswerdetail.Answer == null)
+                            uanswerdetail.Answer = answer;
+                        else
+                            uanswerdetail.Answer += answer;
+                        break;
+                }
+            }
+
+            Question nextqObj = null;
+            switch (nextQ)
+            {
+                case 0:
+                    nextqObj = new Question()
+                    {
+                        AnswerType = AnswerType.Text,
+                        Text = "您可以继续追加回答，或者告诉我“下一题”保存答案！"
+                    };
                     break;
-                case AnswerType.MultiCheck:
-                    nextQ = this.MultiCheckAnalysis(uanswer, question, answer);
+                case -1:
+                    nextqObj = new Question()
+                    {
+                        AnswerType = AnswerType.Text,
+                        Text = "您的回答似乎不符，请尝试重新作答！"
+                    };
                     break;
-                case AnswerType.Text:
-                    nextQ = this.TextAnalysis(uanswer, question, answer);
+                case -2:
+                    uanswer.UserAnswerStatus = UserAnswerStatus.挂起;
+                    nextqObj = new Question()
+                    {
+                        AnswerType = AnswerType.Text,
+                        Text = $"答题已暂停，在有效期内（{uanswer.QuestionBank.ExpireDateEnd.Value.ToString("yyyyMMdd")}）对我说题卷关键字可以继续作答。谢谢您的参与！"
+                    };
+                    break;
+                default:
+                    nextqObj = this._questionBankService.GetQuestion(uanswer.QuestionBank_Id, nextQ);
                     break;
             }
-            if(nextQ != null)
+            
+            if (nextqObj != null)
             {
                 // 判断是否是最后一题
-                switch (nextQ.AnswerType)
+                switch (nextqObj.AnswerType)
                 {
                     case AnswerType.End:
                         uanswerdetail.Next = 0;
                         uanswer.CompletedTime = DateTime.Now;
                         uanswer.UserAnswerStatus = UserAnswerStatus.答题完成;
                         break;
+                    case AnswerType.Break:
+                        uanswer.CompletedTime = DateTime.Now;
+                        uanswer.UserAnswerStatus = UserAnswerStatus.已作废;
+                        break;
                     default:
-                        uanswerdetail.Next = nextQ.Sort;
-                        uanswer.UserAnswerDetailList.Add(new UserAnswerDetail()
+                        if(nextqObj.Id > 0)
                         {
-                            QuestionNo = nextQ.Sort,
-                            Start = DateTime.Now,
-                            QCode = nextQ.Remark
-                        });
+                            uanswerdetail.Next = nextqObj.Sort;
+                            uanswerdetail.End = DateTime.Now;
+                            uanswer.UserAnswerDetailList.Add(new UserAnswerDetail()
+                            {
+                                QuestionNo = nextqObj.Sort,
+                                Start = DateTime.Now
+                            });
+                        }
                         break;
                 }
                 this._userAnswerRepository.Update(uanswer);
-                return nextQ;
+                return nextqObj;
             }
-            //else
-            //{
-
-            //}
-            //uanswerdetail.Next = 0;
-            //uanswer.CompletedTime = DateTime.Now;
-            //this._userAnswerRepository.Update(uanswer);
             return null;
+        }
+
+        /// <summary>
+        /// 保存图片答案
+        /// </summary>
+        /// <param name="uanswer"></param>
+        /// <param name="user"></param>
+        /// <param name="mediaContent"></param>
+        /// <returns></returns>
+        public Question SaveAnswerImage(UserAnswer uanswer, User user, string mediaContent = null)
+        {
+            var uanswerdetail = uanswer.UserAnswerDetailList.FirstOrDefault(x => x.End == null);
+            if (uanswerdetail == null)
+            {
+                uanswer.CompletedTime = DateTime.Now;
+                uanswer.UserAnswerStatus = UserAnswerStatus.答题完成;
+                this._userAnswerRepository.Update(uanswer);
+                return new Question()
+                {
+                    Text = "题卷已完成，感谢您的参与！",
+                    AnswerType = AnswerType.End
+                };
+            }
+            var question = this._questionBankService.GetQuestion(uanswerdetail.UserAnswer.QuestionBank_Id, uanswerdetail.QuestionNo);
+            var media = new UserAnswerDetail_Media()
+            {
+                MediaType = MediaType.Image,
+                CreateTime = DateTime.Now,
+                MediaContent = mediaContent,
+                Text = ""
+            };
+            // 写入多媒体答案
+            uanswerdetail.UserAnswerDetailMediaList.Add(media);
+            this._userAnswerRepository.Update(uanswer);
+            return new Question()
+            {
+                AnswerType = AnswerType.Text,
+                Text = ""
+            };
         }
 
         public IList<UserAnswer> QueryAll()
@@ -402,7 +571,7 @@ namespace Wei.Services.Custom
         /// <returns></returns>
         public bool IsAnswered(int bankid, User user)
         {
-            if (this._userAnswerRepository.Table.Any(x => x.UserAnswerStatus != UserAnswerStatus.已作废 && x.User_Id == user.Id && x.QuestionBank_Id == bankid))
+            if (this._userAnswerRepository.Table.Any(x => x.Status != (int)UserAnswerStatus.已作废 && x.User_Id == user.Id && x.QuestionBank_Id == bankid))
                 return true;
             return false;
         }
@@ -424,6 +593,14 @@ namespace Wei.Services.Custom
         }
         #endregion
 
+        /// <summary>
+        /// 保存多媒体文件
+        /// </summary>
+        /// <param name="media"></param>
+        public void SaveUserAnswerDetailMedia(UserAnswerDetail_Media media)
+        {
+            _userAnswerDetailMediaRepository.Insert(media);
+        }
 
     }
 }

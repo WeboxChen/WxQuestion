@@ -133,7 +133,7 @@
         selection.forEach(function (item) {
             ids.push(item.getId());
         });
-        that.postJsonSync('useranswer/discard', {
+        that.postJsonSync('api/useranswer/discard', {
                 ids: ids
             }, function (obj, response, eopts) {
                 store.reload();

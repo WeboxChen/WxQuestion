@@ -4,9 +4,12 @@ using Wei.Core.Domain.Questions;
 
 namespace Wei.Core.Domain.Custom
 {
+    /// <summary>
+    /// 用户答题
+    /// </summary>
     public class UserAnswer: BaseEntity
     {
-        private List<UserAnswerDetail> _userAnswerDetailList;
+        private ICollection<UserAnswerDetail> _userAnswerDetailList;
         /// <summary>
         /// 用户id
         /// </summary>
@@ -39,7 +42,7 @@ namespace Wei.Core.Domain.Custom
         /// <summary>
         /// 本轮试题答案
         /// </summary>
-        public virtual List<UserAnswerDetail> UserAnswerDetailList
+        public virtual ICollection<UserAnswerDetail> UserAnswerDetailList
         {
             get { return _userAnswerDetailList ?? (_userAnswerDetailList = new List<UserAnswerDetail>()); }
             set { _userAnswerDetailList = value; }

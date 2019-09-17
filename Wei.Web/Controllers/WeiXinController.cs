@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Senparc.Weixin.MP;
-using Senparc.Weixin.MP.Containers;
-using Senparc.Weixin.MP.Entities;
+﻿using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MvcExtension;
 using System;
@@ -128,12 +125,5 @@ namespace Wei.Web.Controllers
             //返回处理结果
         }
 
-        //[HttpGet]
-        //public ActionResult Error()
-        //{
-        //    var error = Server.GetLastError();
-        //    _logger.Error(error.Message, error);
-        //    return View();
-        //}
     }
 }

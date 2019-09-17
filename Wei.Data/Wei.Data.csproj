@@ -62,6 +62,7 @@
     <Compile Include="IDbContext.cs" />
     <Compile Include="Initializers\CreateTablesIfNotExist.cs" />
     <Compile Include="Mapping\Custom\UserAnswerDetailMap.cs" />
+    <Compile Include="Mapping\Custom\UserAnswerDetail_MediaMap.cs" />
     <Compile Include="Mapping\Logging\ActionRecordMap.cs" />
     <Compile Include="Mapping\Logging\LogMap.cs" />
     <Compile Include="Mapping\Media\DownloadMap.cs" />

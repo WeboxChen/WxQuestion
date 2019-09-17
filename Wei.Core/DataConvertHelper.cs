@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace Wei.Core
 {
@@ -79,6 +80,53 @@ namespace Wei.Core
             return i;
         }
 
+        public static string ChineseNumberAnalysis(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+                return null;
+            char[] result = new char[str.Length];
+            for(int i=0; i<str.Length; i++)
+            {
+                switch (str[i])
+                {
+                    case '零':
+                        result[i] = '0';
+                        break;
+                    case '一':
+                        result[i] = '1';
+                        break;
+                    case '二':
+                        result[i] = '2';
+                        break;
+                    case '三':
+                        result[i] = '3';
+                        break;
+                    case '四':
+                        result[i] = '4';
+                        break;
+                    case '五':
+                        result[i] = '5';
+                        break;
+                    case '六':
+                        result[i] = '6';
+                        break;
+                    case '七':
+                        result[i] = '7';
+                        break;
+                    case '八':
+                        result[i] = '8';
+                        break;
+                    case '九':
+                        result[i] = '9';
+                        break;
+                    default:
+                        result[i] = str[i];
+                        break;
+                }
+            }
+
+            return new string(result);
+        }
         //public static T ToBaseEntity<T>(this JObject jobject)
         //{
         //    T entity = Activator.CreateInstance<T>();

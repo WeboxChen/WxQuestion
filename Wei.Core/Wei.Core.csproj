@@ -115,6 +115,9 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="DBHelp.cs" />
     <Compile Include="DBStructCaching.cs" />
+    <Compile Include="Domain\Custom\MediaType.cs" />
+    <Compile Include="Domain\Custom\UserAnswerDetail_Media.cs" />
+    <Compile Include="Domain\Custom\UserAnswerResponseStatus.cs" />
     <Compile Include="Domain\Custom\UserAnswerStatus.cs" />
     <Compile Include="Domain\Logging\ActionRecordType.cs" />
     <Compile Include="Domain\Localization\Language.cs" />

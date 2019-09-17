@@ -258,8 +258,55 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Site.css" />
+    <Content Include="ext\exporter\Base.js" />
+    <Content Include="ext\exporter\data\Base.js" />
+    <Content Include="ext\exporter\data\Cell.js" />
+    <Content Include="ext\exporter\data\Column.js" />
+    <Content Include="ext\exporter\data\Group.js" />
+    <Content Include="ext\exporter\data\Row.js" />
+    <Content Include="ext\exporter\data\Table.js" />
+    <Content Include="ext\exporter\excel\Xlsx.js" />
+    <Content Include="ext\exporter\excel\Xml.js" />
+    <Content Include="ext\exporter\File.js" />
+    <Content Include="ext\exporter\file\Base.js" />
+    <Content Include="ext\exporter\file\excel\Cell.js" />
+    <Content Include="ext\exporter\file\excel\Column.js" />
+    <Content Include="ext\exporter\file\excel\Row.js" />
+    <Content Include="ext\exporter\file\excel\Style.js" />
+    <Content Include="ext\exporter\file\excel\Table.js" />
+    <Content Include="ext\exporter\file\excel\Workbook.js" />
+    <Content Include="ext\exporter\file\excel\Worksheet.js" />
+    <Content Include="ext\exporter\file\ooxml\Base.js" />
+    <Content Include="ext\exporter\file\ooxml\ContentType.js" />
+    <Content Include="ext\exporter\file\ooxml\ContentTypes.js" />
+    <Content Include="ext\exporter\file\ooxml\CoreProperties.js" />
+    <Content Include="ext\exporter\file\ooxml\Excel.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Border.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Cell.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\CellAlignment.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\CellStyleXf.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\CellXf.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Column.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Fill.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Font.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\NumberFormat.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Row.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\SharedStrings.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Sheet.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Stylesheet.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Workbook.js" />
+    <Content Include="ext\exporter\file\ooxml\excel\Worksheet.js" />
+    <Content Include="ext\exporter\file\ooxml\Relationship.js" />
+    <Content Include="ext\exporter\file\ooxml\Relationships.js" />
+    <Content Include="ext\exporter\file\Style.js" />
+    <Content Include="ext\exporter\file\zip\Archive.js" />
+    <Content Include="ext\exporter\file\zip\File.js" />
+    <Content Include="ext\exporter\file\zip\Folder.js" />
+    <Content Include="ext\exporter\Plugin.js" />
+    <Content Include="ext\grid\plugin\Exporter.js" />
     <Content Include="ext\classic\locale\locale-zh_CN.js" />
     <Content Include="ext\classic\locale\Wei_locale-zh_CN.js" />
+    <Content Include="ext\plugin\Abstract.js" />
     <Content Include="ext\classic\theme-neptune\resources\ext\ext-watermark\demo-files\demo.css" />
     <Content Include="ext\classic\theme-neptune\resources\ext\ext-watermark\demo-files\demo.js" />
     <Content Include="ext\classic\theme-neptune\resources\ext\ext-watermark\demo.html" />
@@ -2354,6 +2401,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Common\" />
     <Folder Include="Views\Setting\" />
+    <Folder Include="Views\Widget\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Wei.Core\Wei.Core.csproj">
@@ -2395,7 +2443,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>59393</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost/wxquestion</IISUrl>
+          <IISUrl>http://localhost:8089/wxquestion</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -59,9 +59,9 @@
                 {
                     text: '修改',
                     handler: 'onEdit'
-                }, {
-                    text: '删除',
-                    handler: 'onDel'
+                //}, {
+                //    text: '删除',
+                //    handler: 'onDel'
                 }, {
                     text: '取消',
                     handler: 'onCancel'

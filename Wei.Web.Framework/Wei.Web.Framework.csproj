@@ -147,6 +147,7 @@
     <Compile Include="ExtJs\ResponseMessage.cs" />
     <Compile Include="ExtJs\SortModel.cs" />
     <Compile Include="ExtJs\TreeRequest.cs" />
+    <Compile Include="HtmlExtensions.cs" />
     <Compile Include="Mvc\DependencyRegistrarExtensions.cs" />
     <Compile Include="Mvc\Routes\RoutePublisher.cs" />
     <Compile Include="NPOI\ExcelReader.cs" />

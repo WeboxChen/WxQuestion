@@ -160,8 +160,8 @@ namespace Wei.Services.Questions
         {
             IDictionary<string, QuestionBank> result = new Dictionary<string, QuestionBank>();
             var list = _questionBankRepository.Table.Where(x => x.Status == 0 && x.AutoResponse != null && x.AutoResponse.Value
-                && (x.ExpireDateBegin == null || x.ExpireDateBegin.Value.Date <= DateTime.Now.Date) 
-                && (x.ExpireDateEnd == null || x.ExpireDateEnd.Value.Date >= DateTime.Now.Date));
+                && x.ExpireDateBegin <= DateTime.Now
+                && x.ExpireDateEnd > DateTime.Now);
             foreach(var item in list)
             {
                 if (string.IsNullOrEmpty(item.ResponseKeyWords))

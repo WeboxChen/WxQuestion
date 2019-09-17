@@ -66,9 +66,11 @@ namespace Wei.Web.Models.Users
         /// <summary>
         /// 出身日期
         /// </summary>
-        [DisplayName("出身日期：")]
+        [DisplayName("出生日期：")]
         [AllowHtml]
-        [Required(ErrorMessage = "请输入出身日期！")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Required(ErrorMessage = "请输入出生日期！")]
         public DateTime Birthdate { get; set; }
         /// <summary>
         /// 家庭地址

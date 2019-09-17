@@ -2,7 +2,8 @@
 
 namespace Wei.Data.Mapping.Custom
 {
-    public class UserAnswerDetailMap: WeiEntityTypeConfiguration<UserAnswerDetail>
+    public class UserAnswerDetailMap
+        : WeiEntityTypeConfiguration<UserAnswerDetail>
     {
         public UserAnswerDetailMap()
         {

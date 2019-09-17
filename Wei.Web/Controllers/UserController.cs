@@ -16,14 +16,17 @@ namespace Wei.Web.Controllers
         private readonly IUserService _userService;
         private readonly IWebHelper _webHelper;
         private readonly IWorkContext _workContext;
+        private readonly HttpRequestBase _httpRequest;
 
         public UserController(IUserService userService
             , IWebHelper webHelper
-            , IWorkContext workContext)
+            , IWorkContext workContext
+            , HttpRequestBase httpRequest)
         {
             this._userService = userService;
             this._webHelper = webHelper;
             this._workContext = workContext;
+            this._httpRequest = httpRequest;
         }
 
         // GET: User
@@ -80,6 +83,7 @@ namespace Wei.Web.Controllers
             {
                 return View(uimodel);
             }
+
             var usertoen = _workContext.CurrentUser;
             var user = this._userService.GetUserById(usertoen.Id);
             user.FirstName = uimodel.FirstName;
@@ -94,6 +98,7 @@ namespace Wei.Web.Controllers
             user.Married = uimodel.Married;
             user.Status = 1;
             user.Birthdate = uimodel.Birthdate;
+            user.Remark = this._httpRequest.UserAgent;
 
             this._userService.UpdateUser(user);
             return Redirect("~/closepager.html");

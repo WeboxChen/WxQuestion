@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Wei.Core;
 
 namespace Wei.Web.Tests
 {
@@ -19,6 +20,15 @@ namespace Wei.Web.Tests
             stream.Read(bytes, 0, bytes.Length);
             string voice = Convert.ToBase64String(bytes);
             Console.WriteLine(voice);
+        }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            var source = "八hello三一OO";
+            var str = DataConvertHelper.ChineseNumberAnalysis(source);
+            Console.WriteLine($"source: {source}");
+            Console.WriteLine($"result: {str}");
         }
     }
 }

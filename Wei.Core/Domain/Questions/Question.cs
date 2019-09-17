@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Wei.Core.Domain.Questions
 {
     public class Question: BaseEntity
     {
-        private IList<QuestionItem> _questionItemList;
-        private IList<QuestionAnswer> _questionAnswerList;
+        private ICollection<QuestionItem> _questionItemList;
+        private ICollection<QuestionAnswer> _questionAnswerList;
 
         /// <summary>
         /// 题库
@@ -80,11 +82,46 @@ namespace Wei.Core.Domain.Questions
         /// 备注
         /// </summary>
         public string Remark { get; set; }
+        /// <summary>
+        /// 问题文本
+        /// </summary>
+        public string QuestionText
+        {
+            get
+            {
+                string temp = "";
+                switch (this.AnswerType)
+                {
+                    case AnswerType.SingleCheck:
+                    case AnswerType.MultiCheck:
+                        StringBuilder text = new StringBuilder();
+                        if (!string.IsNullOrEmpty(Text))
+                            text.Append(Text);
+                        var questionitemlist = this.QuestionItemList.OrderBy(x => x.Code);
+                        foreach (var item in QuestionItemList)
+                        {
+                            text.AppendFormat("{2}{0}. {1}", item.Code, item.Text, "\n");
+                        }
+                        temp = text.ToString();
+                        break;
+                    case AnswerType.Tips:
+                        temp = string.Format("{0} 当前第{1}题，共{2}题【继续/终止】", Text, this.Sort.ToDouble(), this.QuestionBank.QuestionList.Max(x => x.Sort).ToDouble());
+                        break;
+                    case AnswerType.Break:
+                        temp = string.Format("{0} 答题已终止，感谢您的参与！", Text);
+                        break;
+                    default:
+                        temp = Text ?? "";
+                        break;
+                }
+                return temp;
+            }
+        }
 
         /// <summary>
         /// 选择题选项
         /// </summary>
-        public virtual IList<QuestionItem> QuestionItemList
+        public virtual ICollection<QuestionItem> QuestionItemList
         {
             get { return _questionItemList ?? (_questionItemList = new List<QuestionItem>()); }
             set { _questionItemList = value; }
@@ -93,7 +130,7 @@ namespace Wei.Core.Domain.Questions
         /// <summary>
         /// 问题答案
         /// </summary>
-        public virtual IList<QuestionAnswer> QuestionAnswerList
+        public virtual ICollection<QuestionAnswer> QuestionAnswerList
         {
             get { return _questionAnswerList ?? (_questionAnswerList = new List<QuestionAnswer>()); }
             set { _questionAnswerList = value; }
