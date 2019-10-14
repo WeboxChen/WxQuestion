@@ -64,8 +64,9 @@ Ext.define('Wei.view.questions.IndexController', {
                 success: function () {
                     flag = true;
                     store.reload();
+                    that.alertSuccessMsg('保存成功！');
                 },
-                error: function () {
+                failure: function () {
                     flag = false;
                 }
             });

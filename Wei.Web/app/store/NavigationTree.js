@@ -32,11 +32,11 @@ Ext.define('Wei.store.NavigationTree', {
                         text: '题库分类',
                         viewType: 'setting_moduletypegrid',
                         leaf: true
-                    },
-                    {
-                        text: '题库标签',
-                        viewType: 'setting_questionbanktaggrid',
-                        leaf: true
+                    //},
+                    //{
+                    //    text: '题库标签',
+                    //    viewType: 'setting_questionbanktaggrid',
+                    //    leaf: true
                     }
                 ]
             },
@@ -63,6 +63,17 @@ Ext.define('Wei.store.NavigationTree', {
                     //    text: '客户属性',
                     //    leaf: true,
                     //    viewType: 'account_userattributegrid'
+                    }
+                ]
+            },
+            {
+                text: '系统设置',
+                expanded: false,
+                children: [
+                    {
+                        text: '基础数据',
+                        leaf: true,
+                        viewType: 'setting_basic'
                     }
                 ]
             },

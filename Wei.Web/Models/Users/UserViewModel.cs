@@ -73,9 +73,9 @@ namespace Wei.Web.Models.Users
         [Required(ErrorMessage = "请输入出生日期！")]
         public DateTime Birthdate { get; set; }
         /// <summary>
-        /// 家庭地址
+        /// 居住城市
         /// </summary>
-        [DisplayName("家庭地址：")]
+        [DisplayName("居住城市：")]
         [AllowHtml]
         public string Address { get; set; }
         /// <summary>

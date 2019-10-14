@@ -1,6 +1,30 @@
 ﻿Ext.define('Wei.view.BaseController', {
     extend: 'Ext.app.ViewController',
 
+    authentication: function (fn1, fn2) {
+        var requestObj = {
+            url: 'Authentication/CheckLogin',
+            method: 'POST',
+            success: function (response, eopts) {
+                var json = JSON.parse(response.responseText);
+                if (json.success) {
+                    if (fn1)
+                        fn1(json.obj, response, eopts);
+                    return;
+                }
+                if (fn2)
+                    fn2(response, eopts);
+            },
+            failure: function (response, eopts) {
+                if (response.status === 401) return;
+
+                if (fn2)
+                    fn2(response, eopts);
+            }
+        };
+        Ext.Ajax.request(requestObj)
+    },
+
     // 获取配置信息
     getBaseConfig: function () {
         var data = Ext.create('Wei.data.base.BaseConfig');
@@ -8,18 +32,23 @@
     },
     // 加载基础数据
     loadBaseData: function () {
-        var that = this;
+        var that = this,
+            view = Ext.getCmp('mainView');
+
         Ext.ns('wei.data');
         wei.data.current = {};
         wei.data.baseData = {};
+
         // 加载全局配置信息
         wei.data.global = that.getBaseConfig();
-        // 判断用户登录
 
+        // 判断用户登录
         var user = that.GetCurrentUser();
         if (user) {
             that.mainModelLoad();
+            that.loadModules();
         }
+
         that.SetCurrentUserName();
     },
     
@@ -30,7 +59,10 @@
         for (var aa in mainviewmodel.storeInfo) {
             var store = mainviewmodel.storeInfo[aa];
             if (store._autoload) {
-                store.load();
+                if (!store.isLoaded)
+                    store.load();
+                else
+                    store.reload();
             }
         }
     },
@@ -41,56 +73,87 @@
             refs = mainview.getReferences(),
             navigationList = refs.navigationTreeList,
             store = navigationList.getStore(),
-            user = that.GetCurrentUser(),
-            modules = user.ModuleWithChildren;
+            user = that.GetCurrentUser();
+
+        if (!id) {
+            var hash = location.hash;
+            if (hash && hash.length > 1) {
+                id = hash.substr(1);
+            }
+        }
+
+        var root = store.getRoot();
 
         //从本地读数据
         if (!id) {
-            if (modules.length > 0) {
-                id = modules[0].Children[0].Item.Url;
+            if (root && root.childNodes.length > 0) {
+                id = root.childNodes[0].childNodes[0].data.viewType;
             }
             else {
                 id = 'login';
                 that.alertErrorMsg('无任何操作权限！');
             }
         }
-        var data = [];
-        
-        Ext.each(modules, function (module, index) {
-            var childrens = module.Children;
-            var menu = {
-                iconCls: 'fa ' + module.Item.IconName,
-                viewType: module.Item.Url,
-                text: module.Item.Name,
-                expanded: false
-            };
-            var cmenus = [];
-            if (childrens && childrens.length > 0) {
-                Ext.each(childrens, function (cmodule) {
-                    if (cmodule.Item.Url.length < 2)
-                        return;
-                    if (cmodule.Item.Url == id)
-                        menu['expanded'] = true;
-                    cmenus.push({
-                        leaf: 1,
-                        iconCls: 'fa ' + cmodule.Item.IconName,
-                        viewType: cmodule.Item.Url,
-                        text: cmodule.Item.Name
-                    });
-                });
-            }
-            menu.children = cmenus;
-            menu.leaf = cmenus.length == 0;
-            data.push(menu);
-        });
-        if (data.length > 0) {
-            var root = store.getRoot();
-            root.removeAll();
-            root.appendChild(data);
-        }
+
+        if (user)
+            that.setTreeStoreNodeRoleVisible(root, user.isadmin);
+
         var record = root.findChild('viewType', id, true);
         if (record) {
             navigationList.setSelection(record);
+        }
+        //var data = [];
+        
+        //Ext.each(modules, function (module, index) {
+        //    var childrens = module.Children;
+        //    var menu = {
+        //        iconCls: 'fa ' + module.Item.IconName,
+        //        viewType: module.Item.Url,
+        //        text: module.Item.Name,
+        //        expanded: false
+        //    };
+        //    var cmenus = [];
+        //    if (childrens && childrens.length > 0) {
+        //        Ext.each(childrens, function (cmodule) {
+        //            if (cmodule.Item.Url.length < 2)
+        //                return;
+        //            if (cmodule.Item.Url == id)
+        //                menu['expanded'] = true;
+        //            cmenus.push({
+        //                leaf: 1,
+        //                iconCls: 'fa ' + cmodule.Item.IconName,
+        //                viewType: cmodule.Item.Url,
+        //                text: cmodule.Item.Name
+        //            });
+        //        });
+        //    }
+        //    menu.children = cmenus;
+        //    menu.leaf = cmenus.length == 0;
+        //    data.push(menu);
+        //});
+        //if (data.length > 0) {
+        //    var root = store.getRoot();
+        //    root.removeAll();
+        //    root.appendChild(data);
+        //}
+        //var record = root.findChild('viewType', id, true);
+        //if (record) {
+        //    navigationList.setSelection(record);
+        //}
+    },
+    setTreeStoreNodeRoleVisible: function (node, isadmin) {
+        var that = this;
+        if (node.hasChildNodes) {
+            node.eachChild(function (item) {
+                if (item)
+                    that.setTreeStoreNodeRoleVisible(item, isadmin);
+            })
+        }
+
+        if (node.get('role') == 'admin' && !isadmin) {
+            node.remove();
+        } else if (node.get('hidden')) {
+            node.remove();
         }
     },
     // 加载基础登录模块
@@ -113,6 +176,8 @@
             navigationList = refs.navigationTreeList,
             store = navigationList.getStore();
         var root = store.getRoot();
+        if (root.childNodes.length == 0)
+            return false;
         if (root.childNodes.length == 1 && root.childNodes[0].get('viewType') == 'login')
             return false;
         return true;

@@ -147,11 +147,17 @@ Ext.define('Wei.view.main.MainController', {
     },
 
     onMainViewRender: function () {
-        // 调整默认页面
-        //if (!window.location.hash) {
-        //    this.redirectTo("login");
-        //}
-        this.redirectTo("login");
+        var that = this;
+        if (!that.GetCurrentUser()) {
+            that.redirectTo("login");
+            return;
+        }
+        that.authentication(function () {
+            var user = that.GetCurrentUser();
+            that.loadBaseData();
+        }, function () {
+            that.redirectTo("login");
+        });
     },
     onMainViewAfterrender: function(){
         this.SetCurrentUserName();

@@ -3,6 +3,7 @@ using Senparc.CO2NET;
 using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin;
 using Senparc.Weixin.Entities;
+using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.Containers;
 using StackExchange.Profiling;
 using System;
@@ -14,6 +15,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Wei.Core;
+using Wei.Core.Configuration;
 using Wei.Core.Data;
 using Wei.Core.Infrastructure;
 using Wei.Data;
@@ -82,9 +84,10 @@ namespace Wei.Web
             var senparcWeixinSetting = SenparcWeixinSetting.BuildFromWebConfig(isWeixinDebug);
 
             //微信全局注册，必须！！
-            register.UseSenparcWeixin(senparcWeixinSetting, senparcSetting);
+            register.UseSenparcWeixin(senparcWeixinSetting, senparcSetting)
+                .RegisterMpAccount(senparcWeixinSetting, "WXQuestion");
             // 注册微信AppId
-            AccessTokenContainer.Register(WXinConfig.WeixinAppId, WXinConfig.WeixinAppSecret);
+            //AccessTokenContainer.RegisterAsync(WXinConfig.WeixinAppId, WXinConfig.WeixinAppSecret).Start();
             
             // 异步执行
             //new Thread(x => {
@@ -109,21 +112,21 @@ namespace Wei.Web
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
             //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.
 
-            Task t = new Task(() =>
-            {
-                var tlogger = EngineContext.Current.Resolve<ILogger>();
-                try
-                {
-                    ViewServices.Users.UserViewService uservice = new ViewServices.Users.UserViewService();
-                    uservice.SaveUserList(WXinConfig.WeixinAppId);
-                }
-                catch (Exception ex)
-                {
-                    //var logger2 = EngineContext.Current.Resolve<ILogger>();
-                    tlogger.Error(ex.Message, ex, null);
-                }
-            });
-            t.Start();
+            //Task t = new Task(() =>
+            //{
+            //    var tlogger = EngineContext.Current.Resolve<ILogger>();
+            //    try
+            //    {
+            //        ViewServices.Users.UserViewService uservice = new ViewServices.Users.UserViewService();
+            //        uservice.SaveUserList(WXinConfig.WeixinAppId);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        //var logger2 = EngineContext.Current.Resolve<ILogger>();
+            //        tlogger.Error(ex.Message, ex, null);
+            //    }
+            //});
+            //t.Start();
             var logger = EngineContext.Current.Resolve<ILogger>();
 
             logger.Information("Application started", null, null);

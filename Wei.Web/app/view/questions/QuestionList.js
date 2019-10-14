@@ -78,7 +78,7 @@
         },
         {
             xtype: 'container',
-            flex: 2,
+            flex: 1,
             split: true,
 
             layout: {

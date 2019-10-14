@@ -6,7 +6,7 @@ namespace Wei.Data.Mapping.Media
     {
         public PictureMap()
         {
-            this.ToTable("Picture");
+            this.ToTable("F_Picture");
             this.HasKey(p => p.Id);
             this.Property(p => p.ImgUrl).HasMaxLength(500);
             this.Property(p => p.PictureBinary).IsMaxLength();

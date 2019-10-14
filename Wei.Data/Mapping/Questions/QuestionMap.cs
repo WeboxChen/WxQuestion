@@ -12,6 +12,7 @@ namespace Wei.Data.Mapping.Questions
 
             this.Ignore(x => x.AnswerType);
             this.Ignore(x => x.QuestionType);
+            this.Ignore(x => x.MatchingType);
             this.Ignore(x => x.QuestionText);
 
             this.HasRequired(q => q.QuestionBank)

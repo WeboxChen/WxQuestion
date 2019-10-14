@@ -1,5 +1,4 @@
-﻿using Senparc.Weixin.MP.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Wei.Core;
 using Wei.Core.Domain.Custom;

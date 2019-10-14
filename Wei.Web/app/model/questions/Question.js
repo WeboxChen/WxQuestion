@@ -11,6 +11,8 @@ Ext.define('Wei.model.questions.Question', {
         { type: 'string', name: 'answer', persist: true },
         { type: 'float', name: 'next1', persist: true },
         { type: 'float', name: 'next2', persist: true },
-        { type: 'float', name: 'sort', persist: true }
+        { type: 'float', name: 'sort', persist: true },
+        { type: 'string', name: 'groupno', persist: true },
+        { type: 'string', name: 'mtype', persist: true }
     ]
 });

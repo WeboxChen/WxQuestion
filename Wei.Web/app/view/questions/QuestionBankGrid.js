@@ -41,7 +41,7 @@ Ext.define('Wei.view.questions.QuestionBankGrid', {
     //],
 
     columns: [
-        { xtype: 'numbercolumn', text: 'id', dataIndex: 'id', format: '0', hidden: false },
+        { xtype: 'numbercolumn', text: 'id', dataIndex: 'id', format: '0', hidden: false, width: 60 },
         {
             xtype: 'numbercolumn', text: '类型', dataIndex: 'type', format: '0', hidden: false,
             editor: {
@@ -62,16 +62,17 @@ Ext.define('Wei.view.questions.QuestionBankGrid', {
                 return '';
             }
         },
-        { xtype: 'gridcolumn', text: '标题', dataIndex: 'title', hidden: false, editor: { xtype: 'textfield' } },
-        { xtype: 'gridcolumn', text: '描述', dataIndex: 'description', hidden: false, editor: { xtype: 'textfield' } },
-        { xtype: 'gridcolumn', text: '备注', dataIndex: 'remark', hidden: false, editor: { xtype: 'textfield' } },
+        { xtype: 'gridcolumn', text: '标题', dataIndex: 'title', hidden: false, width: 140, editor: { xtype: 'textfield' } },
+        { xtype: 'gridcolumn', text: '描述', dataIndex: 'description', hidden: false, width: 140, editor: { xtype: 'textfield' } },
+        { xtype: 'gridcolumn', text: '备注', dataIndex: 'remark', hidden: false, width: 140, editor: { xtype: 'textfield' } },
         { xtype: 'datecolumn', text: '有效期起始', dataIndex: 'expiredatebegin', format: 'Y-m-d', hidden: false },
         { xtype: 'datecolumn', text: '有效期结束', dataIndex: 'expiredateend', format: 'Y-m-d', hidden: false },
-        { xtype: 'booleancolumn', text: '自动唤醒', dataIndex: 'autoresponse', trueText: '√', falseText: '', width: 100, hidden: false, editor: { xtype: 'checkboxfield' } },
+        { xtype: 'booleancolumn', text: '自动唤醒', dataIndex: 'autoresponse', trueText: '√', falseText: '', width: 80, hidden: false, editor: { xtype: 'checkboxfield' } },
         { xtype: 'gridcolumn', text: '唤醒语句', dataIndex: 'responsekeywords', width: 160, hidden: false, editor: { xtype: 'textfield' } },
         {
-            xtype: 'numbercolumn', text: '状态', dataIndex: 'status', format: '0', hidden: false,
-            renderer: function (d) {
+            xtype: 'numbercolumn', text: '状态', dataIndex: 'status', format: '0', width: 60, hidden: false,
+            renderer: function (d, m, r) {
+                if(r.get(''))
                 if (d === 0)
                     return '启用'
                 else if (d === -1)
@@ -79,7 +80,7 @@ Ext.define('Wei.view.questions.QuestionBankGrid', {
                 return '';
             }
         },
-        { xtype: 'datecolumn', text: '创建时间', dataIndex: 'createtime', format: 'Y-m-d H:i', hidden: false },
+        { xtype: 'datecolumn', text: '创建时间', dataIndex: 'createtime', format: 'Y-m-d H:i', width: 140, hidden: false },
         { xtype: 'gridcolumn', text: '创建人', dataIndex: 'creatorname', hidden: false }
     ]
 });

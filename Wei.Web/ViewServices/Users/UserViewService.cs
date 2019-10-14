@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wei.Core.Configuration;
 using Wei.Core.Infrastructure;
 using Wei.Services.Logging;
 using Wei.Services.Users;

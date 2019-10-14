@@ -9,6 +9,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http;
 using Wei.Core;
+using Wei.Core.Configuration;
 using Wei.Core.Domain.Questions;
 using Wei.Services.Logging;
 using Wei.Services.Questions;
@@ -159,7 +160,7 @@ namespace Wei.Web.API.Controllers
                 var qbviewmodel = jobj.ToObject<QuestionBankViewModel>(); 
                 QuestionBank qbmodel = this._questionBankService.GetQuestionBankById(qbviewmodel.id.ToInt());
                 if (qbmodel == null)
-                    return ResponseMessageExt.Error("参数错误！");
+                    return ResponseMessageExt.Failed("参数错误！");
                 CommonHelper.UpdateT<QuestionBank>(qbmodel, jobj);
                 if (qbviewmodel.userattributes != null && qbviewmodel.userattributes.Length > 0)
                 {
@@ -183,7 +184,7 @@ namespace Wei.Web.API.Controllers
                     var qbviewmodel = jobj.ToObject<QuestionBankViewModel>();
                     QuestionBank qbmodel = this._questionBankService.GetQuestionBankById(qbviewmodel.id.ToInt());
                     if (qbmodel == null)
-                        return ResponseMessageExt.Error("参数错误！");
+                        return ResponseMessageExt.Failed("参数错误！");
                     CommonHelper.UpdateT<QuestionBank>(qbmodel, jobj);
                     if (qbviewmodel.userattributes != null && qbviewmodel.userattributes.Length > 0)
                     {
@@ -212,7 +213,7 @@ namespace Wei.Web.API.Controllers
                 JObject jobj = obj as JObject;
                 var id = jobj.GetValue("id").ToInt();
                 if (id <= 0)
-                    return ResponseMessageExt.Error("参数错误！");
+                    return ResponseMessageExt.Failed("参数错误！");
                 this._questionBankService.DeleteQuestionBank(id);
 
             }
@@ -223,7 +224,7 @@ namespace Wei.Web.API.Controllers
                 {
                     var id = jobj.GetValue("id").ToInt();
                     if (id <= 0)
-                        return ResponseMessageExt.Error("参数错误！");
+                        return ResponseMessageExt.Failed("参数错误！");
                     this._questionBankService.DeleteQuestionBank(id);
                 }
             }
@@ -240,25 +241,26 @@ namespace Wei.Web.API.Controllers
             int qbid;
             if(!int.TryParse(_request.Form["QuestionBank_Id"], out qbid))
             {
-                return Framework.ExtJs.ResponseMessageExt.Error("参数错误！");
+                return Framework.ExtJs.ResponseMessageExt.Failed("参数错误！");
             }
             QuestionBank qbank = _questionBankService.GetQuestionBankById(qbid);
             if(qbank == null || _request.Files.Count == 0)
             {
-                return Framework.ExtJs.ResponseMessageExt.Error("数据错误！");
+                return Framework.ExtJs.ResponseMessageExt.Failed("数据错误！");
             }
             var file = _request.Files[0];
             ExcelReader ereader = new ExcelReader(file.InputStream);
 
             string msg;
-            var questionlist = ereader.Read<Question>("Questions", "Q_Question", out msg);
-            var questionitemlist = ereader.Read<QuestionItem>("QuestionItems", "Q_QuestionItem", out msg);
-            var answerlist = ereader.Read<QuestionAnswer>("Answers", "Q_QuestionAnswer", out msg);
+            var questionlist = ereader.Read<Question>("题目", "Q_Question", out msg);
+            var questionitemlist = ereader.Read<QuestionItem>("选择题选项", "Q_QuestionItem", out msg);
+            var answerlist = ereader.Read<QuestionAnswer>("答案关联", "Q_QuestionAnswer", out msg);
             foreach(var q in questionlist)
             {
                 q.QuestionBank_Id = qbid;
                 q.QType = default(QuestionType).ToString();
                 q.AType = CommonHelper.GetEnumValueByDesc<AnswerType>(q.AType).ToString();
+                q.MType = CommonHelper.GetEnumValueByDesc<MatchingType>(q.MType).ToString();
                 q.QuestionAnswerList = answerlist.Where(x => x.Sort == q.Sort).ToList();
                 q.QuestionItemList = questionitemlist.Where(x=>x.Sort == q.Sort).ToList();
             }
@@ -276,21 +278,22 @@ namespace Wei.Web.API.Controllers
         {
             if(model.questionbankid ==0 || model.userids == null || model.userids.Length == 0)
             {
-                return ResponseMessageExt.Error("参数错误！");
+                return ResponseMessageExt.Failed("参数错误！");
             }
             
             var questionbank = this._questionBankService.GetQuestionBankById(model.questionbankid);
             if(questionbank == null)
             {
-                return ResponseMessageExt.Error("参数错误！");
+                return ResponseMessageExt.Failed("参数错误！");
             }
             if (string.IsNullOrEmpty(questionbank.ResponseKeyWords))
             {
-                return ResponseMessageExt.Error("没有唤醒语句！");
+                return ResponseMessageExt.Failed("没有唤醒语句！");
             }
 
             StringBuilder sbulder = new StringBuilder();
             string msg = WXinConfig.InvitationText.Replace("{title}", questionbank.Title).Replace("{responsekeywords}", questionbank.ResponseKeyWords.Split('|')[0]);
+
             foreach (var userid in model.userids)
             {
                 var user = this._userService.GetUserById(userid);
@@ -310,7 +313,9 @@ namespace Wei.Web.API.Controllers
                     this._logger.Warning("推送消息发送失败。", ex, user);
                 }
             }
-            return ResponseMessageExt.Success(sbulder.ToString());
+            if (sbulder.Length == 0)
+                return ResponseMessageExt.Success();
+            return ResponseMessageExt.Failed(sbulder.ToString());
         }
     }
 }

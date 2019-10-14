@@ -49,6 +49,10 @@
         'Wei.model.custom.UserAnswer',
         'Wei.model.custom.UserAnswerDetail',
 
+        // sys
+        'Wei.model.sys.Property',
+        'Wei.model.sys.PropertyValue', 
+
         /*********************************************************************************************
          * stores 
          */
@@ -69,6 +73,10 @@
         // custom
         'Wei.store.custom.UserAnswer',
         'Wei.store.custom.UserAnswerDetail',
+
+        // sys
+        'Wei.store.sys.Property',
+        'Wei.store.sys.PropertyValue', 
 
         /*********************************************************************************************
          * base grid 
@@ -105,12 +113,20 @@
         'Wei.view.common.FileInfo',
 
         // setting
+        'Wei.view.setting.PropertyViewModel',
+
+        'Wei.view.setting.PropertyController',
         'Wei.view.setting.ModuletypeController',
-        'Wei.view.setting.ModuleTypeGrid',
-        'Wei.view.setting.ModuleTypeInfo',
         'Wei.view.setting.QuestionBankTagController',
+
+        'Wei.view.setting.PropertyGrid',
+        'Wei.view.setting.PropertyValueGrid',
+        'Wei.view.setting.ModuleTypeGrid',
         'Wei.view.setting.QuestionBankTagGrid',
+
+        'Wei.view.setting.ModuleTypeInfo',
         'Wei.view.setting.QuestionBankTagInfo',
+        'Wei.view.setting.PropertySetting',
 
         // questions
         'Wei.view.questions.IndexViewModel',

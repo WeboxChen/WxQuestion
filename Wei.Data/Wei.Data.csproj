@@ -63,6 +63,7 @@
     <Compile Include="Initializers\CreateTablesIfNotExist.cs" />
     <Compile Include="Mapping\Custom\UserAnswerDetailMap.cs" />
     <Compile Include="Mapping\Custom\UserAnswerDetail_MediaMap.cs" />
+    <Compile Include="Mapping\Custom\UserAnswerQueueMap.cs" />
     <Compile Include="Mapping\Logging\ActionRecordMap.cs" />
     <Compile Include="Mapping\Logging\LogMap.cs" />
     <Compile Include="Mapping\Media\DownloadMap.cs" />
@@ -74,6 +75,8 @@
     <Compile Include="Mapping\Questions\QuestionItemMap.cs" />
     <Compile Include="Mapping\Questions\QuestionMap.cs" />
     <Compile Include="Mapping\Custom\UserAnswerMap.cs" />
+    <Compile Include="Mapping\Sys\PropertyMap.cs" />
+    <Compile Include="Mapping\Sys\PropertyValueMap.cs" />
     <Compile Include="Mapping\Users\DepartmentMap.cs" />
     <Compile Include="Mapping\Users\LoginPermissionMap.cs" />
     <Compile Include="Mapping\Users\PermissionRecordMap.cs" />

@@ -10,29 +10,9 @@ Ext.define('Wei.view.authentication.AuthenticationController', {
 
     onLoginButton: function (t) {
         // ? 可以尝试用 AuthenticationModel 获取值
-        var loginForm = t.findParentByType('form');
-        var values = loginForm.getValues();
-        var that = this;
-
-        /*
-                var users = Ext.create('Wei.data.base.User');
-                var islogin = false;
-                var user;
-                Ext.each(users.data, function (u) {
-                    if (u.LoginName == values['userid'] && u.Password == values['password']) {
-                        user = u;
-                        islogin = true;
-                    }
-                });
-                if (!islogin) {
-                    that.alertErrorMsg('账号或密码错误哦！');
-                    return;
-                }
-                var store = new Ext.util.LocalStorage({ id: 'Wei' });
-                store.setItem('Permission', Ext.util.Base64.encode(JSON.stringify(user)));
-                that.loadBaseData();
-                that.redirectTo('setting_moduletypegrid');
-        */
+        var that = this,
+            loginForm = t.findParentByType('form'),
+            values = loginForm.getValues();
 
         var logindata = { LoginName: values['userid'], Password: md5(values['password']) };
         that.postJson('Authentication/Login', logindata,
@@ -45,16 +25,6 @@ Ext.define('Wei.view.authentication.AuthenticationController', {
                 store.setItem("Permission", Ext.util.Base64.encode(JSON.stringify(obj)));
                 that.loadBaseData();
                 that.redirectTo('questions');
-
-                // 加载基础数据
-                //        that.loadBaseData();
-                //        //that.mainModelLoad();
-                //        that.loadModules();
-                //        //that.redirectTo(that.loadModules());
-                //        //var target = 'order';
-                //        //if (that.IsClientUser())
-                //        //    target = 'client';
-                //        //that.redirectTo(target);
             },
             function () {
 

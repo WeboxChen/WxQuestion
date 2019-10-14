@@ -10,7 +10,7 @@
         {
             return new ResponseMessageExt() { success = true, msg = msg, obj = obj };
         }
-        public static ResponseMessageExt Error(string msg = "", object obj = null)
+        public static ResponseMessageExt Failed(string msg = "", object obj = null)
         {
             return new ResponseMessageExt() { success = false, msg = msg, obj = obj };
         }

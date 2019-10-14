@@ -147,6 +147,11 @@ namespace Wei.Services.Questions
             return this._questionRepository.Table.First(x => x.QuestionBank_Id == questionbankid && x.Sort == questionno);
         }
 
+        public Question GetQuestionById(int id)
+        {
+            return this._questionRepository.GetById(id);
+        }
+
         public QuestionBank GetQuestionBankById(int id)
         {
             return this._questionBankRepository.GetById(id);

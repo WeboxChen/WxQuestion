@@ -1,5 +1,6 @@
 ﻿using Senparc.NeuChar.Entities;
 using Senparc.Weixin.MP.Entities;
+using Wei.Core.Configuration;
 using Wei.Web.ViewServices.Users;
 
 namespace Wei.Web.API.Handlers

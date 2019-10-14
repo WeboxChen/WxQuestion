@@ -77,26 +77,29 @@
     <Reference Include="MiniProfiler.Mvc, Version=3.0.11.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniProfiler.MVC4.3.0.11\lib\net40\MiniProfiler.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Senparc.CO2NET, Version=0.3.0.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Senparc.CO2NET.0.3.0.2\lib\net45\Senparc.CO2NET.dll</HintPath>
+    <Reference Include="Senparc.CO2NET, Version=1.0.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.CO2NET.1.0.101\lib\net45\Senparc.CO2NET.dll</HintPath>
     </Reference>
-    <Reference Include="Senparc.CO2NET.APM, Version=0.1.3.2, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Senparc.CO2NET.APM.0.1.3.2\lib\net45\Senparc.CO2NET.APM.dll</HintPath>
+    <Reference Include="Senparc.CO2NET.APM, Version=0.5.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.CO2NET.APM.0.5.101\lib\net45\Senparc.CO2NET.APM.dll</HintPath>
     </Reference>
-    <Reference Include="Senparc.NeuChar, Version=0.4.4.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Senparc.NeuChar.0.4.4.4\lib\net45\Senparc.NeuChar.dll</HintPath>
+    <Reference Include="Senparc.NeuChar, Version=1.0.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.NeuChar.1.0.101\lib\net45\Senparc.NeuChar.dll</HintPath>
     </Reference>
-    <Reference Include="Senparc.Weixin, Version=6.2.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Senparc.Weixin.6.2.1\lib\net45\Senparc.Weixin.dll</HintPath>
+    <Reference Include="Senparc.NeuChar.App, Version=0.6.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.NeuChar.App.0.6.101\lib\net45\Senparc.NeuChar.App.dll</HintPath>
     </Reference>
-    <Reference Include="Senparc.Weixin.MP, Version=16.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Senparc.Weixin.MP.16.5.1\lib\net45\Senparc.Weixin.MP.dll</HintPath>
+    <Reference Include="Senparc.Weixin, Version=6.6.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.Weixin.6.6.101\lib\net45\Senparc.Weixin.dll</HintPath>
     </Reference>
-    <Reference Include="Senparc.Weixin.MP.MvcExtension, Version=7.1.13.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Senparc.Weixin.MP.MVC.7.1.13\lib\net45\Senparc.Weixin.MP.MvcExtension.dll</HintPath>
+    <Reference Include="Senparc.Weixin.MP, Version=16.9.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.Weixin.MP.16.9.101\lib\net45\Senparc.Weixin.MP.dll</HintPath>
+    </Reference>
+    <Reference Include="Senparc.Weixin.MP.MvcExtension, Version=7.4.101.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Senparc.Weixin.MP.MVC.7.4.101\lib\net45\Senparc.Weixin.MP.MvcExtension.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Primitives, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ComponentModel.Primitives.4.3.0\lib\net45\System.ComponentModel.Primitives.dll</HintPath>
@@ -105,6 +108,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.6\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -118,7 +122,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.6\lib\net45\System.Web.Http.dll</HintPath>
@@ -126,20 +130,20 @@
     <Reference Include="System.Web.Http.WebHost, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.6\lib\net45\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.6\lib\net45\System.Web.Mvc.dll</HintPath>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -171,6 +175,8 @@
     <Content Include="app\model\questions\Question.js" />
     <Content Include="app\model\questions\QuestionBank.js" />
     <Content Include="app\model\setting\QuestionBankTag.js" />
+    <Content Include="app\model\sys\Property.js" />
+    <Content Include="app\model\sys\PropertyValue.js" />
     <Content Include="app\model\TreeBase.js" />
     <Content Include="app\model\account\User.js" />
     <Content Include="app\proxy\Api.js" />
@@ -189,6 +195,8 @@
     <Content Include="app\store\questions\Question.js" />
     <Content Include="app\store\questions\QuestionBank.js" />
     <Content Include="app\store\setting\QuestionBankTag.js" />
+    <Content Include="app\store\sys\Property.js" />
+    <Content Include="app\store\sys\PropertyValue.js" />
     <Content Include="app\view\account\UserAttributeController.js" />
     <Content Include="app\view\account\UserAttributeGrid.js" />
     <Content Include="app\view\account\UserAttributeViewModel.js" />
@@ -241,6 +249,9 @@
     <Content Include="app\view\questions\QuestionItemGrid.js" />
     <Content Include="app\view\questions\QuestionList.js" />
     <Content Include="app\view\questions\QuestionModel.js" />
+    <Content Include="app\view\setting\PropertyController.js" />
+    <Content Include="app\view\setting\PropertySetting.js" />
+    <Content Include="app\view\setting\PropertyViewModel.js" />
     <Content Include="app\view\setting\QuestionBankTagController.js" />
     <Content Include="app\view\setting\QuestionBankTagGrid.js" />
     <Content Include="app\view\setting\QuestionBankTagInfo.js" />
@@ -250,6 +261,8 @@
     <Content Include="app\view\setting\ModuleTypeGrid.js" />
     <Content Include="app\view\setting\ModuleTypeInfo.js" />
     <Content Include="app\view\setting\SettingModel.js" />
+    <Content Include="app\view\setting\PropertyGrid.js" />
+    <Content Include="app\view\setting\PropertyValueGrid.js" />
     <Content Include="ClosePager.html" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />

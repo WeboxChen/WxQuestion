@@ -10,6 +10,7 @@ namespace Wei.Core.Domain.Custom
     public class UserAnswer: BaseEntity
     {
         private ICollection<UserAnswerDetail> _userAnswerDetailList;
+        private ICollection<UserAnswerQueue> _userAnswerQueueList;
         /// <summary>
         /// 用户id
         /// </summary>
@@ -46,6 +47,15 @@ namespace Wei.Core.Domain.Custom
         {
             get { return _userAnswerDetailList ?? (_userAnswerDetailList = new List<UserAnswerDetail>()); }
             set { _userAnswerDetailList = value; }
+        }
+
+        /// <summary>
+        /// 本次答题所有队列
+        /// </summary>
+        public virtual ICollection<UserAnswerQueue> UserAnswerQueueList
+        {
+            get { return _userAnswerQueueList ?? (_userAnswerQueueList = new List<UserAnswerQueue>()); }
+            set { _userAnswerQueueList = value; }
         }
     }
 }

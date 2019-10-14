@@ -9,5 +9,6 @@ namespace Wei.Core.Configuration
     public class WeiConfig
     {
         public string Name { get; set; }
+        //public string WeixinAppId { get; set; }
     }
 }

@@ -61,6 +61,8 @@ namespace Wei.Services.Questions
         /// <returns></returns>
         Question GetQuestion(int questionbankid, decimal questionno = 0, User user = null);
 
+        Question GetQuestionById(int id);
+
         /// <summary>
         /// 获取默认的
         /// </summary>

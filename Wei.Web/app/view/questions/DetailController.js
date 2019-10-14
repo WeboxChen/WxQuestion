@@ -195,6 +195,13 @@
             return store.getAt(index).get('name');
         return '';
     },
+    onQuestionGridMTypeRenderer: function (v, m, r) {
+        var store = this.getStore('matchingtypelist');
+        var index = store.find('code', v);
+        if (index >= 0)
+            return store.getAt(index).get('name');
+        return '';
+    },
     onQuestionAnswerAdd: function (t) {
         var that = this,
             qgrid = that.getView().down('questions_questiongrid'),

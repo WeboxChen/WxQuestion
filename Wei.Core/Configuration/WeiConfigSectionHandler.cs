@@ -18,9 +18,12 @@ namespace Wei.Core.Configuration
         public object Create(object parent, object configContext, XmlNode section)
         {
             var config = new WeiConfig();
-            var node = section.SelectSingleNode("Name");
+            var node = section.SelectSingleNode("name");
             if (node != null)
                 config.Name = node.InnerText;
+            //node = section.SelectSingleNode("weixinappid");
+            //if (node != null)
+            //    config.WeixinAppId = node.InnerText;
             return config;
         }
     }

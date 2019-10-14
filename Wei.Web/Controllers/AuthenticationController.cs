@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Wei.Core;
+using Wei.Core.Configuration;
 using Wei.Services.Logging;
 using Wei.Services.Users;
 using Wei.Web.Framework.Controllers;
@@ -21,7 +22,9 @@ namespace Wei.Web.Controllers
         private readonly IUserRegistrationService _userRegistrationService;
         private readonly IAuthenticationService _authenticationService;
         private readonly IUserService _userService;
+        private readonly IWorkContext _workContext;
         private readonly IWebHelper _webHelper;
+        private readonly HttpContextBase _httpContext;
         private readonly ILogger _logger;
         #endregion
 
@@ -29,13 +32,17 @@ namespace Wei.Web.Controllers
         public AuthenticationController(IUserRegistrationService userRegistrationService
             , IAuthenticationService authenticationService
             , IUserService userService
+            , IWorkContext workContext
             , IWebHelper webHelper
+            , HttpContextBase httpContext
             , ILogger logger)
         {
             this._userRegistrationService = userRegistrationService;
             this._authenticationService = authenticationService;
             this._userService = userService;
+            this._workContext = workContext;
             this._webHelper = webHelper;
+            this._httpContext = httpContext;
             this._logger = logger;
         }
         #endregion
@@ -77,10 +84,41 @@ namespace Wei.Web.Controllers
             }
             else
             {
-                return Json(ResponseMessageExt.Error(loginResult.ToString()));
+                return Json(ResponseMessageExt.Failed(loginResult.ToString()));
             }
         }
-        
+
+
+        /// <summary>
+        /// 登出
+        /// </summary>
+        /// <returns></returns>
+        [JsonCallback]
+        [HttpPost]
+        public ActionResult Logout()
+        {
+            this._authenticationService.SignOut();
+            HttpCookie tokenCookie = this._httpContext.Response.Cookies.Get("Token");
+            if (tokenCookie != null)
+                tokenCookie.Expires = DateTime.Now.AddDays(-1);
+            HttpCookie userCookie = this._httpContext.Response.Cookies.Get("Wei.user");
+            if (userCookie != null)
+                userCookie.Expires = DateTime.Now.AddDays(-1);
+            return Json(ResponseMessageExt.Success());
+        }
+
+        /// <summary>
+        /// 验证登录状态
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult CheckLogin()
+        {
+            if (this._workContext.CurrentUser == null)
+                return Json(ResponseMessageExt.Failed());
+            return Json(ResponseMessageExt.Success());
+        }
+
         public ActionResult UserOAuth()
         {
             this._logger.Debug("UserOAuth");

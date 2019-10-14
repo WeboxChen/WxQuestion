@@ -83,6 +83,28 @@ namespace Wei.Core.Domain.Questions
         /// </summary>
         public string Remark { get; set; }
         /// <summary>
+        /// 分组号
+        /// </summary>
+        public string GroupNo { get; set; }
+        /// <summary>
+        /// 结果匹配类型
+        /// </summary>
+        public string MType { get; set; }
+        public MatchingType MatchingType
+        {
+            get
+            {
+                MatchingType mtype;
+                if (Enum.TryParse<MatchingType>(MType, out mtype))
+                    return mtype;
+                return MatchingType.Single;
+            }
+            set
+            {
+                MType = value.ToString();
+            }
+        }
+        /// <summary>
         /// 问题文本
         /// </summary>
         public string QuestionText

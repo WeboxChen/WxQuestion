@@ -92,7 +92,7 @@ namespace Wei.Web.API.Controllers
         {
             if(model == null || model.ids.Length == 0)
             {
-                return ResponseMessageExt.Error("参数错误");
+                return ResponseMessageExt.Failed("参数错误");
             }
             foreach(var id in model.ids)
             {

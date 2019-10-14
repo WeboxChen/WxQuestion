@@ -30,5 +30,12 @@ namespace Wei.Web.Tests
             Console.WriteLine($"source: {source}");
             Console.WriteLine($"result: {str}");
         }
+
+        [TestMethod]
+        public void TestMethod3()
+        {
+            decimal num  = decimal.Floor(7.31m + 1);
+            Console.WriteLine(num);
+        }
     }
 }

@@ -31,7 +31,21 @@ Ext.define('Wei.view.questions.QuestionGrid', {
             },
             renderer: 'onQuestionGridQTypeRenderer'
         },
+        {
+            xtype: 'gridcolumn', text: '匹配类型', dataIndex: 'mtype', width: 100, hidden: false, editor: {
+                xtype: 'combobox',
+                bind: {
+                    store: '{matchingtypelist}'
+                },
+                editable: false,
+                queryMode: 'local',
+                displayField: 'name',
+                valueField: 'code'
+            },
+            renderer: 'onQuestionGridMTypeRenderer'
+        },
         { xtype: 'gridcolumn', text: '问题文本', dataIndex: 'text', width: 220, hidden: false, editor: { xtype: 'textfield' } },
+        { xtype: 'gridcolumn', text: '组合编号', dataIndex: 'groupno', width: 80, hidden: false, editor: { xtype: 'textfield' } },
         {
             xtype: 'gridcolumn', text: '问题图片', dataIndex: 'imagecode', hidden: true, editor: {
                 xtype: 'filefield'
