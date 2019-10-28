@@ -6,6 +6,11 @@
 *.user
 *.userosscache
 *.sln.docstates
+WXTools/
+WinDemo/
+Senparc.Weixin.MP.BuildOutPut/
+MenusManager/
+TestResults/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
