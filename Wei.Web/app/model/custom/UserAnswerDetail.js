@@ -15,7 +15,8 @@ Ext.define('Wei.model.custom.UserAnswerDetail', {
         { type: 'string', name: 'atype', persist: false },
         { type: 'string', name: 'qtypename', persist: false },
         { type: 'string', name: 'atypename', persist: false },
-        { type: 'string', name: 'voicepath', persist: false }
+        { type: 'string', name: 'voicepath', persist: false },
+        { type: 'bool', name: 'voicehidden', persist: false, calculate: function (d) { if (d.voicepath) return false; return true; } }
 
     ]
 });

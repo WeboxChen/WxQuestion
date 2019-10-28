@@ -31,8 +31,8 @@ namespace Wei.Web.Models.Users
         /// </summary>
         [DisplayName("邮箱：")]
         [AllowHtml]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "请输入邮箱信息！")]
-        [RegularExpression(@"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$", ErrorMessage = "请输入正确的电子邮箱地址！")]
+        //[Required(AllowEmptyStrings = false, ErrorMessage = "请输入邮箱信息！")]
+        //[RegularExpression(@"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$", ErrorMessage = "请输入正确的电子邮箱地址！")]
         public string Email { get; set; }
         /// <summary>
         /// 电话
@@ -47,7 +47,7 @@ namespace Wei.Web.Models.Users
         /// </summary>
         [DisplayName("QQ：")]
         [AllowHtml]
-        [StringLength(20, MinimumLength = 5)]
+        //[StringLength(20, MinimumLength = 5)]
         public string QQ { get; set; }
         public int IsAdmin { get; set; }
         public string OpenId { get; set; }

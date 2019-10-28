@@ -113,7 +113,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sys\IDBService.cs" />
     <Compile Include="Sys\IPropertyService.cs" />
+    <Compile Include="Sys\IWordsSubstitutionService.cs" />
     <Compile Include="Sys\PropertyService.cs" />
+    <Compile Include="Sys\WordsSubstitutionService.cs" />
     <Compile Include="Users\ChangePasswordRequest.cs" />
     <Compile Include="Users\ChangePasswordResult.cs" />
     <Compile Include="Users\IUserAttributeService.cs" />

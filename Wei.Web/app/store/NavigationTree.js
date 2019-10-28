@@ -74,6 +74,10 @@ Ext.define('Wei.store.NavigationTree', {
                         text: '基础数据',
                         leaf: true,
                         viewType: 'setting_basic'
+                    }, {
+                        text: '修正簿',
+                        leaf: true,
+                        viewType: 'setting_wordssubtitutionlist'
                     }
                 ]
             },

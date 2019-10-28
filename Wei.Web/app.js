@@ -22,6 +22,7 @@
         'Wei.view.BaseController',
         'Wei.view.BaseGrid',
         'Wei.view.NonPageBaseGrid',
+        'Wei.view.BaseActionController',
 
         /*********************************************************************************************
          * data
@@ -52,6 +53,7 @@
         // sys
         'Wei.model.sys.Property',
         'Wei.model.sys.PropertyValue', 
+        'Wei.model.sys.WordsSubstitution',
 
         /*********************************************************************************************
          * stores 
@@ -77,6 +79,7 @@
         // sys
         'Wei.store.sys.Property',
         'Wei.store.sys.PropertyValue', 
+        'Wei.store.sys.WordsSubstitution',
 
         /*********************************************************************************************
          * base grid 
@@ -114,19 +117,23 @@
 
         // setting
         'Wei.view.setting.PropertyViewModel',
+        'Wei.view.setting.WordsSubstitutionViewModel',
 
         'Wei.view.setting.PropertyController',
         'Wei.view.setting.ModuletypeController',
         'Wei.view.setting.QuestionBankTagController',
+        'Wei.view.setting.WordsSubstitutionController',
 
         'Wei.view.setting.PropertyGrid',
         'Wei.view.setting.PropertyValueGrid',
         'Wei.view.setting.ModuleTypeGrid',
         'Wei.view.setting.QuestionBankTagGrid',
+        'Wei.view.setting.WordsSubstitutionGrid',
 
         'Wei.view.setting.ModuleTypeInfo',
         'Wei.view.setting.QuestionBankTagInfo',
         'Wei.view.setting.PropertySetting',
+        'Wei.view.setting.WordsSubstitutionList',
 
         // questions
         'Wei.view.questions.IndexViewModel',

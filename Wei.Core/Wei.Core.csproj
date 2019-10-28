@@ -144,6 +144,7 @@
     <Compile Include="Domain\Sys\DBTable.cs" />
     <Compile Include="Domain\Sys\Property.cs" />
     <Compile Include="Domain\Sys\PropertyValue.cs" />
+    <Compile Include="Domain\Sys\WordsSubstitution.cs" />
     <Compile Include="Domain\Users\LoginPermission.cs" />
     <Compile Include="Domain\Users\PasswordFormat.cs" />
     <Compile Include="Domain\Users\UserAttribute.cs" />

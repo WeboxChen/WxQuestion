@@ -82,6 +82,10 @@
                 }
                 , '-',
                 {
+                    text: '修正词',
+                    handler: 'onWordsSubstitutionHandler'
+                },
+                {
                     text: '邀请答题',
                     handler: 'onRequestUserAnswer'
                 }

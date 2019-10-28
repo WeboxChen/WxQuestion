@@ -41,7 +41,7 @@ Ext.define('Wei.view.setting.QuestionBankTagGrid', {
     ],
 
     columns: [
-        { xtype: 'numbercolumn', text: 'id', dataIndex: 'id', format: '0', hidden: false },
+        { xtype: 'numbercolumn', text: 'id', dataIndex: 'id', format: '0', width: 60, hidden: false },
         { xtype: 'gridcolumn', text: '标签', dataIndex: 'name', hidden: false, editor: { xtype: 'textfield' } },
         {
             xtype: 'numbercolumn', text: '标签类型', dataIndex: 'type', format: '0', hidden: false,
@@ -63,6 +63,6 @@ Ext.define('Wei.view.setting.QuestionBankTagGrid', {
                 return '';
             }
         },
-        { xtype: 'gridcolumn', text: '描述', dataIndex: 'description', hidden: false, editor: { xtype: 'textfield' } }
+        { xtype: 'gridcolumn', text: '描述', dataIndex: 'description', hidden: false, width: 160, editor: { xtype: 'textfield' } }
     ]
 });

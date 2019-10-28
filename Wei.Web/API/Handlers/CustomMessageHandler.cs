@@ -341,27 +341,35 @@ namespace Wei.Web.API.Handlers
         {
             var user = this._userService.GetUserById(requestMessage.FromUserName);
             string voice = null;
-            Stream stream = null;
-            try
+            using(Stream stream = new MemoryStream())
             {
-                string filedir = Path.Combine(WXinConfig.MediaDir, "voice\\");
-                if (!Directory.Exists(filedir))
-                    Directory.CreateDirectory(filedir);
-                string filepath = Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, filedir);
-                stream = File.OpenRead(filepath);
-            }
-            catch (Exception ex)
-            {
-                this._logger.Information(string.Format("WXinConfig.WeixinAppId:{0}; requestMessage.MediaId:{1}", WXinConfig.WeixinAppId, requestMessage.MediaId));
-                this._logger.Error(ex.Message, ex);
-            }
-            if(stream != null)
-            {
-                byte[] bytes = bytes = new byte[stream.Length];
-                
-                stream.Read(bytes, 0, bytes.Length);
-                voice = Convert.ToBase64String(bytes);
-                stream.Close();
+                try
+                {
+                    //string filedir = Path.Combine(WXinConfig.MediaDir, "voice\\");
+                    //if (!Directory.Exists(filedir))
+                    //    Directory.CreateDirectory(filedir);
+                    //string filepath = Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, filedir);
+                    Senparc.Weixin.MP.AdvancedAPIs.MediaApi.Get(WXinConfig.WeixinAppId, requestMessage.MediaId, stream);
+                    //if(result.errcode != Senparc.Weixin.ReturnCode.请求成功)
+                    //    this._logger.Information(string.Format("WXinConfig.WeixinAppId:{0}; requestMessage.MediaId:{1}; errormsg: {2}"
+                    //        , WXinConfig.WeixinAppId, requestMessage.MediaId, result.errmsg));
+                    //stream = File.OpenRead(filepath);
+
+                }
+                catch (Exception ex)
+                {
+                    this._logger.Information(string.Format("WXinConfig.WeixinAppId:{0}; requestMessage.MediaId:{1}", WXinConfig.WeixinAppId, requestMessage.MediaId));
+                    this._logger.Error(ex.Message, ex);
+                }
+                if (stream != null)
+                {
+                    byte[] bytes = bytes = new byte[stream.Length];
+
+                    stream.Position = 0;
+                    stream.Read(bytes, 0, bytes.Length);
+                    voice = Convert.ToBase64String(bytes);
+                    stream.Close();
+                }
             }
 
             return CustomResponse(requestMessage.Recognition.TrimEnd('。'), user, MediaType.Voice, voice);

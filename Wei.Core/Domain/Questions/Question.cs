@@ -118,7 +118,7 @@ namespace Wei.Core.Domain.Questions
                     case AnswerType.MultiCheck:
                         StringBuilder text = new StringBuilder();
                         if (!string.IsNullOrEmpty(Text))
-                            text.Append(Text);
+                            text.AppendLine(Text);
                         var questionitemlist = this.QuestionItemList.OrderBy(x => x.Code);
                         foreach (var item in QuestionItemList)
                         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Wei.Core;
 
@@ -34,8 +35,9 @@ namespace Wei.Web.Tests
         [TestMethod]
         public void TestMethod3()
         {
-            decimal num  = decimal.Floor(7.31m + 1);
-            Console.WriteLine(num);
+            StringBuilder sbuilder = new StringBuilder("abcdesfdsdfdgedrtersfrsdsf");
+            sbuilder.Replace("sd", "cw");
+            Console.WriteLine(sbuilder.ToString());
         }
     }
 }

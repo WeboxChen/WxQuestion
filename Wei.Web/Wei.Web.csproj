@@ -177,6 +177,7 @@
     <Content Include="app\model\setting\QuestionBankTag.js" />
     <Content Include="app\model\sys\Property.js" />
     <Content Include="app\model\sys\PropertyValue.js" />
+    <Content Include="app\model\sys\WordsSubstitution.js" />
     <Content Include="app\model\TreeBase.js" />
     <Content Include="app\model\account\User.js" />
     <Content Include="app\proxy\Api.js" />
@@ -197,6 +198,7 @@
     <Content Include="app\store\setting\QuestionBankTag.js" />
     <Content Include="app\store\sys\Property.js" />
     <Content Include="app\store\sys\PropertyValue.js" />
+    <Content Include="app\store\sys\WordsSubstitution.js" />
     <Content Include="app\view\account\UserAttributeController.js" />
     <Content Include="app\view\account\UserAttributeGrid.js" />
     <Content Include="app\view\account\UserAttributeViewModel.js" />
@@ -212,6 +214,7 @@
     <Content Include="app\view\authentication\Login.js" />
     <Content Include="app\view\authentication\PasswordReset.js" />
     <Content Include="app\view\authentication\Register.js" />
+    <Content Include="app\view\BaseActionController.js" />
     <Content Include="app\view\BaseController.js" />
     <Content Include="app\view\BaseGrid.js" />
     <Content Include="app\view\common\FileInfo.js" />
@@ -263,6 +266,10 @@
     <Content Include="app\view\setting\SettingModel.js" />
     <Content Include="app\view\setting\PropertyGrid.js" />
     <Content Include="app\view\setting\PropertyValueGrid.js" />
+    <Content Include="app\view\setting\WordsSubstitutionController.js" />
+    <Content Include="app\view\setting\WordsSubstitutionGrid.js" />
+    <Content Include="app\view\setting\WordsSubstitutionList.js" />
+    <Content Include="app\view\setting\WordsSubstitutionViewModel.js" />
     <Content Include="ClosePager.html" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />

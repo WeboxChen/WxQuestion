@@ -250,6 +250,70 @@ Ext.define('Wei.view.questions.IndexController', {
                 })
         });
     },
+    // 题库修正词
+    onWordsSubstitutionHandler: function (t) {
+        var that = this,
+            grid = t.up('grid'),
+            selection = grid.getSelection();
+        if (selection.length == 0)
+            return;
+
+        var record = selection[0];
+        that.alertWindow('修正词列表', {
+            xtype: 'container',
+            controller: 'setting_wordssubstitution',
+            viewModel: 'setting_wordssubstitution',
+
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+            },
+            items: [
+                {
+                    xtype: 'setting_wordssubstitutiongrid',
+                    bind: {
+                        store: '{wordssubstitutionlist}',
+                    },
+                    _record: record,
+                    flex: 1,
+                    tbar: [
+                        {
+                            text: '添加',
+                            handler: 'onWordsSubstitutionAdd'
+                        }, {
+                            xtype: 'splitbutton',
+                            text: '修改',
+                            handler: 'onEdit',
+                            menu: {
+                                items: [
+                                    {
+                                        text: '单项修改',
+                                        handler: 'onEdit'
+                                    },
+                                    {
+                                        text: '批量修改',
+                                        handler: 'onMultiEdit'
+                                    }
+                                ]
+                            }
+                        }, {
+                            text: '删除',
+                            handler: 'onDel'
+                        }, {
+                            text: '取消',
+                            handler: 'onCancel'
+                        }, {
+                            text: '保存',
+                            handler: 'onSave'
+                        }
+                    ],
+                    listeners: {
+                        render: 'onWordsSubstitutionGridRender',
+                    }
+                }
+            ]
+        })
+    },
 
     // questionBank grid
     onQuestionBankGridDblClick: function (t, r, ele, ri, e, eopts) {

@@ -160,11 +160,13 @@
             useranswerdetailgrid = t.down('custom_useranswerdetailgrid'),
             selection = useranswerdetailgrid.getSelectionModel(),
             userdetailstore = that.getStore('useranswerdetaillist');
-        userdetailstore.setRemoteFilter(true);
+        //userdetailstore.setRemoteFilter(true);
+
+        RongIMLib.RongIMVoice.init();
         userdetailstore.on({
             load: function (s, r, suc, oper, eopt) {
                 if (suc && r.length > 0) {
-                    userdetailstore.setRemoteFilter(false);
+                    //userdetailstore.setRemoteFilter(false);
                     // selection.select(0);
                 }
             }
@@ -176,7 +178,7 @@
         var path = gpitem._rowContext.record.get('voicepath');
 
         if (path) {
-            RongIMLib.RongIMVoice.init();
+            //RongIMLib.RongIMVoice.init();
             RongIMLib.RongIMVoice.play(path);
         }
         //console.log(path);

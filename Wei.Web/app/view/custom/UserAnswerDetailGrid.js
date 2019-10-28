@@ -8,9 +8,9 @@ Ext.define('Wei.view.custom.UserAnswerDetailGrid', {
 
     tbar: [
         {
-            text: '添加',
-            handler: 'onAdd'
-        }, {
+        //    text: '添加',
+        //    handler: 'onAdd'
+        //}, {
             xtype: 'splitbutton',
             text: '修改',
             handler: 'onEdit',
@@ -53,17 +53,14 @@ Ext.define('Wei.view.custom.UserAnswerDetailGrid', {
             width: 120,
             widget: {
                 xtype: 'buttongroup',
-                //bind: {
-                //    _wei: '{record.viocepath}'
-                //},
+                bind: {
+                    hidden: '{record.voicehidden}'
+                },
                 items: [
                     {
                         xtype: 'button',
                         text: 'Play',
                         scale: 'small',
-                        //bind: {
-                        //    _data: '{viocepath}'
-                        //},
                         handler: 'onAnswerViocePlay'
                     },
                     {
@@ -73,14 +70,6 @@ Ext.define('Wei.view.custom.UserAnswerDetailGrid', {
                         handler: 'onAnswerVioceStop'
                     }
                 ]
-                //bind: {
-                //    html: '<audio src="{record.voicepath}"  controls="controls" ></audio>'
-                //}
-                //bind: '{record.voicepath}',
-                //html: '<audio src="{record.voicepath}" controls="controls" />'
-                //bind: {
-                    //tpl: '<audio src="123" src="{0}"  controls="controls" ></audio>'
-                //}
             }
         },
         { xtype: 'datecolumn', text: '答题开始时间', dataIndex: 'start', format: 'Y-m-d H:i', hidden: false, width: 120 },

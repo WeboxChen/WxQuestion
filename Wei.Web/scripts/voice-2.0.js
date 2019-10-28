@@ -122,7 +122,9 @@ var RongIMLib;
             return new Blob(byteArrays, mimeType);
         };
         RongIMVoice.palyVoice = function (base64Data) {
-            var reader = new FileReader(), blob = this.base64ToBlob(base64Data, "audio/amr"), me = this;
+            var reader = new FileReader(),
+                blob = this.base64ToBlob(base64Data, "audio/amr"),
+                me = this;
             reader.onload = function () {
                 if (!AMR) {
                     setTimeout(function () {

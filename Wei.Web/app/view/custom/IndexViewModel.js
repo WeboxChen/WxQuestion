@@ -10,7 +10,8 @@
         },
 
         useranswerdetaillist: {
-            type: 'custom_useranswerdetail'
+            type: 'custom_useranswerdetail',
+            remoteFilter: true
         }
     }
 });

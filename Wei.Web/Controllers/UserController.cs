@@ -61,11 +61,11 @@ namespace Wei.Web.Controllers
                 LoginName = user.LoginName,
                 Address = user.Address,
                 Education = user.Education,
-                Email = user.Email,
+                //Email = user.Email,
                 Sex = user.Sex,
                 IdentityCard = user.IdentityCard,
                 Married = user.Married == null ? false : user.Married.Value,
-                QQ = user.QQ,
+                //QQ = user.QQ,
                 Phone = user.Phone,
                 Language = user.Language,
                 OpenId = user.OpenId,
@@ -90,10 +90,10 @@ namespace Wei.Web.Controllers
             user.LastName = uimodel.LastName;
             user.Address = uimodel.Address;
             user.Education = uimodel.Education;
-            user.Email = uimodel.Email;
+            //user.Email = uimodel.Email;
             user.Sex = uimodel.Sex;
             user.IdentityCard = uimodel.IdentityCard;
-            user.QQ = uimodel.QQ;
+            //user.QQ = uimodel.QQ;
             user.Phone = uimodel.Phone;
             user.Married = uimodel.Married;
             user.Status = 1;

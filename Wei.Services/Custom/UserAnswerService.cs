@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Wei.Core;
 using Wei.Core.Caching;
@@ -46,6 +47,7 @@ namespace Wei.Services.Custom
         private readonly IUserService _userService;
         private readonly IWorkContext _workContext;
         private readonly ILogger _logger;
+        private readonly IWordsSubstitutionService _wordsSubstitutionService;
         private readonly WeiConfig _weiConfig;
         #endregion
 
@@ -62,6 +64,7 @@ namespace Wei.Services.Custom
             , IWorkContext workContext
             , IUserService userService
             , ILogger logger
+            , IWordsSubstitutionService wordsSubstitutionService
             , WeiConfig weiConfig)
         {
             this._userAnswerRepository = userAnswerRepository;
@@ -76,6 +79,7 @@ namespace Wei.Services.Custom
             this._userService = userService;
             this._workContext = workContext;
             this._logger = logger;
+            this._wordsSubstitutionService = wordsSubstitutionService;
             this._weiConfig = weiConfig;
         }
         #endregion
@@ -417,6 +421,23 @@ namespace Wei.Services.Custom
             }
             return tmpQ;
         }
+
+        /// <summary>
+        /// 修正语音文本
+        /// </summary>
+        /// <param name="answer"></param>
+        /// <returns></returns>
+        private string CorrectAnswer(string answer, int qbid)
+        {
+            StringBuilder sbuilder = new StringBuilder(answer);
+            var correctList = this._wordsSubstitutionService.GetSubstitutions(qbid, true);
+
+            foreach(var item in correctList)
+            {
+                sbuilder.Replace(item.Key, item.Value);
+            }
+            return sbuilder.ToString();
+        }
         #endregion
 
         #region methods
@@ -591,6 +612,10 @@ namespace Wei.Services.Custom
             var question = this._questionBankService.GetQuestion(uanswerdetail.UserAnswer.QuestionBank_Id, uanswerdetail.QuestionNo);
             var nuanswerdetail = new UserAnswerDetail();
 
+            // 语音答题处理文本数据
+            if (mediaType == MediaType.Voice)
+                answer = CorrectAnswer(answer, uanswerdetail.UserAnswer.QuestionBank_Id);
+
             //decimal nextQ = 0;
             WeiExecuteResult analysisQResult = null;
             // 文本答题，判断是否为下一题
@@ -637,7 +662,7 @@ namespace Wei.Services.Custom
                             uanswerdetail.Answer = answer;
                         else
                             uanswerdetail.Answer += answer;
-                        analysisQResult = WeiExecuteResultHelper.Failed(this._propertyService.GetValue("Answer.TextTips"));
+                        analysisQResult = WeiExecuteResultHelper.Failed(this._propertyService.GetValue("Answer.TextTips", 1));
                         break;
                 }
             }
